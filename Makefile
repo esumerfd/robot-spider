@@ -27,7 +27,9 @@ debug: build upload
 
 build:
 	@cd $(SELECTED_PROJECT) \
-		&& arduino-cli compile --build-path gen --fqbn $(FQBN) --libraries libraries .
+		&& arduino-cli compile --build-path gen --fqbn $(FQBN) \
+			--libraries libraries,src \
+			.
 
 upload: build
 ifeq ($(SELECTED_SERIAL_PORT),notset)
@@ -49,4 +51,6 @@ usb:
 	@cd $(SELECTED_PROJECT) \
 		&& arduino-cli board list \
 		&& ioreg -p IOUSB
-
+clean:
+	@cd $(SELECTED_PROJECT) \
+		&& rm -rf gen/*

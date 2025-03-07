@@ -1,19 +1,12 @@
 #include <arduino.h>
-#include <logging.h>
-#include <flasher.h>
+#include <robot.h>
 
-Flasher flasher;
+Robot robot;
 
 void setup() {
-  Log::begin();
-
-  flasher.begin(1000);
+  robot.setup();
 }
 
 void loop() {
-  Log::println("hello world");
-
-  flasher.flash();
-
-  delay(1000);
+  robot.loop();
 }
