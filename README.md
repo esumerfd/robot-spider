@@ -1,5 +1,7 @@
 # Robot Spider
 
+NOTE: It doesn't work yet.
+
 Hardware based on a free Robotics hexapod by delta3robotics. 
 
 * https://cults3d.com/de/modell-3d/verschiedene/sixpack

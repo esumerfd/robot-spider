@@ -19,8 +19,8 @@ board:
 		&& arduino-cli core install esp32:esp32
 dependencies:
 	@cd $(SELECTED_PROJECT) \
-		# && arduino-cli lib install "Adafruit BusIO" \
-		# && arduino-cli lib install "Adafruit PWM Servo Driver Library"
+		&& arduino-cli lib install "Adafruit BusIO" \
+		&& arduino-cli lib install "Adafruit PWM Servo Driver Library"
 
 # make PROJECT=Firmware/SIXpackDebug debug
 debug: build upload
