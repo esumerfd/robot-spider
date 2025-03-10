@@ -5,9 +5,12 @@
 #include <Wire.h>
 #include <Adafruit_PWMServoDriver.h>
 
+#define I2C_SDA 15
+#define I2C_SCL 14
+
 Flasher flasher;
 
-Adafruit_PWMServoDriver pwm = Adafruit_PWMServoDriver();
+Adafruit_PWMServoDriver pwm = Adafruit_PWMServoDriver(0x40, Wire);
 
 #define SERVOMIN 150
 #define SERVOMAX 600
@@ -22,6 +25,9 @@ void Robot::setup() {
 
   // init pwm
   Log::println("PWM Init");
+
+  Wire.begin(I2C_SDA, I2C_SCL);
+
   pwm.begin();
   pwm.setPWMFreq(60);
   delay(10);
