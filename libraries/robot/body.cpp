@@ -13,20 +13,6 @@ void Body::begin() {
 
   pwm.begin();
   pwm.setPWMFreq(60);
-  delay(10);
-}
-
-void Body::reset() {
-
-  for (int pulselen = SERVOMIN; pulselen < SERVOMAX; pulselen++){
-    pwm.setPWM(servonum, 0, pulselen);
-    delay(10);
-  }
-
-  for (int pulselen = SERVOMAX; pulselen > SERVOMIN; pulselen--){
-    pwm.setPWM(servonum, 0, pulselen);
-    delay(10);
-  }
-
+  pwm.setPWM(servonum, 0, SERVOMIN + (SERVOMAX - SERVOMIN / 2));
 }
 

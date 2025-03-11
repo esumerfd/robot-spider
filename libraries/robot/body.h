@@ -12,7 +12,6 @@ class Body {
   public:
 
     void begin();
-    void reset();
 };
 
 #endif

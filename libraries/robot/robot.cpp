@@ -25,9 +25,6 @@ void Robot::setup() {
 
 void Robot::loop() {
   Log::println("Loop start");
-
-  body.reset();
-
   flasher.flash();
 
   // check queue for operation.
