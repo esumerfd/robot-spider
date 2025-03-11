@@ -4,15 +4,23 @@
 #include <logging.h>
 
 #include <body.h>
+#include <board.h>
 
 Flasher flasher;
-Body body;
+
+Board board;
+Body body = Body(board);
 
 void Robot::setup() {
   Log::begin();
   flasher.begin(1000);
 
   // seed initial sequence with movements.
+
+  // Construct model
+  // new Knee
+  // new Sholder
+  // new Leg
   body.begin();
 
   // init pwm
