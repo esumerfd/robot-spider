@@ -28,7 +28,7 @@ debug: build upload
 build:
 	@cd $(SELECTED_PROJECT) \
 		&& arduino-cli compile --build-path gen --fqbn $(FQBN) \
-			--libraries libraries,src \
+			--libraries libraries \
 			.
 
 upload: build
