@@ -5,11 +5,13 @@
 
 #include <body.h>
 #include <board.h>
+#include <move.h>
 
 Flasher flasher;
 
+Move move;
 Board board;
-Body body = Body(board);
+Body body = Body(board, move);
 
 void Robot::setup() {
   Log::begin();
@@ -37,6 +39,7 @@ void Robot::loop() {
 
   // check queue for operation.
   // take next opertion step.
+  body.action();
 
   Log::println("Loop end");
   delay(1000);

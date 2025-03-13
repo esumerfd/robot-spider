@@ -1,6 +1,9 @@
 #ifndef BOARD_H
 #define BOARD_H
 
+#define SERVOMIN 150
+#define SERVOMAX 600
+
 /*
  * Definition of the board we are running on.
  */

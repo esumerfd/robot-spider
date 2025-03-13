@@ -11,9 +11,6 @@ int Board::pwmSCL() {
   return I2C_SCL;
 }
 
-#define SERVOMIN 150
-#define SERVOMAX 600
-
 int Board::servoMin() {
   return SERVOMIN;
 }
