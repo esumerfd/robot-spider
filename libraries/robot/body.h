@@ -4,6 +4,9 @@
 #include <board.h>
 #include <move.h>
 
+/*
+ * Composes all the parts of the body and how that are controlled.
+ */
 class Body {
 
   private:

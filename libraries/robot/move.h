@@ -5,6 +5,10 @@
 
 #define DISTANCE 5
 
+/*
+ * A mover is responsible for applying a delate change to
+ * a servo state.
+ */
 class Move {
   private:
 
