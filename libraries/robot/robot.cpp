@@ -17,7 +17,7 @@ Body body = Body(servo, mover);
 
 void Robot::setup() {
   Log::begin();
-  flasher.begin(1000);
+  flasher.begin();
 
   // seed initial sequence with movements.
 

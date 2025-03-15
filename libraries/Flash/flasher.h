@@ -8,26 +8,13 @@
 class Flasher {
   private:
     bool _ledOn = false;
-    int _ledTransitions = 0;
+    int _ledTransitions = -1;
 
-    void toggleLED() {
-      digitalWrite(ESP_LED_PIN, _ledOn ? LOW : HIGH);
-      _ledOn = !_ledOn;
-    }
+    void toggleLED();
 
   public:
-    void begin(int flashers) {
-      _ledTransitions = flashers * 2;
-
-      pinMode(ESP_LED_PIN, OUTPUT);
-    }
-
-    void flash() {
-      if (_ledTransitions > 0) {
-        _ledTransitions--;
-        toggleLED();
-      }
-    }
+    void begin(int flashes = -1);
+    void flash();
 };
 
 #endif
