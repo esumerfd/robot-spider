@@ -1,14 +1,13 @@
 #include <mover.h>
-#include <board.h>
 
-int Mover::move(int currentPosition) {
+uint16_t Mover::move(uint16_t currentPosition) {
 
-  int newPosition = currentPosition;
+  uint16_t newPosition = currentPosition;
 
-  if (_directionUp && currentPosition <= SERVOMAX) {
+  if (_directionUp && currentPosition <= _positionMax) {
     newPosition = currentPosition + DISTANCE;
   }
-  else if (!_directionUp && currentPosition >= SERVOMIN) {
+  else if (!_directionUp && currentPosition >= _positionMin) {
     newPosition = currentPosition - DISTANCE;
   }
   else {

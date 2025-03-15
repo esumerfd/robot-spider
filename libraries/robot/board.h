@@ -1,6 +1,8 @@
 #ifndef BOARD_H
 #define BOARD_H
 
+#include <stdint.h>
+
 #define SERVOMIN 150
 #define SERVOMAX 600
 
@@ -14,9 +16,9 @@ class Board {
     int pwmSDA();
     int pwmSCL();
 
-    int servoMin();
-    int servoMax();
-    int servoMiddle();
+    uint16_t servoMin();
+    uint16_t servoMax();
+    uint16_t servoMiddle();
 };
 
 #endif

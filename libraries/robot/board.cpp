@@ -11,14 +11,14 @@ int Board::pwmSCL() {
   return I2C_SCL;
 }
 
-int Board::servoMin() {
+uint16_t Board::servoMin() {
   return SERVOMIN;
 }
 
-int Board::servoMax() {
+uint16_t Board::servoMax() {
   return SERVOMAX;
 }
 
-int Board::servoMiddle() {
+uint16_t Board::servoMiddle() {
   return SERVOMIN + (SERVOMAX - SERVOMIN / 2);
 }

@@ -1,7 +1,7 @@
 #ifndef BODY_H
 #define BODY_H
 
-#include <board.h>
+#include <servo.h>
 #include <mover.h>
 
 /*
@@ -11,14 +11,14 @@ class Body {
 
   private:
 
-    Board _board;
+    Servo _servo;
     Mover _mover;
 
-    int _position = SERVOMIN;
+    uint16_t _position = SERVOMIN;
 
   public:
 
-    Body(Board &board, Mover &mover);
+    Body(Servo &servo, Mover &mover);
 
     void begin();
     void action();

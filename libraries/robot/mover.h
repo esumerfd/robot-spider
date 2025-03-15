@@ -1,7 +1,7 @@
 #ifndef MOVER_H
 #define MOVER_H
 
-#include <board.h>
+#include <stdint.h>
 
 #define DISTANCE 5
 
@@ -14,8 +14,15 @@ class Mover {
 
     bool _directionUp = true;
 
+    uint16_t _positionMin;
+    uint16_t _positionMax;
+
   public:
-    int move(int position);
+
+    Mover(uint16_t positionMin, uint16_t positionMax)
+      : _positionMin(positionMin), _positionMax(positionMax) {}
+
+    uint16_t move(uint16_t currentPosition);
 };
 
 #endif MOVER_H

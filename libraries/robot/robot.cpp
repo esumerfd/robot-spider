@@ -4,14 +4,16 @@
 #include <logging.h>
 
 #include <body.h>
+#include <servo.h>
 #include <board.h>
 #include <mover.h>
 
 Flasher flasher;
 
-Mover mover;
 Board board;
-Body body = Body(board, mover);
+Mover mover = Mover(board.servoMin(), board.servoMax());
+Servo servo = Servo(board, 0);
+Body body = Body(servo, mover);
 
 void Robot::setup() {
   Log::begin();
