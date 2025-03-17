@@ -11,8 +11,6 @@ void Body::begin() {
 
 void Body::action() {
 
-  _position = _mover.move(_position);
-
-  _servo.move(_position);
+  _servo.move(_mover);
 }
 

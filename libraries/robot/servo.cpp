@@ -18,9 +18,10 @@ void Servo::begin() {
   pwm.setPWM(_servonum, 0, _board.servoMiddle());
 }
 
-void Servo::move(uint16_t position) {
+void Servo::move(Mover mover) {
 
-  Log::println("Move %d", position);
+  _position = mover.move(_position);
+  Log::println("Mover %d", _position);
 
-  pwm.setPWM(_servonum, 0, position);
+  pwm.setPWM(_servonum, 0, _position);
 }

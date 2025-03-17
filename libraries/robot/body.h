@@ -14,8 +14,6 @@ class Body {
     Servo _servo;
     Mover _mover;
 
-    uint16_t _position = SERVOMIN;
-
   public:
 
     Body(Servo &servo, Mover &mover);

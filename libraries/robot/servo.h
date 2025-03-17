@@ -3,6 +3,7 @@
 
 #include <stdint.h>
 #include <board.h>
+#include <mover.h>
 
 /*
  * Simple abstraction of servo library
@@ -13,12 +14,14 @@ class Servo {
     Board _board;
     uint8_t _servonum = 0;
 
+    uint16_t _position = SERVOMIN;
+
   public:
 
     Servo(Board &board, uint8_t servonum);
 
     void begin();
-    void move(uint16_t position);
+    void move(Mover mover);
 };
 
 #endif
