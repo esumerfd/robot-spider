@@ -15,13 +15,12 @@ void Servo::begin() {
 
   pwm.begin();
   pwm.setPWMFreq(60);
-  pwm.setPWM(_servonum, 0, _board.servoMiddle());
+  pwm.setPWM(_servonum, 0, _position);
 }
 
 void Servo::move(Mover mover) {
 
   _position = mover.move(_position);
-  Log::println("Mover %d", _position);
 
   pwm.setPWM(_servonum, 0, _position);
 }
