@@ -54,3 +54,12 @@ usb:
 clean:
 	@cd $(SELECTED_PROJECT) \
 		&& rm -rf gen/*
+
+runtest:
+	@cd $(SELECTED_PROJECT)/test \
+		&& gcc -v mover_test.cpp \
+			-std=c++11 \
+			-o ../gen/robot-spider-test \
+			-I ../libraries/robot
+		&& ../gen/robot-spider-test
+
