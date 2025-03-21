@@ -1,4 +1,3 @@
-
 #include <body.h>
 
 Body::Body(Servo &servo, Mover &mover) 

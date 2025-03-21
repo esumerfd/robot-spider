@@ -7,11 +7,12 @@
 #include <servo.h>
 #include <board.h>
 #include <mover.h>
+#include <mover_oscilate.h>
 
 Flasher flasher;
 
 Board board;
-Mover mover = Mover(board.servoMin(), board.servoMax());
+Mover mover = MoverOscilate(board.servoMin(), board.servoMax());
 Servo servo = Servo(board, 0);
 Body body = Body(servo, mover);
 

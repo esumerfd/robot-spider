@@ -1,9 +1,9 @@
 #include <stdio.h>
 #include <string.h>
-#include <mover.h>
+#include <mover_oscilate.h>
 #include <logging.h>
 
-uint16_t Mover::move(uint16_t currentPosition) {
+uint16_t MoverOscilate::move(uint16_t currentPosition) {
 
   uint16_t newPosition = currentPosition;
 

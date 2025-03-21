@@ -21,7 +21,7 @@ class Servo {
     Servo(Board &board, uint8_t servonum);
 
     void begin();
-    void move(Mover mover);
+    void move(Mover &mover);
 };
 
 #endif

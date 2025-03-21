@@ -12,7 +12,7 @@ class Body {
   private:
 
     Servo _servo;
-    Mover _mover;
+    Mover &_mover;
 
   public:
 
