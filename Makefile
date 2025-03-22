@@ -57,9 +57,9 @@ clean:
 
 runtest:
 	@cd $(SELECTED_PROJECT)/test \
-		&& gcc -v mover_test.cpp \
-			-std=c++11 \
+		&& gcc -v -std=c++11 -c -g -I ../libraries/robot mover_test.cpp \
+		&& gcc -v -std=c++11 \
 			-o ../gen/robot-spider-test \
-			-I ../libraries/robot
+			$(find ../gen/libraries -name '*.o' -type f) \
 		&& ../gen/robot-spider-test
 
