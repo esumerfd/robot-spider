@@ -56,5 +56,4 @@ clean:
 		&& rm -rf gen/*
 
 runtest:
-	@cd $(SELECTED_PROJECT)/test \
-		make test
+	@cd $(SELECTED_PROJECT)/test && make test
