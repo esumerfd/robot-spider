@@ -21,6 +21,13 @@ My goal is to re-write the software using various techniques with some experieme
         * Install FTDI drivers: https://ftdichip.com
 * make init
 
+# Prerequisites
+
+From here: https://github.com/osx-cross/homebrew-avr
+
+* brew tap osx-cross/avr
+* brew install avr-gcc
+
 # Build
 
 The build step installs the packages and runs the arduino-cli compile to generate the image
