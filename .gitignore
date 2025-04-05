@@ -2,6 +2,6 @@
 gen
 *.o
 
-test/build
+tests/build
 
 
