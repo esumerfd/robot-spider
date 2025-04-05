@@ -1,26 +1,79 @@
-CXX = g++
-CXXFLAGS = -Wall -Wextra -std=c++17
-SOURCE_PATH = . libraries
+CXX ?= gcc
+# path #
+ROOT = ..
+SRC_PATH = ../libraries/robot
+TEST_PATH = .
 BUILD_PATH = build
 BIN_PATH = $(BUILD_PATH)/bin
-SOURCES = $(foreach dir, $(SOURCE_PATH), $(wildcard $(dir)/*.cpp))
-OBJECTS = $(patsubst %.cpp, $(BUILD_PATH)/%.o, $(notdir $(SOURCES)))
-EXECUTABLE = $(BIN_PATH)/test_executable
 
-debug:
-	@echo SOURCE $(SOURCES)
-	@echo OBJECTS $(OBJECTS)
+# executable # 
+BIN_NAME = run_tests
 
-# Rules
-all: $(EXECUTABLE)
+# extensions #
+SRC_EXT = cpp
 
-$(EXECUTABLE): $(OBJECTS)
-	mkdir -p $(BIN_PATH)
-	$(CXX) $(CXXFLAGS) $^ -o $@
+# code lists #
+# Find all source files in the source directory, sorted by
+# most recently modified
+SOURCES = $(shell find $(SRC_PATH) $(TEST_PATH) -name "*.$(SRC_EXT)" | sort -k 1nr | cut -f2-)
+# Set the object file names, with the source directory stripped
+# from the path, and the build path prepended in its place
+OBJECTS = $(SOURCES:$(SRC_PATH)/%.$(SRC_EXT)=$(BUILD_PATH)/%.o) \
+	$(SOURCES:$(TEST_PATH)/%.$(SRC_EXT)=$(BUILD_PATH)/%.o)
 
-$(BUILD_PATH)/%.o: $(SOURCE_PATH)/%.cpp
-	mkdir -p $(BUILD_PATH)
-	$(CXX) $(CXXFLAGS) -c $< -o $@
+# Set the dependency files that will be used to add header dependencies
+DEPS = $(OBJECTS:.o=.d)
 
+# flags #
+COMPILE_FLAGS = -std=c++11 -Wall -Wextra -g -Wc++11-extensions
+
+INCLUDES = -I include/ \
+	   -I /usr/local/include \
+	   -I $(ROOT)/libraries/robot
+# Space-separated pkg-config libraries used by this project
+LIBS =
+
+.PHONY: default_target
+default_target: release
+
+.PHONY: release
+release: export CXXFLAGS := $(CXXFLAGS) $(COMPILE_FLAGS)
+release: dirs
+	@$(MAKE) all
+
+.PHONY: dirs
+dirs:
+	@echo "Creating directories"
+	@mkdir -p $(dir $(OBJECTS))
+	@mkdir -p $(BIN_PATH)
+
+.PHONY: clean
 clean:
-	rm -rf $(BUILD_PATH)
+	@echo "Deleting $(BIN_NAME) symlink"
+	@$(RM) $(BIN_NAME)
+	@echo "Deleting directories"
+	@$(RM) -r $(BUILD_PATH)
+	@$(RM) -r $(BIN_PATH)
+
+# checks the executable and symlinks to the output
+.PHONY: all
+all: $(BIN_PATH)/$(BIN_NAME)
+	@echo "BIN $(BIN_NAME)"
+
+# Creation of the executable
+$(BIN_PATH)/$(BIN_NAME): $(OBJECTS)
+	@echo "Linking: $@"
+	$(CXX) $(OBJECTS) -o $@ ${LIBS}
+
+# Add dependency files, if they exist
+-include $(DEPS)
+
+# Source file rules
+# After the first compilation they will be joined with the rules from the
+# dependency files to provide header dependencies
+$(BUILD_PATH)/%.o: $(SRC_PATH)/%.$(SRC_EXT)
+	@echo "Compiling: $< -> $@"
+	$(CXX) $(CXXFLAGS) $(INCLUDES) -MP -MMD -c $< -o $@
+
+test: all
+	$(BIN_PATH)/$(BIN_NAME)
