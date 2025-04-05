@@ -3,6 +3,8 @@
 #include <mover.h>
 #include <logging.h>
 
+Mover::Mover() : _directionUp(true) {}
+
 uint16_t Mover::move(uint16_t currentPosition) {
 
   uint16_t newPosition = currentPosition;

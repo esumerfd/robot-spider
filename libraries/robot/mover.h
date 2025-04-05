@@ -12,7 +12,7 @@
 class Mover {
   private:
 
-    bool _directionUp = true;
+    bool _directionUp;
 
     uint16_t _positionMin;
     uint16_t _positionMax;
