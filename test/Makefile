@@ -1,23 +1,76 @@
-default: test
+CXX ?= gcc
+# path #
+ROOT = ..
+SRC_PATH = .
+BUILD_PATH = build
+BIN_PATH = $(BUILD_PATH)/bin
 
-compile:
-	avr-gcc -v -std=c++11 -c -g \
-		-I ../libraries/robot \
-		-I ../libraries/logging \
-		-I ../libraries/flash \
-		*.cpp \
-	# && avr-gcc -v -std=c++11 -c -g \
-	# 	-I ../libraries/robot \
-	# 	-I ../libraries/logging \
-	# 	-I ../libraries/flash \
-	# 	../libraries/robot/*.cpp
+# executable # 
+BIN_NAME = run_tests
 
-link:
-	avr-gcc -v \
-		-o ../gen/robot-spider-test ./main.o ./mover_test.o ../gen/libraries/Wire/Wire.cpp.o ../gen/libraries/Adafruit_PWM_Servo_Driver_Library/Adafruit_PWMServoDriver.cpp.o ../gen/libraries/robot/servo.cpp.o ../gen/libraries/robot/mover.cpp.o ../gen/libraries/robot/body.cpp.o ../gen/libraries/robot/robot.cpp.o ../gen/libraries/robot/board.cpp.o ../gen/libraries/Adafruit_BusIO/Adafruit_BusIO_Register.cpp.o ../gen/libraries/Adafruit_BusIO/Adafruit_GenericDevice.cpp.o ../gen/libraries/Adafruit_BusIO/Adafruit_I2CDevice.cpp.o ../gen/libraries/Adafruit_BusIO/Adafruit_SPIDevice.cpp.o ../gen/libraries/flash/flasher.cpp.o ../gen/libraries/SPI/SPI.cpp.o ../gen/libraries/logging/logging.cpp.o
+# extensions #
+SRC_EXT = cpp
 
-run:
-	../gen/robot-spider-test
+# code lists #
+# Find all source files in the source directory, sorted by
+# most recently modified
+SOURCES = $(shell find $(SRC_PATH) -name '*.$(SRC_EXT)' | sort -k 1nr | cut -f2-)
+# Set the object file names, with the source directory stripped
+# from the path, and the build path prepended in its place
+OBJECTS = $(SOURCES:$(SRC_PATH)/%.$(SRC_EXT)=$(BUILD_PATH)/%.o)
+# Set the dependency files that will be used to add header dependencies
+DEPS = $(OBJECTS:.o=.d)
 
-test: compile link run
+# flags #
+COMPILE_FLAGS = -std=c++11 -Wall -Wextra -g -Wc++11-extensions
 
+INCLUDES = -I include/ \
+	   -I /usr/local/include \
+	   -I $(ROOT)/libraries/robot
+# Space-separated pkg-config libraries used by this project
+LIBS =
+
+.PHONY: default_target
+default_target: release
+
+.PHONY: release
+release: export CXXFLAGS := $(CXXFLAGS) $(COMPILE_FLAGS)
+release: dirs
+	@$(MAKE) all
+
+.PHONY: dirs
+dirs:
+	@echo "Creating directories"
+	@mkdir -p $(dir $(OBJECTS))
+	@mkdir -p $(BIN_PATH)
+
+.PHONY: clean
+clean:
+	@echo "Deleting $(BIN_NAME) symlink"
+	@$(RM) $(BIN_NAME)
+	@echo "Deleting directories"
+	@$(RM) -r $(BUILD_PATH)
+	@$(RM) -r $(BIN_PATH)
+
+# checks the executable and symlinks to the output
+.PHONY: all
+all: $(BIN_PATH)/$(BIN_NAME)
+	@echo "BIN $(BIN_NAME)"
+
+# Creation of the executable
+$(BIN_PATH)/$(BIN_NAME): $(OBJECTS)
+	@echo "Linking: $@"
+	$(CXX) $(OBJECTS) -o $@ ${LIBS}
+
+# Add dependency files, if they exist
+-include $(DEPS)
+
+# Source file rules
+# After the first compilation they will be joined with the rules from the
+# dependency files to provide header dependencies
+$(BUILD_PATH)/%.o: $(SRC_PATH)/%.$(SRC_EXT)
+	@echo "Compiling: $< -> $@"
+	$(CXX) $(CXXFLAGS) $(INCLUDES) -MP -MMD -c $< -o $@
+
+test: all
+	$(BIN_PATH)/$(BIN_NAME)

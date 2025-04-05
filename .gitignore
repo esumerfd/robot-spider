@@ -2,4 +2,6 @@
 gen
 *.o
 
+test/build
+
 
