@@ -55,5 +55,5 @@ clean:
 	@cd $(SELECTED_PROJECT) \
 		&& rm -rf gen/*
 
-runtest:
-	@cd $(SELECTED_PROJECT)/test && make test
+test:
+	@cd $(SELECTED_PROJECT)/tests && make test
