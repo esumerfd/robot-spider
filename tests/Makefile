@@ -1,7 +1,7 @@
 CXX ?= gcc
 # path #
 ROOT = ..
-SRC_PATH = ../libraries/robot
+SRC_PATH = ../libraries
 TEST_PATH = .
 BUILD_PATH = build
 BIN_PATH = $(BUILD_PATH)/bin
@@ -15,23 +15,29 @@ SRC_EXT = cpp
 # code lists #
 # Find all source files in the source directory, sorted by
 # most recently modified
-SOURCES = $(shell find $(SRC_PATH) $(TEST_PATH) -name "*.$(SRC_EXT)" | sort -k 1nr | cut -f2-)
-# Set the object file names, with the source directory stripped
-# from the path, and the build path prepended in its place
-OBJECTS = $(SOURCES:$(SRC_PATH)/%.$(SRC_EXT)=$(BUILD_PATH)/%.o) \
-	$(SOURCES:$(TEST_PATH)/%.$(SRC_EXT)=$(BUILD_PATH)/%.o)
+SOURCES = $(shell find $(SRC_PATH) -name "*.$(SRC_EXT)" | sort -k 1nr | cut -f2-)
+TEST_SOURCES = $(shell find $(TEST_PATH) -name "*.$(SRC_EXT)" | sort -k 1nr | cut -f2-)
+# convert cpp file nanme sinto o file names
+OBJECTS = $(SOURCES:$(SRC_PATH)/%.$(SRC_EXT)=$(BUILD_PATH)/%.o) $(TEST_SOURCES:$(TEST_PATH)/%.$(SRC_EXT)=$(BUILD_PATH)/%.o) 
 
 # Set the dependency files that will be used to add header dependencies
 DEPS = $(OBJECTS:.o=.d)
 
-# flags #
-COMPILE_FLAGS = -std=c++11 -Wall -Wextra -g -Wc++11-extensions
+# # flags #
+# COMPILE_FLAGS = -std=c++11 -Wall -Wextra -g -Wc++11-extensions
 
 INCLUDES = -I include/ \
 	   -I /usr/local/include \
 	   -I $(ROOT)/libraries/robot
 # Space-separated pkg-config libraries used by this project
 LIBS =
+
+debug:
+	@echo SOURCE=$(SOURCES)
+	@echo TEST_SOURCE=$(TEST_SOURCES)
+	@echo OBJECTS=$(OBJECTS)
+	@echo DEPS=$(DEP)
+	@echo INCLUDES=$(INCLUDES)
 
 .PHONY: default_target
 default_target: release
