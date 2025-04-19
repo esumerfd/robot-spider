@@ -19,8 +19,7 @@ class Mover {
 
   public:
 
-    Mover(uint16_t positionMin, uint16_t positionMax)
-      : _positionMin(positionMin), _positionMax(positionMax) {}
+    Mover(uint16_t positionMin, uint16_t positionMax);
 
     uint16_t move(uint16_t currentPosition);
 };

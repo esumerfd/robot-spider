@@ -29,7 +29,7 @@ build:
 	@cd $(SELECTED_PROJECT) \
 		&& arduino-cli compile --build-path gen --fqbn $(FQBN) \
 			--libraries libraries \
-			.
+			--libraries .
 
 upload: build
 ifeq ($(SELECTED_SERIAL_PORT),notset)

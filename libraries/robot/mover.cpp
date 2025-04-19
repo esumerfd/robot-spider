@@ -3,7 +3,9 @@
 #include <mover.h>
 #include <logging.h>
 
-Mover::Mover() : _directionUp(true) {}
+Mover::Mover(uint16_t positionMin, uint16_t positionMax) : _positionMin(positionMin), _positionMax(positionMax) {
+  _directionUp = true;
+}
 
 uint16_t Mover::move(uint16_t currentPosition) {
 
