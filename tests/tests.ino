@@ -3,7 +3,7 @@
 
 void setup(){
   Log::begin();
-  delay(1000);
+  delay(5000);
 
   Log::println("Start Test Suite");
   delay(1000);

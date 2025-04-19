@@ -26,12 +26,11 @@ uint16_t Mover::move(uint16_t currentPosition) {
     strcpy(branch, "changed");
   }
 
-  bool x = (!_directionUp && currentPosition - DISTANCE > _positionMin);
-    
-  Log::println("Mover (%d/%d) %d: %d => %d: %s : %d", 
+  Log::println("Mover (%d/%d) up %d: %d => %d: %s", 
     _positionMin, _positionMax, 
-    _directionUp, currentPosition, newPosition,
-    branch, x);
+    _directionUp, 
+    currentPosition, newPosition,
+    branch);
 
   return newPosition;
 }

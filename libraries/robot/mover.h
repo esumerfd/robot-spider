@@ -22,6 +22,10 @@ class Mover {
     Mover(uint16_t positionMin, uint16_t positionMax);
 
     uint16_t move(uint16_t currentPosition);
+
+    bool isDirectionUp() {
+      return _directionUp;
+    }
 };
 
 #endif 
