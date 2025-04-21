@@ -1,7 +1,7 @@
 
 #include <body.h>
 
-Body::Body(Servo &servo, Mover &mover) 
+Body::Body(Servo &servo, MoverUp &mover) 
   : _servo(servo), _mover(mover) {}
 
 void Body::begin() {

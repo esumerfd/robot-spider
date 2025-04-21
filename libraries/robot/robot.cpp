@@ -6,12 +6,12 @@
 #include <body.h>
 #include <servo.h>
 #include <board.h>
-#include <mover.h>
+#include <mover_up.h>
 
 Flasher flasher;
 
 Board board;
-Mover mover = Mover(board.servoMin(), board.servoMax());
+MoverUp mover = MoverUp(board.servoMin(), board.servoMax());
 Servo servo = Servo(board, 0);
 Body body = Body(servo, mover);
 

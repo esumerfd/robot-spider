@@ -1,5 +1,5 @@
-#ifndef MOVER_H
-#define MOVER_H
+#ifndef MOVER_UP_H
+#define MOVER_UP_H
 
 #include <stdint.h>
 
@@ -9,7 +9,7 @@
  * A mover is responsible for applying a delta change to
  * a servo state.
  */
-class Mover {
+class MoverUp {
   private:
 
     bool _directionUp;
@@ -19,7 +19,7 @@ class Mover {
 
   public:
 
-    Mover(uint16_t positionMin, uint16_t positionMax);
+    MoverUp(uint16_t positionMin, uint16_t positionMax);
 
     uint16_t move(uint16_t currentPosition);
 
