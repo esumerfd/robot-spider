@@ -36,12 +36,12 @@ void Robot::setup() {
 }
 
 void Robot::loop() {
-  Log::println("Loop -----------------");
+  // Log::println("Loop -----------------");
   flasher.flash();
 
   // check queue for operation.
   // take next opertion step.
   body.action();
 
-  delay(250);
+  delay(100);
 }
