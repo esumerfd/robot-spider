@@ -18,7 +18,7 @@ void Servo::begin() {
   pwm.setPWM(_servonum, 0, _position);
 }
 
-void Servo::move(MoverUp mover) {
+void Servo::move(MoverUp& mover) {
 
   _position = mover.move(_position);
 

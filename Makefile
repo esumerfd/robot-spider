@@ -46,6 +46,8 @@ else
 	@cd $(SELECTED_PROJECT) \
 		&& arduino-cli monitor --port $(SELECTED_SERIAL_PORT)
 endif
+
+run:	upload monitor
  
 usb:
 	@cd $(SELECTED_PROJECT) \

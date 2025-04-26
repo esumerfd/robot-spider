@@ -12,11 +12,11 @@ class Body {
   private:
 
     Servo _servo;
-    MoverUp _mover;
+    MoverUp& _mover;
 
   public:
 
-    Body(Servo &servo, MoverUp &mover);
+    Body(Servo &servo, MoverUp& mover);
 
     void begin();
     void action();
