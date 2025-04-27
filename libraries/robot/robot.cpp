@@ -28,7 +28,6 @@ void Robot::setup() {
   body.begin();
 
   // init pwm
-  Log::println("PWM Init");
 
   // init servos to default position
   // report status of memory, devices.
@@ -36,7 +35,6 @@ void Robot::setup() {
 }
 
 void Robot::loop() {
-  // Log::println("Loop -----------------");
   flasher.flash();
 
   // check queue for operation.

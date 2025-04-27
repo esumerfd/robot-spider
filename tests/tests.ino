@@ -1,5 +1,6 @@
 #include <logging.h>
 #include <mover_test.h>
+#include <sequence_test.h>
 
 void setup(){
   Log::begin();
@@ -7,6 +8,7 @@ void setup(){
 
   Log::println("Start Test Suite");
   test_mover();
+  test_sequence();
   Log::println("Finished Test Suite");
 }
 

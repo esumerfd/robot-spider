@@ -1,6 +1,6 @@
 #include <logging.h>
-#include <mover_up.h>
 #include <unit_test.h>
+#include <mover_up.h>
 
 void test_mover() {
   MoverUp mover(1, 100);
