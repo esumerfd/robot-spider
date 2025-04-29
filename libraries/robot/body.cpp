@@ -1,16 +1,14 @@
-
 #include <body.h>
 
-Body::Body(Servo &servo, MoverUp &mover) 
-  : _servo(servo), _mover(mover) {}
+Body::Body(Servo &servo, Sequence &sequence) 
+  : _servo(servo), _sequence(sequence) {}
 
 void Body::begin() {
   
-  _servo.begin();
 }
 
 void Body::action() {
 
-  _servo.move(_mover);
+  _sequence.move();
 }
 

@@ -6,6 +6,7 @@
 #include <body.h>
 #include <servo.h>
 #include <board.h>
+#include <sequence.h>
 #include <mover_up.h>
 
 Flasher flasher;
@@ -13,7 +14,8 @@ Flasher flasher;
 Board board;
 MoverUp mover = MoverUp(board.servoMin(), board.servoMax());
 Servo servo = Servo(board, 0);
-Body body = Body(servo, mover);
+Sequence sequence = Sequence(servo);
+Body body = Body(servo, sequence);
 
 void Robot::setup() {
   Log::begin();
@@ -25,6 +27,9 @@ void Robot::setup() {
   // new Knee
   // new Sholder
   // new Leg
+  //
+  sequence.add(mover);
+
   body.begin();
 
   // init pwm

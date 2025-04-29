@@ -3,6 +3,7 @@
 
 #include <servo.h>
 #include <mover_up.h>
+#include <sequence.h>
 
 /*
  * Composes all the parts of the body and how that are controlled.
@@ -12,11 +13,11 @@ class Body {
   private:
 
     Servo _servo;
-    MoverUp& _mover;
+    Sequence &_sequence;
 
   public:
 
-    Body(Servo &servo, MoverUp& mover);
+    Body(Servo &servo, Sequence &sequence);
 
     void begin();
     void action();
