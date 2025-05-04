@@ -6,8 +6,9 @@
 #define DISTANCE 5
 
 /*
- * A mover is responsible for applying a delta change to
- * a servo state.
+ * A mover is responsible for applying a delta change to position.
+ * 
+ * Not coupled with servos, just a transformation of position.
  */
 class MoverUp {
   private:

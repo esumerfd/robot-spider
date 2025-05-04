@@ -11,7 +11,8 @@ size_t Sequence::size() {
 }
 
 void Sequence::move() {
-  for (MoverUp &mover : _sequence) {
+  for (MoverUp mover : _sequence) {
+    Log::println("Sequence: move 0x%x", mover);
     _servo.move(mover);
   }
 }

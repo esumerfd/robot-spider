@@ -8,7 +8,7 @@ void Log::begin() {
 }
 
 void Log::println(const char* format, ...) {
-  char buffer[100];
+  char buffer[500];
   va_list args;
   va_start(args, format);
   vsnprintf(buffer, sizeof(buffer), format, args);
@@ -17,7 +17,7 @@ void Log::println(const char* format, ...) {
 }
 
 void Log::print(const char* format, ...) {
-  char buffer[100];
+  char buffer[500];
   va_list args;
   va_start(args, format);
   vsnprintf(buffer, sizeof(buffer), format, args);

@@ -1,6 +1,7 @@
 #ifndef SEQUENCE_H
 #define SEQUENCE_H
 
+#include <logging.h>
 #include <servo.h>
 #include <mover_up.h>
 #include <vector>
