@@ -1,25 +1,20 @@
 #include <robot.h>
-#include <flasher.h>
 #include <logging.h>
 
-#include <body.h>
-#include <servo.h>
-#include <board.h>
-#include <sequence.h>
-#include <mover_up.h>
-
-Flasher flasher;
-
-Board board;
-Servo servo = Servo(board, 0);
-MoverUp moverUp(board.servoMin(), board.servoMax());
-Sequence sequence = Sequence(servo);
-Body body = Body(servo, sequence);
-byte endMarter;
+// Constructor with member initializer list (guarantees correct order)
+Robot::Robot()
+  : _flasher(),
+    _board(),
+    _servo(_board, 0),
+    _moverUp(_board.servoMin(), _board.servoMax()),
+    _sequence(_servo),
+    _body(_servo, _sequence) {
+  // All members constructed in declaration order
+}
 
 void Robot::setup() {
   Log::begin();
-  flasher.begin();
+  _flasher.begin();
 
   delay(500);
 
@@ -28,26 +23,26 @@ void Robot::setup() {
   // new Sholder
   // new Leg
 
-  sequence.add(moverUp);
+  _sequence.add(_moverUp);
 
-  body.begin();
+  _body.begin();
 
   // report status of memory, devices.
 }
 
 void Robot::loop() {
-  flasher.flash();
+  _flasher.flash();
 
   // check queue for operation.
   // take next opertion step.
-  body.action();
+  _body.action();
 
   Log::println(
-      "Robot setup: body: 0x%x (%d), sequence: 0x%x (%d), mover 0x%x (%d), servo 0x%x (%d)--",
-      &body, sizeof(Body), &sequence, sizeof(Sequence),
-      &moverUp, sizeof(MoverUp), &servo, sizeof(Servo));
+      "Robot setup: body: 0x%x (%d), sequence: 0x%x (%d), mover: 0x%x (%d), servo: 0x%x (%d)",
+      &_body, sizeof(Body), &_sequence, sizeof(Sequence),
+      &_moverUp, sizeof(MoverUp), &_servo, sizeof(Servo));
 
-  Log::println("Status: mover count %d", sequence.size());
+  Log::println("Status: mover count %d", _sequence.size());
 
   delay(100);
 }

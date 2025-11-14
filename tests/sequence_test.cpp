@@ -3,6 +3,7 @@
 #include <board.h>
 #include <servo.h>
 #include <sequence.h>
+#include <mover_up.h>
 
 void test_sequence() {
   Board board;
