@@ -19,4 +19,3 @@ void test_sequence() {
   SHOULD(sequence.size() == 2);
 
 }
-

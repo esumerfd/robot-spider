@@ -3,25 +3,22 @@
 
 #include <logging.h>
 #include <servo.h>
-#include <mover_up.h>
+#include <operation.h>
 #include <vector>
 
 class Sequence {
   private:
-
-    std::vector<MoverUp> _sequence;
-
+    std::vector<Operation *> _sequence; // Store pointers to Operation objects
     Servo &_servo;
 
   public:
-
     Sequence(Servo &servo);
 
-    void add(MoverUp &mover);
+    void add(Operation &operation);
     size_t size();
     void move();
 };
 
-#endif 
+#endif
 
 

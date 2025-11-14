@@ -1,9 +1,9 @@
 #include <sequence.h>
 
-Sequence::Sequence(Servo &servo) : _servo(servo) { }
+Sequence::Sequence(Servo &servo) : _servo(servo) {}
 
-void Sequence::add(MoverUp &mover) {
-  _sequence.push_back(mover);
+void Sequence::add(Operation &operation) {
+  _sequence.push_back(&operation); // Store a pointer to the Operation object
 }
 
 size_t Sequence::size() {
@@ -11,8 +11,9 @@ size_t Sequence::size() {
 }
 
 void Sequence::move() {
-  for (MoverUp mover : _sequence) {
-    Log::println("Sequence: move 0x%x", mover);
-    _servo.move(mover);
+  uint16_t currentPosition = _servo.getPosition();
+  for (Operation *operation : _sequence) {
+    currentPosition = operation->move(currentPosition); // Get the next position
+    _servo.move(currentPosition); // Apply the position to the servo
   }
 }

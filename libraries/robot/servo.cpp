@@ -18,10 +18,14 @@ void Servo::begin() {
   pwm.setPWM(_servonum, 0, _position);
 }
 
-void Servo::move(MoverUp& mover) {
+void Servo::move(uint16_t position) {
 
-  _position = mover.move(_position);
+  _position = position;
   Log::println("Servo: servonum %d, move %d", _servonum, _position);
 
   // pwm.setPWM(_servonum, 0, _position);
+}
+
+uint16_t Servo::getPosition() {
+  return _position;
 }

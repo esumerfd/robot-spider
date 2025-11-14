@@ -3,7 +3,6 @@
 
 #include <stdint.h>
 #include <board.h>
-#include <mover_up.h>
 
 /*
  * Simple abstraction of servo library
@@ -21,7 +20,8 @@ class Servo {
     Servo(Board& board, uint8_t servonum);
 
     void begin();
-    void move(MoverUp& mover);
+    void move(uint16_t position);
+    uint16_t getPosition();
 };
 
 #endif

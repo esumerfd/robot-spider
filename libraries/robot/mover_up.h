@@ -1,6 +1,7 @@
 #ifndef MOVER_UP_H
 #define MOVER_UP_H
 
+#include <operation.h>
 #include <stdint.h>
 
 #define DISTANCE 5
@@ -10,24 +11,22 @@
  * 
  * Not coupled with servos, just a transformation of position.
  */
-class MoverUp {
+class MoverUp : public Operation {
   private:
-
     bool _directionUp;
 
     uint16_t _positionMin;
     uint16_t _positionMax;
 
   public:
-
     MoverUp(uint16_t positionMin, uint16_t positionMax);
 
-    uint16_t move(uint16_t currentPosition);
+    uint16_t move(uint16_t currentPosition) override; // Override the move method
 
     bool isDirectionUp() {
       return _directionUp;
     }
 };
 
-#endif 
+#endif
 
