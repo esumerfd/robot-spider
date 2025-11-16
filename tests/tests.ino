@@ -1,11 +1,14 @@
 #include <logging.h>
+#include "joint_test.h"
 
 void setup(){
   Log::begin();
   delay(5000);
 
-  Log::println("Test Suite - No tests defined yet");
-  Log::println("TODO: Add tests for new Joint/Leg architecture");
+  // Run Joint class tests
+  JointTest::runAll();
+
+  Log::println("\nAll test suites complete!");
 }
 
 void loop(){
