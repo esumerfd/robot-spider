@@ -12,7 +12,7 @@ class Body {
 
   private:
 
-    Servo _servo;
+    Servo &_servo;
     Sequence &_sequence;
 
   public:

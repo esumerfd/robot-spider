@@ -10,6 +10,10 @@ Adafruit_PWMServoDriver pwm = Adafruit_PWMServoDriver(0x40, Wire);
 Servo::Servo(Board &board, uint8_t servonum) 
   : _board(board), _servonum(servonum) {}
 
+uint16_t Servo::getPosition() {
+  return _position;
+}
+
 void Servo::begin() {
   Wire.begin(_board.pwmSDA(), _board.pwmSCL());
 
@@ -26,6 +30,3 @@ void Servo::move(uint16_t position) {
   // pwm.setPWM(_servonum, 0, _position);
 }
 
-uint16_t Servo::getPosition() {
-  return _position;
-}

@@ -37,10 +37,10 @@ void Robot::loop() {
   // take next opertion step.
   _body.action();
 
-  Log::println(
-      "Robot setup: body: 0x%x (%d), sequence: 0x%x (%d), mover: 0x%x (%d), servo: 0x%x (%d)",
-      &_body, sizeof(Body), &_sequence, sizeof(Sequence),
-      &_moverUp, sizeof(MoverUp), &_servo, sizeof(Servo));
+  // Log::println(
+  //     "Robot setup: body: 0x%x (%d), sequence: 0x%x (%d), mover: 0x%x (%d), servo: 0x%x (%d)",
+  //     &_body, sizeof(Body), &_sequence, sizeof(Sequence),
+  //     &_moverUp, sizeof(MoverUp), &_servo, sizeof(Servo));
 
   Log::println("Status: mover count %d", _sequence.size());
 
