@@ -3,20 +3,17 @@
 
 #include <flasher.h>
 #include <board.h>
-#include <servo.h>
-#include <mover_up.h>
-#include <sequence.h>
 #include <body.h>
+#include <arc_test_sequence.h>
 
 class Robot {
   private:
-    // Ordered by dependency (board first, then things that depend on it)
     Flasher _flasher;
     Board _board;
-    Servo _servo;
-    MoverUp _moverUp;
-    Sequence _sequence;
     Body _body;
+    ArcTestSequence _arcTest;
+
+    uint32_t _lastUpdateMs;
 
   public:
     Robot();

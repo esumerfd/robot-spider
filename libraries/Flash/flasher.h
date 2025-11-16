@@ -9,12 +9,14 @@ class Flasher {
   private:
     bool _ledOn = false;
     int _ledTransitions = -1;
+    uint32_t _lastToggleMs = 0;
+    uint32_t _toggleIntervalMs = 500; // Flash every 500ms
 
     void toggleLED();
 
   public:
     void begin(int flashes = -1);
-    void flash();
+    void flash(uint32_t currentMs);
 };
 
 #endif

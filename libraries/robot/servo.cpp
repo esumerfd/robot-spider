@@ -23,10 +23,9 @@ void Servo::begin() {
 }
 
 void Servo::move(uint16_t position) {
-
   _position = position;
   Log::println("Servo: servonum %d, move %d", _servonum, _position);
 
-  // pwm.setPWM(_servonum, 0, _position);
+  pwm.setPWM(_servonum, 0, _position);
 }
 

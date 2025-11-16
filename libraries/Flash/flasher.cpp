@@ -12,7 +12,14 @@ void Flasher::begin(int flashes) {
   pinMode(ESP_LED_PIN, OUTPUT);
 }
 
-void Flasher::flash() {
+void Flasher::flash(uint32_t currentMs) {
+  // Only toggle at specified interval
+  if (currentMs - _lastToggleMs < _toggleIntervalMs) {
+    return;
+  }
+
+  _lastToggleMs = currentMs;
+
   if (_ledTransitions > 0) _ledTransitions--;
 
   if (_ledTransitions < 0 || _ledTransitions > 0) {

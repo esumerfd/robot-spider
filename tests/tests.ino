@@ -1,15 +1,11 @@
 #include <logging.h>
-#include <mover_test.h>
-#include <sequence_test.h>
 
 void setup(){
   Log::begin();
   delay(5000);
 
-  Log::println("Start Test Suite");
-  test_mover();
-  test_sequence();
-  Log::println("Finished Test Suite");
+  Log::println("Test Suite - No tests defined yet");
+  Log::println("TODO: Add tests for new Joint/Leg architecture");
 }
 
 void loop(){

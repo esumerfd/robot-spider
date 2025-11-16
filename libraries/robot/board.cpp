@@ -20,5 +20,5 @@ uint16_t Board::servoMax() {
 }
 
 uint16_t Board::servoMiddle() {
-  return SERVOMIN + (SERVOMAX - SERVOMIN / 2);
+  return SERVOMIN + (SERVOMAX - SERVOMIN) / 2;
 }

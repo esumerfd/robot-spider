@@ -1,15 +1,14 @@
 #include <robot.h>
 #include <logging.h>
+#include <arduino.h>
 
 // Constructor with member initializer list (guarantees correct order)
 Robot::Robot()
   : _flasher(),
     _board(),
-    _servo(_board, 0),
-    _moverUp(_board.servoMin(), _board.servoMax()),
-    _sequence(_servo),
-    _body(_servo, _sequence) {
-  // All members constructed in declaration order
+    _body(_board),
+    _arcTest(),
+    _lastUpdateMs(0) {
 }
 
 void Robot::setup() {
@@ -18,31 +17,32 @@ void Robot::setup() {
 
   delay(500);
 
-  // Construct model
-  // new Knee
-  // new Sholder
-  // new Leg
-
-  _sequence.add(_moverUp);
-
   _body.begin();
 
-  // report status of memory, devices.
+  // Apply initial test sequence to start movement
+  _body.applyGait(_arcTest);
+
+  _lastUpdateMs = millis();
+
+  Log::println("Robot: initialized with 6 legs, running ArcTest sequence");
 }
 
 void Robot::loop() {
-  _flasher.flash();
+  // Calculate elapsed time since last update
+  uint32_t currentMs = millis();
+  uint32_t deltaMs = currentMs - _lastUpdateMs;
+  _lastUpdateMs = currentMs;
 
-  // check queue for operation.
-  // take next opertion step.
-  _body.action();
+  _flasher.flash(currentMs);
 
-  // Log::println(
-  //     "Robot setup: body: 0x%x (%d), sequence: 0x%x (%d), mover: 0x%x (%d), servo: 0x%x (%d)",
-  //     &_body, sizeof(Body), &_sequence, sizeof(Sequence),
-  //     &_moverUp, sizeof(MoverUp), &_servo, sizeof(Servo));
+  // Update all legs (time-based movement)
+  _body.update(deltaMs);
 
-  Log::println("Status: mover count %d", _sequence.size());
+  // Check if left front shoulder has reached its target
+  // If so, reapply sequence to continue movement (stateless)
+  if (_body.leftFront().shoulder().atTarget()) {
+    _body.applyGait(_arcTest);
+  }
 
-  delay(100);
+  delay(10); // Small delay for stability, actual timing handled by deltaMs
 }
