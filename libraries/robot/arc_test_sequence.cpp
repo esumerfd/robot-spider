@@ -7,26 +7,31 @@ ArcTestSequence::ArcTestSequence() {
   _speed = range / 2; // Range / 2 seconds = units per second
 }
 
-void ArcTestSequence::applyTo(LeftFrontLeg& leg) {
-  // Move shoulder between min and max
-  uint16_t currentPos = leg.shoulder().getPosition();
+void ArcTestSequence::applyArcToJoint(Joint& joint, const char* legName, const char* jointName) {
+  uint16_t currentPos = joint.getPosition();
   uint16_t targetPos;
 
-  // Toggle between min and max
+  // Toggle between min and max based on current position
+  // This ensures all joints move in the same direction (parallel movement)
   if (currentPos <= _board.servoMiddle()) {
     targetPos = _board.servoMax();
   } else {
     targetPos = _board.servoMin();
   }
 
-  leg.shoulder().setTarget(targetPos, _speed);
-  Log::println("ArcTest -> %s shoulder: %d -> %d (speed=%d)",
-               leg.getName(), currentPos, targetPos, _speed);
+  joint.setTarget(targetPos, _speed);
+  Log::println("ArcTest -> %s %s: %d -> %d (speed=%d)",
+               legName, jointName, currentPos, targetPos, _speed);
+}
+
+void ArcTestSequence::applyTo(LeftFrontLeg& leg) {
+  applyArcToJoint(leg.shoulder(), leg.getName(), "shoulder");
+  applyArcToJoint(leg.knee(), leg.getName(), "knee");
 }
 
 void ArcTestSequence::applyTo(LeftMiddleLeg& leg) {
-  // For now, only LeftFrontLeg shoulder is connected
-  // Other legs do nothing
+  applyArcToJoint(leg.shoulder(), leg.getName(), "shoulder");
+  applyArcToJoint(leg.knee(), leg.getName(), "knee");
 }
 
 void ArcTestSequence::applyTo(LeftRearLeg& leg) {

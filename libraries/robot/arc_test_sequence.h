@@ -22,6 +22,9 @@ class ArcTestSequence : public GaitSequence {
     Board _board;
     uint16_t _speed;
 
+    // Helper method to apply arc movement to a joint
+    void applyArcToJoint(Joint& joint, const char* legName, const char* jointName);
+
   public:
     ArcTestSequence();
 
