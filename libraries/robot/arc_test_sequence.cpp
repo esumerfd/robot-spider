@@ -20,8 +20,9 @@ void ArcTestSequence::applyArcToJoint(Joint& joint, const char* legName, const c
   }
 
   joint.setTarget(targetPos, _speed);
-  Log::println("ArcTest -> %s %s: %d -> %d (speed=%d)",
-               legName, jointName, currentPos, targetPos, _speed);
+  // Reduced logging to prevent serial buffer overflow
+  // Log::println("ArcTest -> %s %s: %d -> %d (speed=%d)",
+  //              legName, jointName, currentPos, targetPos, _speed);
 }
 
 void ArcTestSequence::applyTo(LeftFrontLeg& leg) {
@@ -35,17 +36,21 @@ void ArcTestSequence::applyTo(LeftMiddleLeg& leg) {
 }
 
 void ArcTestSequence::applyTo(LeftRearLeg& leg) {
-  // Not connected yet
+  // Not connected yet - do nothing
+  (void)leg; // Suppress unused parameter warning
 }
 
 void ArcTestSequence::applyTo(RightFrontLeg& leg) {
-  // Not connected yet
+  // Not connected yet - do nothing
+  (void)leg; // Suppress unused parameter warning
 }
 
 void ArcTestSequence::applyTo(RightMiddleLeg& leg) {
-  // Not connected yet
+  // Not connected yet - do nothing
+  (void)leg; // Suppress unused parameter warning
 }
 
 void ArcTestSequence::applyTo(RightRearLeg& leg) {
-  // Not connected yet
+  // Not connected yet - do nothing
+  (void)leg; // Suppress unused parameter warning
 }

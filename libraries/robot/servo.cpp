@@ -27,7 +27,7 @@ void Servo::initializePWM(Board& board) {
   pwm.setPWMFreq(60);
 
   _pwmInitialized = true;
-  Log::println("Servo: PWM driver initialized (I2C 0x40, 60Hz)");
+  // Log::println("Servo: PWM driver initialized (I2C 0x40, 60Hz)");
 }
 
 void Servo::begin() {
@@ -41,5 +41,9 @@ void Servo::move(uint16_t position) {
   // Log::println("Servo: servonum %d, move %d", _servonum, _position);
 
   pwm.setPWM(_servonum, 0, _position);
+
+  // Critical: I2C bus needs time between commands
+  // Without this delay, rapid servo updates cause bus lockup and ESP32 crash
+  delayMicroseconds(500);
 }
 
