@@ -15,9 +15,14 @@ class Servo {
     uint8_t _servonum = 0;
     uint16_t _position = SERVOMIN;
 
+    static bool _pwmInitialized;
+
   public:
 
     Servo(Board& board, uint8_t servonum);
+
+    // Initialize PWM driver (call once before any servo operations)
+    static void initializePWM(Board& board);
 
     void begin();
     void move(uint16_t position);

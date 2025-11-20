@@ -18,6 +18,8 @@
  */
 class Body {
   private:
+    Board& _board;
+
     // All 12 servos (2 per leg)
     Servo _leftFrontShoulder;
     Servo _leftFrontKnee;
@@ -39,6 +41,12 @@ class Body {
     RightFrontLeg _rightFront;
     RightMiddleLeg _rightMiddle;
     RightRearLeg _rightRear;
+
+    // Arrays for iteration (initialized in constructor)
+    static const int SERVO_COUNT = 12;
+    static const int LEG_COUNT = 6;
+    Servo* _servos[SERVO_COUNT];
+    Leg* _legs[LEG_COUNT];
 
   public:
     Body(Board& board);
