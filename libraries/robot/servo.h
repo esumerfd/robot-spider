@@ -10,7 +10,7 @@
 class Servo {
   private:
 
-    Board _board;
+    Board& _board;
 
     uint8_t _servonum = 0;
     uint16_t _position = SERVOMIN;

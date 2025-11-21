@@ -2,25 +2,27 @@
 
 #include <HardwareSerial.h>
 
+// Static buffer shared by print and println (not on stack)
+// Single-threaded Arduino environment makes this safe
+static char logBuffer[256];
+
 void Log::begin() {
   Serial.begin(9600);
   delay(100);
 }
 
 void Log::println(const char* format, ...) {
-  char buffer[500];
   va_list args;
   va_start(args, format);
-  vsnprintf(buffer, sizeof(buffer), format, args);
+  vsnprintf(logBuffer, sizeof(logBuffer), format, args);
   va_end(args);
-  Serial.println(buffer);
+  Serial.println(logBuffer);
 }
 
 void Log::print(const char* format, ...) {
-  char buffer[500];
   va_list args;
   va_start(args, format);
-  vsnprintf(buffer, sizeof(buffer), format, args);
+  vsnprintf(logBuffer, sizeof(logBuffer), format, args);
   va_end(args);
-  Serial.print(buffer);
+  Serial.print(logBuffer);
 }

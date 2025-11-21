@@ -9,11 +9,19 @@ Robot::Robot()
     _body(_board),
     _arcTest(),
     _lastUpdateMs(0),
+    _lastHeapCheckMs(0),
     _firstLoop(true) {
 }
 
 void Robot::setup() {
   Log::begin();
+
+  // Memory diagnostics at startup
+  Log::println("=== ESP32 Memory Diagnostics ===");
+  Log::println("Free heap: %d bytes", ESP.getFreeHeap());
+  Log::println("Heap size: %d bytes", ESP.getHeapSize());
+  Log::println("Min free heap: %d bytes", ESP.getMinFreeHeap());
+
   _flasher.begin();
 
   delay(500);
@@ -24,6 +32,8 @@ void Robot::setup() {
 
   _lastUpdateMs = millis();
 
+  // Memory diagnostics after initialization
+  Log::println("After init - Free heap: %d bytes", ESP.getFreeHeap());
   Log::println("Robot: setup complete");
   delay(100); // Give serial time to flush
 
@@ -46,6 +56,12 @@ void Robot::loop() {
   uint32_t currentMs = millis();
   uint32_t deltaMs = currentMs - _lastUpdateMs;
   _lastUpdateMs = currentMs;
+
+  // Periodic heap monitoring (every 5 seconds)
+  if (currentMs - _lastHeapCheckMs >= 5000) {
+    Log::println("Heap: %d bytes (min: %d)", ESP.getFreeHeap(), ESP.getMinFreeHeap());
+    _lastHeapCheckMs = currentMs;
+  }
 
   _flasher.flash(currentMs);
 

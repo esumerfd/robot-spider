@@ -14,6 +14,7 @@ class Robot {
     ArcTestSequence _arcTest;
 
     uint32_t _lastUpdateMs;
+    uint32_t _lastHeapCheckMs;
     bool _firstLoop;
 
   public:
