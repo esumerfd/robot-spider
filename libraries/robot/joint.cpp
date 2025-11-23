@@ -37,9 +37,6 @@ void Joint::update(uint32_t deltaMs) {
 
   // Apply position to servo
   _servo.move(_currentPos);
-
-  // Yield to watchdog
-  yield();
 }
 
 void Joint::setTarget(uint16_t targetPos, uint16_t speed) {

@@ -27,6 +27,7 @@ void Robot::setup() {
   delay(500);
   yield(); // Yield to watchdog
 
+  // DEBUG: Re-enabled - testing Body::begin() incrementally
   _body.begin();
   yield(); // Yield to watchdog
 
@@ -38,19 +39,19 @@ void Robot::setup() {
   delay(100); // Give serial time to flush
 
   // Apply initial test sequence to start movement
-  // (Moved to first loop iteration to avoid setup crashes)
-  // _body.applyGait(_arcTest);
+  _body.applyGait(_arcTest);
 }
 
 void Robot::loop() {
   // Yield to watchdog to prevent ESP32 reset
   yield();
 
+  // DEBUG: Disable gait application for debugging
   // Apply gait on first loop iteration
-  if (_firstLoop) {
-    _body.applyGait(_arcTest);
-    _firstLoop = false;
-  }
+  // if (_firstLoop) {
+  //   _body.applyGait(_arcTest);
+  //   _firstLoop = false;
+  // }
 
   // Calculate elapsed time since last update
   uint32_t currentMs = millis();
@@ -73,11 +74,12 @@ void Robot::loop() {
   // Update all legs (time-based movement)
   _body.update(deltaMs);
 
+  // DEBUG: Disable gait reapplication for debugging
   // Check if left front shoulder has reached its target
   // If so, reapply sequence to continue movement (stateless)
-  if (_body.leftFront().shoulder().atTarget()) {
-    _body.applyGait(_arcTest);
-  }
+  // if (_body.leftFront().shoulder().atTarget()) {
+  //   _body.applyGait(_arcTest);
+  // }
 
   delay(10); // Small delay for stability, actual timing handled by deltaMs
 }

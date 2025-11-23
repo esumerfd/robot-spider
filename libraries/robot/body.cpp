@@ -55,7 +55,6 @@ void Body::begin() {
   // Initialize all servos (set their initial positions)
   for (int i = 0; i < SERVO_COUNT; i++) {
     _servos[i]->begin();
-    yield(); // Yield to watchdog between servos
   }
 
   Log::println("Body: initialized %d legs with %d servos", LEG_COUNT, SERVO_COUNT);
@@ -65,7 +64,6 @@ void Body::update(uint32_t deltaMs) {
   // Update all legs based on elapsed time
   for (int i = 0; i < LEG_COUNT; i++) {
     _legs[i]->update(deltaMs);
-    yield(); // Yield between legs to prevent watchdog timeout
   }
 }
 

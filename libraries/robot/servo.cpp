@@ -4,8 +4,8 @@
 #include <Wire.h>
 #include <Adafruit_PWMServoDriver.h>
 
-// One instance of PWM for all servos
-Adafruit_PWMServoDriver pwm = Adafruit_PWMServoDriver(0x40, Wire);
+// Global PWM driver - matches Adafruit example pattern
+static Adafruit_PWMServoDriver pwm = Adafruit_PWMServoDriver();
 
 // Static flag to track PWM initialization
 bool Servo::_pwmInitialized = false;
@@ -22,12 +22,18 @@ void Servo::initializePWM(Board& board) {
     return; // Already initialized
   }
 
+  // ESP32: Initialize I2C with custom pins
   Wire.begin(board.pwmSDA(), board.pwmSCL());
+
+  // Initialize PWM driver (matches Adafruit example)
   pwm.begin();
-  pwm.setPWMFreq(60);
+  pwm.setOscillatorFrequency(27000000);  // Calibrate oscillator
+  pwm.setPWMFreq(50);  // 50 Hz for servos (was 60)
+
+  delay(10);  // Startup delay from example
 
   _pwmInitialized = true;
-  // Log::println("Servo: PWM driver initialized (I2C 0x40, 60Hz)");
+  Log::println("Servo: PWM driver initialized");
 }
 
 void Servo::begin() {
@@ -37,13 +43,8 @@ void Servo::begin() {
 
 void Servo::move(uint16_t position) {
   _position = position;
-  // Removed verbose logging - called too frequently during movement
-  // Log::println("Servo: servonum %d, move %d", _servonum, _position);
 
   pwm.setPWM(_servonum, 0, _position);
-
-  // Critical: I2C bus needs time between commands
-  // Without this delay, rapid servo updates cause bus lockup and ESP32 crash
-  delayMicroseconds(500);
+  delay(50);  // 50ms between calls - no limit
 }
 
