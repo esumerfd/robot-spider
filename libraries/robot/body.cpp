@@ -80,3 +80,12 @@ void Body::applyGait(GaitSequence& gait) {
   Log::println("Gait '%s' applied", gait.getName());
 }
 
+bool Body::atTarget() const {
+  for (int i = 0; i < LEG_COUNT; i++) {
+    if (!_legs[i]->atTarget()) {
+      return false;
+    }
+  }
+  return true;
+}
+

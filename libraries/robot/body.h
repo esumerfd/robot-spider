@@ -64,6 +64,9 @@ class Body {
     RightFrontLeg& rightFront() { return _rightFront; }
     RightMiddleLeg& rightMiddle() { return _rightMiddle; }
     RightRearLeg& rightRear() { return _rightRear; }
+
+    // Check if all legs have reached their targets
+    bool atTarget() const;
 };
 
 #endif

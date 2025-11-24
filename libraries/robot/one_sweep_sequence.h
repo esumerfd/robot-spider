@@ -1,32 +1,31 @@
-#ifndef ARC_TEST_SEQUENCE_H
-#define ARC_TEST_SEQUENCE_H
+#ifndef ONE_SWEEP_SEQUENCE_H
+#define ONE_SWEEP_SEQUENCE_H
 
 #include <gait_sequence.h>
 #include <board.h>
 
 /*
- * Simple test sequence that moves servos in a 2-second arc.
+ * Simple test sequence that sweeps servos from min to max once.
  *
- * This is a stateless movement description:
- * - Moves from min to max position
- * - Takes 2 seconds to complete one arc
- * - Can be reapplied to continue the movement
+ * - Starts at current position
+ * - Sets target to max position
+ * - Body::atTarget() determines when movement is complete
  *
  * Speed calculation:
  * - Range: SERVOMAX (600) - SERVOMIN (150) = 450 units
  * - Duration: 2000ms = 2 seconds
  * - Speed: 450 units / 2 seconds = 225 units/second
  */
-class ArcTestSequence : public GaitSequence {
+class OneSweepSequence : public GaitSequence {
   private:
     Board _board;
     uint16_t _speed;
 
-    // Helper method to apply arc movement to a joint
-    void applyArcToJoint(Joint& joint, const char* legName, const char* jointName);
+    // Helper method to apply sweep movement to a joint
+    void applySweepToJoint(Joint& joint);
 
   public:
-    ArcTestSequence();
+    OneSweepSequence();
 
     void applyTo(LeftFrontLeg& leg) override;
     void applyTo(LeftMiddleLeg& leg) override;
@@ -35,7 +34,7 @@ class ArcTestSequence : public GaitSequence {
     void applyTo(RightMiddleLeg& leg) override;
     void applyTo(RightRearLeg& leg) override;
 
-    const char* getName() const override { return "ArcTest"; }
+    const char* getName() const override { return "OneSweep"; }
 };
 
 #endif

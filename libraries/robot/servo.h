@@ -13,7 +13,7 @@ class Servo {
     Board& _board;
 
     uint8_t _servonum = 0;
-    uint16_t _position = SERVOMIN;
+    uint16_t _position = SERVOMIN + (SERVOMAX - SERVOMIN) / 2;  // Start at middle (375)
 
     static bool _pwmInitialized;
 

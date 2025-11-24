@@ -7,6 +7,13 @@ Joint::Joint(Servo &servo, uint16_t initialPos)
 }
 
 void Joint::update(uint32_t deltaMs) {
+  // DEBUG: Log position info
+  static int logCount = 0;
+  if (logCount < 20) {
+    Log::println("Joint: cur=%d tgt=%d atTgt=%d", _currentPos, _targetPos, (_currentPos == _targetPos));
+    logCount++;
+  }
+
   if (_currentPos == _targetPos) {
     return; // Already at target
   }

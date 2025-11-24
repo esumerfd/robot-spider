@@ -27,8 +27,9 @@ node_modules/
 *.sw?
 # OS specific
 
+.mcp.json
+.taskmaster
+
 # Task files
 # tasks.json
 # tasks/ 
-.mcp.json
-.taskmaster

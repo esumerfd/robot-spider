@@ -4,14 +4,14 @@
 #include <flasher.h>
 #include <board.h>
 #include <body.h>
-#include <arc_test_sequence.h>
+#include <one_sweep_sequence.h>
 
 class Robot {
   private:
     Flasher _flasher;
     Board _board;
     Body _body;
-    ArcTestSequence _arcTest;
+    OneSweepSequence _sweep;
 
     uint32_t _lastUpdateMs;
     uint32_t _lastHeapCheckMs;

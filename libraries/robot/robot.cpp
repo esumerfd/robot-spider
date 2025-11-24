@@ -7,7 +7,7 @@ Robot::Robot()
   : _flasher(),
     _board(),
     _body(_board),
-    _arcTest(),
+    _sweep(),
     _lastUpdateMs(0),
     _lastHeapCheckMs(0),
     _firstLoop(true) {
@@ -39,7 +39,7 @@ void Robot::setup() {
   delay(100); // Give serial time to flush
 
   // Apply initial test sequence to start movement
-  _body.applyGait(_arcTest);
+  _body.applyGait(_sweep);
 }
 
 void Robot::loop() {
@@ -74,12 +74,8 @@ void Robot::loop() {
   // Update all legs (time-based movement)
   _body.update(deltaMs);
 
-  // DEBUG: Disable gait reapplication for debugging
-  // Check if left front shoulder has reached its target
-  // If so, reapply sequence to continue movement (stateless)
-  // if (_body.leftFront().shoulder().atTarget()) {
-  //   _body.applyGait(_arcTest);
-  // }
+  // OneSweepSequence: Don't reapply - just run once and stop
+  // For continuous gaits, would check atTarget() and apply next step
 
   delay(10); // Small delay for stability, actual timing handled by deltaMs
 }
