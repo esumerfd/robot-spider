@@ -4,7 +4,7 @@
 #include <stdint.h>
 
 #define SERVOMIN 150
-#define SERVOMAX 600
+#define SERVOMAX 650
 
 /*
  * Definition of the board we are running on.

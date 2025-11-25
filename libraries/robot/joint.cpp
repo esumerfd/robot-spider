@@ -7,13 +7,6 @@ Joint::Joint(Servo &servo, uint16_t initialPos)
 }
 
 void Joint::update(uint32_t deltaMs) {
-  // DEBUG: Log position info
-  static int logCount = 0;
-  if (logCount < 20) {
-    Log::println("Joint: cur=%d tgt=%d atTgt=%d", _currentPos, _targetPos, (_currentPos == _targetPos));
-    logCount++;
-  }
-
   if (_currentPos == _targetPos) {
     return; // Already at target
   }
@@ -25,22 +18,18 @@ void Joint::update(uint32_t deltaMs) {
     return; // Time step too small
   }
 
-  // Move towards target
-  if (_currentPos < _targetPos) {
-    uint16_t distance = _targetPos - _currentPos;
-    if (maxDelta >= distance) {
-      _currentPos = _targetPos; // Reached target
-    } else {
-      _currentPos += maxDelta;
-    }
+  // Calculate distance and direction to target
+  int16_t direction = (_currentPos < _targetPos) ? 1 : -1;
+  uint16_t distance = abs((int16_t)_targetPos - (int16_t)_currentPos);
+
+  // Move towards target or reach it
+  if (maxDelta >= distance) {
+    _currentPos = _targetPos; // Reached target
   } else {
-    uint16_t distance = _currentPos - _targetPos;
-    if (maxDelta >= distance) {
-      _currentPos = _targetPos; // Reached target
-    } else {
-      _currentPos -= maxDelta;
-    }
+    _currentPos += direction * maxDelta;
   }
+
+  Log::println("Joint: cur=%d tgt=%d speed=%d deltaMs=%d", _currentPos, _targetPos, _speed, deltaMs);
 
   // Apply position to servo
   _servo.move(_currentPos);
