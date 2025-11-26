@@ -74,8 +74,11 @@ void Robot::loop() {
   // Update all legs (time-based movement)
   _body.update(deltaMs);
 
-  // OneSweepSequence: Don't reapply - just run once and stop
-  // For continuous gaits, would check atTarget() and apply next step
+  // Oscillate: when target is reached, toggle direction and reapply
+  if (_body.atTarget()) {
+    _sweep.toggleDirection();
+    _body.applyGait(_sweep);
+  }
 
   delay(10); // Small delay for stability, actual timing handled by deltaMs
 }

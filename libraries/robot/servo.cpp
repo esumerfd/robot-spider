@@ -45,6 +45,6 @@ void Servo::move(uint16_t position) {
   _position = position;
 
   pwm.setPWM(_servonum, 0, _position);
-  delay(50);  // 50ms between calls - no limit
+  delay(100);  // 50ms between calls - no limit
 }
 

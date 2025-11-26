@@ -5,11 +5,10 @@
 #include <board.h>
 
 /*
- * Simple test sequence that sweeps servos from min to max once.
+ * Oscillating test sequence that sweeps servos from min to max and back.
  *
- * - Starts at current position
- * - Sets target to max position
- * - Body::atTarget() determines when movement is complete
+ * - Alternates between moving to max and moving to min
+ * - Body::atTarget() determines when to switch direction
  *
  * Speed calculation:
  * - Range: SERVOMAX (600) - SERVOMIN (150) = 450 units
@@ -20,6 +19,7 @@ class OneSweepSequence : public GaitSequence {
   private:
     Board _board;
     uint16_t _speed;
+    bool _movingToMax;  // Track direction: true = moving to max, false = moving to min
 
     // Helper method to apply sweep movement to a joint
     void applySweepToJoint(Joint& joint);
@@ -35,6 +35,9 @@ class OneSweepSequence : public GaitSequence {
     void applyTo(RightRearLeg& leg) override;
 
     const char* getName() const override { return "OneSweep"; }
+
+    // Toggle direction for oscillation
+    void toggleDirection() { _movingToMax = !_movingToMax; }
 };
 
 #endif
