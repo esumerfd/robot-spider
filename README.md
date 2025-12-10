@@ -360,6 +360,10 @@ graph TB
 
 ### ESP32-CAM to PCA9685 Wiring Diagram
 
+![Physical Wiring Mockup](docs/Mockup-of-connections.jpg)
+
+*Physical wiring setup showing ESP32-CAM connected to PCA9685 servo driver board*
+
 ```mermaid
 graph LR
     subgraph ESP32["ESP32-CAM"]
