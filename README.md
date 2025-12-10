@@ -180,6 +180,68 @@ See [ai/docs/project-analysis.md](ai/docs/project-analysis.md) for the complete 
 - **Servo Range**: 150-600 PWM (middle: 375)
 - **Servo Mapping**: 0-11 (LeftFront, LeftMiddle, LeftRear, RightFront, RightMiddle, RightRear)
 
+### ESP32-CAM Pinout Diagram
+
+```mermaid
+graph TB
+    subgraph ESP32-CAM["ESP32-CAM Board"]
+        subgraph LeftSide["Left Side Pins"]
+            L1["5V"]
+            L2["GND"]
+            L3["GPIO 12"]
+            L4["GPIO 13"]
+            L5["GPIO 15 (SDA) ⚡"]
+            L6["GPIO 14 (SCL) ⚡"]
+            L7["GPIO 2"]
+            L8["GPIO 4"]
+        end
+
+        subgraph RightSide["Right Side Pins"]
+            R1["3.3V"]
+            R2["GPIO 16 (RX)"]
+            R3["GPIO 0"]
+            R4["GND"]
+            R5["GPIO 3 (TX)"]
+            R6["GPIO 1"]
+            R7["GPIO 33 (LED) 💡"]
+            R8["GND"]
+        end
+
+        subgraph Camera["Camera Module"]
+            CAM["OV2640 Camera"]
+        end
+
+        subgraph Flash["Flash LED"]
+            FLED["GPIO 4 (Flash)"]
+        end
+    end
+
+    subgraph Peripherals["Connected Peripherals"]
+        I2C["I2C: Adafruit PWM<br/>Servo Driver (0x40)"]
+        LED["Status LED"]
+        SERIAL["USB-Serial<br/>Programmer"]
+    end
+
+    L5 --> I2C
+    L6 --> I2C
+    R7 --> LED
+    R2 --> SERIAL
+    R5 --> SERIAL
+
+    style L5 fill:#ff9999
+    style L6 fill:#ff9999
+    style R7 fill:#99ccff
+    style I2C fill:#99ff99
+    style LED fill:#ffff99
+```
+
+**Key Pins Used:**
+- **GPIO 15 (SDA)**: I2C Data line for PWM Servo Driver
+- **GPIO 14 (SCL)**: I2C Clock line for PWM Servo Driver
+- **GPIO 33**: Status LED control
+- **GPIO 16/3**: Serial communication (RX/TX)
+- **GPIO 4**: Camera flash LED (available for future use)
+
 ## Contributing
 
 This is an experimental project focused on exploring C++ design patterns in embedded systems. The codebase prioritizes:
