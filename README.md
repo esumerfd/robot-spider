@@ -350,6 +350,109 @@ graph TB
 - **CH 8-9**: Right Middle Leg (Shoulder, Knee)
 - **CH 10-11**: Right Rear Leg (Shoulder, Knee)
 
+### ESP32-CAM to PCA9685 Wiring Diagram
+
+```mermaid
+graph LR
+    subgraph ESP32["ESP32-CAM"]
+        ESP_VCC["5V"]
+        ESP_GND["GND"]
+        ESP_SDA["GPIO 15 (SDA)"]
+        ESP_SCL["GPIO 14 (SCL)"]
+        ESP_LED["GPIO 33 (LED)"]
+        ESP_RX["GPIO 16 (RX)"]
+        ESP_TX["GPIO 3 (TX)"]
+    end
+
+    subgraph PCA["PCA9685 Servo Driver"]
+        PCA_VCC["VCC"]
+        PCA_GND["GND"]
+        PCA_SDA["SDA"]
+        PCA_SCL["SCL"]
+        PCA_VP["V+"]
+        PCA_VGND["GND (Power)"]
+        PCA_OE["OE"]
+    end
+
+    subgraph ExtPower["External Power"]
+        BATT_POS["Battery + (5-6V)"]
+        BATT_NEG["Battery - (GND)"]
+    end
+
+    subgraph Status["Status Indicators"]
+        LED["Status LED"]
+    end
+
+    subgraph Serial["Serial Programmer"]
+        SERIAL_RX["USB-Serial RX"]
+        SERIAL_TX["USB-Serial TX"]
+    end
+
+    ESP_SDA -->|"I2C Data"| PCA_SDA
+    ESP_SCL -->|"I2C Clock"| PCA_SCL
+    ESP_GND -->|"Common Ground"| PCA_GND
+    ESP_VCC -.->|"Optional<br/>(Logic Power)"| PCA_VCC
+
+    BATT_POS -->|"Servo Power"| PCA_VP
+    BATT_NEG -->|"Power Ground"| PCA_VGND
+    PCA_VGND -->|"Common Ground"| ESP_GND
+
+    ESP_LED -->|"Control"| LED
+    ESP_RX --> SERIAL_RX
+    ESP_TX --> SERIAL_TX
+
+    PCA_OE -.->|"Optional<br/>(tie to GND)"| PCA_GND
+
+    style ESP_SDA fill:#ff9999,stroke:#cc0000,stroke-width:3px
+    style ESP_SCL fill:#ff9999,stroke:#cc0000,stroke-width:3px
+    style PCA_SDA fill:#ff9999,stroke:#cc0000,stroke-width:3px
+    style PCA_SCL fill:#ff9999,stroke:#cc0000,stroke-width:3px
+    style ESP_GND fill:#333333,color:#ffffff
+    style PCA_GND fill:#333333,color:#ffffff
+    style PCA_VGND fill:#333333,color:#ffffff
+    style BATT_NEG fill:#333333,color:#ffffff
+    style BATT_POS fill:#ff0000,color:#ffffff
+    style PCA_VP fill:#ff0000,color:#ffffff
+    style ESP_VCC fill:#ffaa00
+    style PCA_VCC fill:#ffaa00
+```
+
+### Connection Pin Mapping Table
+
+| ESP32-CAM Pin | Function | Connects To | PCA9685 Pin | Notes |
+|---------------|----------|-------------|-------------|-------|
+| **GPIO 15** | SDA (I2C Data) | → | **SDA** | I2C communication (required) |
+| **GPIO 14** | SCL (I2C Clock) | → | **SCL** | I2C communication (required) |
+| **GND** | Ground | → | **GND** | Common ground for I2C (required) |
+| **5V** | Logic Power | → | **VCC** | Optional - powers PCA9685 logic |
+| - | - | - | **V+** | Connect to external 5-6V battery/supply |
+| - | - | - | **GND (Power)** | Connect to battery GND and ESP32 GND |
+| - | - | - | **OE** | Optional - tie LOW to enable outputs |
+| **GPIO 33** | Status LED | → | External LED | Project status indicator |
+| **GPIO 16** | RX | → | USB-Serial TX | Programming/debugging |
+| **GPIO 3** | TX | → | USB-Serial RX | Programming/debugging |
+
+### Power Supply Notes
+
+⚠️ **Important Power Considerations:**
+
+1. **Separate Servo Power**: The PCA9685 V+ pin must be connected to a separate 5-6V power supply (battery) capable of supplying sufficient current for all servos (12 servos × ~500mA peak = ~6A max)
+
+2. **Common Ground**: All grounds must be connected together:
+   - ESP32-CAM GND
+   - PCA9685 GND (logic)
+   - PCA9685 GND (power/V+)
+   - External battery/power supply GND
+
+3. **Logic Power Options**:
+   - **Option A**: Power PCA9685 VCC from ESP32-CAM 5V (if available from USB programmer)
+   - **Option B**: Power PCA9685 VCC from the same external 5-6V supply as V+
+   - PCA9685 can operate on 3.3V-5V logic levels
+
+4. **I2C Pull-ups**: The PCA9685 board typically has built-in pull-up resistors on SDA/SCL (10kΩ). No external pull-ups needed.
+
+5. **Output Enable (OE)**: Leave floating or tie to GND to enable outputs. Tie to VCC to disable all servo outputs.
+
 ## Contributing
 
 This is an experimental project focused on exploring C++ design patterns in embedded systems. The codebase prioritizes:
