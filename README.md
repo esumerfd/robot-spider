@@ -180,6 +180,10 @@ See [ai/docs/project-analysis.md](ai/docs/project-analysis.md) for the complete 
 - **Servo Range**: 150-600 PWM (middle: 375)
 - **Servo Mapping**: 0-11 (LeftFront, LeftMiddle, LeftRear, RightFront, RightMiddle, RightRear)
 
+### ESP32-CAM Pinout Reference
+
+![ESP32-CAM Pinout](docs/pinouts-esp32cam.png)
+
 ### ESP32-CAM Pinout Diagram
 
 ```mermaid
@@ -241,6 +245,10 @@ graph TB
 - **GPIO 33**: Status LED control
 - **GPIO 16/3**: Serial communication (RX/TX)
 - **GPIO 4**: Camera flash LED (available for future use)
+
+### PCA9685 Pinout Reference
+
+![PCA9685 Pinout](docs/pinouts-pca9685.png)
 
 ### PCA9685 PWM Servo Driver Pinout
 
