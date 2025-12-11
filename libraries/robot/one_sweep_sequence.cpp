@@ -8,8 +8,9 @@ OneSweepSequence::OneSweepSequence() : _movingToMax(true) {
 }
 
 void OneSweepSequence::applySweepToJoint(Joint& joint) {
-  // Use safe range with 2-unit offset from extremes to avoid 360° rotation
-  // Safe range: 152-598 (2-unit offset from 150-600)
+  // Use safe range with larger offset from extremes to avoid 360° rotation
+  // Servos can enter continuous rotation mode near extremes (150, 600)
+  // Using 50-unit safety margin: 200-550
   const uint16_t offset = 5;
   const uint16_t safeMin = _board.servoMin() + offset;
   const uint16_t safeMax = _board.servoMax() - offset;
