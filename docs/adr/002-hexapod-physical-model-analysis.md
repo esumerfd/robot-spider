@@ -109,25 +109,30 @@ The SIXpack is a free robotics hexapod design by delta3robotics (https://cults3d
 
 ### 1. Pinout Compatibility Issues
 
-#### Issue #1: I2C Pin Conflict
-**Problem:** Physical SIXpack model may have hardwired connections to GPIO1/3
+#### Issue #1: I2C Pin Conflict (RESOLVED)
+**Problem:** Physical SIXpack model has I2C connections soldered to GPIO1/3
 
-**Impact:**
-- If hardware is fixed to GPIO1/3: Must modify robot-spider firmware
-- If hardware is configurable: Can keep GPIO14/15 (preferred)
+**Resolution:** Hardware can be modified - soldering iron available, pins can be desoldered and rewired
 
-**Decision Needed:** Inspect physical model to determine if I2C pins are hardwired
+**Impact Analysis:**
 
-**Options:**
-1. **Keep GPIO14/15 (Recommended)**
-   - Requires checking if physical model has flexible wiring
-   - Maintains serial debugging capability
-   - Better development experience
+**Original SIXpack (GPIO1/3 for I2C):**
+- ❌ Conflicts with UART - breaks serial debugging
+- ❌ Conflicts with ESP-prog programming interface
+- ❌ Must disable I2C to use serial communication
 
-2. **Switch to GPIO1/3 (If Required)**
-   - Matches original SIXpack design
-   - Loses serial debugging when I2C active
-   - May require hardware modification if pins are fixed
+**Current Robot-Spider (GPIO14/15 for I2C):**
+- ✅ UART (GPIO1/3) free for serial debugging
+- ✅ UART free for ESP-prog programming interface
+- ✅ No conflicts with ESP-prog auto-programming circuit
+- ✅ Can use serial monitor and program simultaneously
+
+**Decision:** **Keep GPIO14/15 for I2C** (current configuration)
+- Desolder I2C connections from GPIO1/3 on physical model
+- Rewire to GPIO14/15 to match firmware
+- Maintains full compatibility with ESP-prog programming
+- Preserves serial debugging capability
+- No firmware changes required
 
 #### Issue #2: Servo Pulse Range Difference
 **Problem:**
@@ -155,7 +160,10 @@ The SIXpack is a free robotics hexapod design by delta3robotics (https://cults3d
 
 ### 2. ESP-prog Programming Board Integration
 
-**Goal:** Enable in-place debugging while robot is mounted on physical model
+**Goal:** Enable in-place programming while robot is mounted on physical model
+
+**Interface:** ESP-prog Program Interface (UART-based auto-programming)
+- Reference: https://docs.espressif.com/projects/esp-iot-solution/en/latest/hw-reference/ESP-Prog_guide.html
 
 **Requirements:**
 1. ESP-prog connector placement
@@ -163,23 +171,30 @@ The SIXpack is a free robotics hexapod design by delta3robotics (https://cults3d
    - Should be accessible when robot is assembled
    - May need custom mounting bracket
 
-2. Required JTAG Pins:
-   - TMS: GPIO14
-   - TCK: GPIO13
-   - TDI: GPIO12
-   - TDO: GPIO15
-   - GND: Ground
-   - VCC: 3.3V
+2. Required Program Interface Pins (6-pin connector):
+   - **TXD** - Transmit data to ESP32 RX (GPIO3)
+   - **RXD** - Receive data from ESP32 TX (GPIO1)
+   - **IO0** - Boot mode control (pulled low for programming mode)
+   - **EN** - Reset control (DTR/RTS auto-programming)
+   - **GND** - Ground
+   - **VCC** - 3.3V or 5V power (optional, can power from ESP-prog)
 
-**CONFLICT DETECTED:**
-- GPIO14 is currently used for I2C_SCL
-- GPIO15 is currently used for I2C_SDA
-- **Cannot use JTAG and current I2C pins simultaneously**
+**Auto-Programming Circuit:**
+The ESP-prog uses DTR/RTS signals to automatically control EN and IO0 for seamless programming without manual button presses.
 
-**Resolution Options:**
-1. Move I2C to different pins (e.g., GPIO21/22) to free up GPIO14/15 for JTAG
-2. Use ESP-prog only when needed (disconnect I2C temporarily)
-3. Use alternative debugging methods (serial logging, WiFi debugging)
+**Pin Analysis:**
+- **No GPIO conflicts!** Programming interface only uses UART (GPIO1/3)
+- GPIO14/15 (current I2C pins) are **completely free** - no conflict
+- Can keep current I2C configuration on GPIO14/15
+- Or migrate I2C elsewhere for other reasons (flexibility, better layout)
+
+**Connector Options:**
+1. **6-pin header** (2.54mm pitch) - simple, requires jumper wires
+2. **6-pin JST connector** - more robust, keyed connection
+3. **Pogo pin connector** - easy attach/detach, no inserted connector
+
+**Key Advantage:**
+Since programming interface uses UART, it's **compatible with keeping TX/RX (GPIO1/3) free** for both serial debugging and programming. I2C can remain on GPIO14/15 or be moved to GPIO21/22 without affecting ESP-prog functionality.
 
 ### 3. Micro-USB Power Supply Integration
 
@@ -232,25 +247,32 @@ The SIXpack is a free robotics hexapod design by delta3robotics (https://cults3d
 4. Assess power input accessibility
 5. Photograph and document current state
 
-### Phase 2: Pinout Decision
-Based on physical inspection:
-- **If I2C is hardwired to GPIO1/3:**
-  - Create subtask to migrate firmware to GPIO1/3
-  - Document serial debugging workaround
-  - Consider adding I2C level shifter for flexibility
+### Phase 2: I2C Pin Migration (Hardware)
+**Decision:** Keep GPIO14/15 for I2C (current firmware configuration)
 
-- **If I2C wiring is flexible:**
-  - Keep GPIO14/15 for I2C
-  - Update physical wiring to match
-  - Move I2C pins again if JTAG debugging needed (to GPIO21/22)
+Hardware modifications required:
+1. Desolder I2C connections from GPIO1/3 on physical SIXpack model
+2. Rewire SDA to GPIO15 on ESP32
+3. Rewire SCL to GPIO14 on ESP32
+4. Verify connections with multimeter
+5. Test I2C communication with PCA9685
+6. Document wiring changes with photos
 
-### Phase 3: ESP-prog Integration
-1. Select final I2C pins to avoid JTAG conflict
-2. Design ESP-prog connector bracket
+**No firmware changes required** - board.cpp already configured for GPIO14/15
+
+### Phase 3: ESP-prog Programming Interface Integration
+1. Design ESP-prog connector bracket/mount
+2. Select connector type (6-pin header, JST, or pogo pins)
 3. 3D print or fabricate mounting solution
-4. Add 6-pin header to robot
+4. Install 6-pin programming header on robot
+   - TXD → ESP32 RX (GPIO3)
+   - RXD → ESP32 TX (GPIO1)
+   - IO0 → ESP32 IO0 (boot mode control)
+   - EN → ESP32 EN (reset control)
+   - GND → Ground
+   - VCC → 3.3V (optional)
 5. Document connection procedure
-6. Test JTAG debugging functionality
+6. Test auto-programming functionality with ESP-prog
 
 ### Phase 4: USB Power Integration
 1. Source micro-USB breakout or panel-mount connector
@@ -271,46 +293,67 @@ Based on physical inspection:
 6. Long-duration stability test
 7. Document final configuration
 
-## Pin Migration Decision Matrix
+## Final Pin Configuration
 
-| Scenario | I2C Pins | JTAG Available | Serial Debug | Action Required |
-|----------|----------|----------------|--------------|-----------------|
-| A: Hardwired GPIO1/3 | GPIO1/3 | No (conflicts) | Limited | Accept limitations, use WiFi debug |
-| B: Flexible wiring + No JTAG | GPIO14/15 | No (conflicts) | Yes | Keep current config |
-| C: Flexible wiring + JTAG needed | GPIO21/22 | Yes | Yes | Migrate I2C, update wiring |
+**Selected Configuration:** GPIO14/15 for I2C with ESP-prog Programming Interface
 
-**Recommendation:** Pursue Scenario C if JTAG debugging is desired, otherwise Scenario B is optimal.
+| Function | GPIO Pins | Notes |
+|----------|-----------|-------|
+| **I2C (PCA9685)** | GPIO15 (SDA), GPIO14 (SCL) | Current firmware config - no changes needed |
+| **UART (Serial/ESP-prog)** | GPIO1 (TX), GPIO3 (RX) | Available for both serial debug and programming |
+| **ESP-prog Programming** | TX, RX, IO0, EN, GND, 3.3V | 6-pin connector - no GPIO conflicts |
+
+**Advantages of This Configuration:**
+- ✅ No firmware changes required (already using GPIO14/15)
+- ✅ Full serial debugging capability (UART free)
+- ✅ ESP-prog programming works seamlessly (uses UART + control pins)
+- ✅ No pin conflicts between I2C, UART, and ESP-prog
+- ✅ Only hardware change: desolder GPIO1/3, rewire to GPIO14/15
+
+**Why Not JTAG?**
+- JTAG not required - ESP-prog programming interface (UART-based) is sufficient
+- JTAG would conflict with GPIO14/15 (I2C) unnecessarily
+- Programming interface provides upload capability and serial debugging
+- Simpler hardware integration (6-pin vs 6+ pins for JTAG)
 
 ## Risks and Mitigations
 
-### Risk 1: Hardwired I2C Pins
-**Impact:** Forced to use GPIO1/3, losing serial debugging
-**Mitigation:**
-- Use WiFi-based logging instead
-- Add removable jumpers for I2C to enable serial when needed
-- Consider hardware modification to rewire I2C
+### Risk 1: Hardwired I2C Pins (RESOLVED)
+**Status:** ✅ Resolved - can desolder and rewire
+**Original Impact:** Forced to use GPIO1/3, losing serial debugging
+**Resolution:**
+- Desolder existing GPIO1/3 connections
+- Rewire to GPIO14/15 to match firmware
+- No firmware changes needed
 
 ### Risk 2: Insufficient USB Current
 **Impact:** Servos brown out or ESP32 resets under load
+**Likelihood:** High - 12 servos can draw >>1A, USB provides 500-900mA
 **Mitigation:**
-- Current limiting circuit
+- Current limiting circuit or fuse
 - Warning LED when USB power is selected
-- Documentation clearly stating USB limitations
+- Clear documentation stating USB is for testing only, not full operation
 - Test with progressively increasing servo load
+- Battery pack required for actual robot movement
 
-### Risk 3: JTAG/I2C Pin Conflict
-**Impact:** Cannot use ESP-prog with current pin configuration
+### Risk 3: Desoldering Damage
+**Impact:** Damaged PCB traces or pads during I2C pin migration
+**Likelihood:** Low-Medium (with proper technique)
 **Mitigation:**
-- Move I2C to GPIO21/22
-- Use ESP-prog only during specific debugging sessions
-- Rely on serial/WiFi debugging instead
+- Use quality desoldering equipment (wick, pump, or hot air)
+- Apply appropriate temperature (<350°C)
+- Test continuity before/after with multimeter
+- Have backup ESP32 module available
+- Consider using flying wires if pads are damaged
 
 ### Risk 4: Physical Space Constraints
-**Impact:** Cannot mount ESP-prog connector or USB port
+**Impact:** Cannot mount ESP-prog connector or USB port in body
+**Likelihood:** Medium
 **Mitigation:**
 - Design compact mounting solutions
-- Use right-angle connectors
+- Use right-angle connectors to save space
 - Consider external adapter cables instead of on-board mounting
+- May need to modify body STL and reprint with connector cutouts
 
 ## References
 
