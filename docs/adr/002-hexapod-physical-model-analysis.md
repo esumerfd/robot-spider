@@ -251,12 +251,22 @@ Since programming interface uses UART, it's **compatible with keeping TX/RX (GPI
 2. **Micro-USB power connector**
    - Location: Accessible on body
    - Type: Micro-USB breakout board or panel-mount connector
-   - Safety: Add protection diode to prevent backfeed
+   - Power switching: Automatic diode-OR circuit (no manual switch needed)
 
-3. **Power selection mechanism**
-   - Type: DPDT switch or jumper block
-   - Location: Accessible but protected
-   - Labels: Clear marking of USB vs Battery
+3. **Automatic power selection circuit**
+   - Type: Diode-OR configuration using Schottky diodes
+   - Operation: Automatically selects between USB and battery based on which is connected
+   - Components:
+     - Schottky diode on USB 5V input (e.g., 1N5819, low voltage drop ~0.2V)
+     - Schottky diode on battery input (prevents backfeed to battery when USB connected)
+     - Optional: LED indicator showing which power source is active
+   - Advantages:
+     - ✅ No manual switching required - plug and go
+     - ✅ Automatic failover if USB unplugged
+     - ✅ Backfeed protection built-in
+     - ✅ Simpler user experience
+     - ✅ Fewer mechanical components to fail
+   - Note: When both sources connected, higher voltage takes priority (typically battery if >5.2V)
 
 ## Implementation Plan
 
@@ -310,14 +320,27 @@ Hardware installation steps:
 6. Document connection procedure with photos and pinout diagram
 
 ### Phase 4: USB Power Integration
-1. Source micro-USB breakout or panel-mount connector
-2. Design power switching circuit
-   - Schottky diode for backfeed protection
-   - Optional current limit indicator LED
-3. Install connector in body
-4. Wire to power distribution
-5. Test with limited servo load
-6. Document power limitations
+1. Source components:
+   - Micro-USB breakout or panel-mount connector
+   - 2x Schottky diodes (e.g., 1N5819 or similar, rated for 1A+)
+   - Optional: Dual-color LED (red=battery, green=USB) with current-limiting resistors
+2. Design and build automatic power selection circuit:
+   - Diode-OR configuration:
+     - USB 5V → Schottky diode → Power bus
+     - Battery V+ → Schottky diode → Power bus
+   - Optional LED indicators for visual feedback
+3. Install micro-USB connector in body
+   - Position for easy access during development
+   - Secure mounting to prevent mechanical stress
+4. Wire diode-OR circuit to power distribution
+   - Connect power bus output to ESP32 and PCA9685 power inputs
+   - Ensure proper polarity and ground connections
+5. Test power selection:
+   - Battery only: Verify operation
+   - USB only: Verify operation with limited servo movement
+   - Both connected: Verify higher voltage source takes priority
+   - Measure voltage drop across diodes (~0.2V for Schottky)
+6. Document power limitations and usage guidelines
 
 ### Phase 5: Testing and Validation
 1. Power-on test (USB and battery)
