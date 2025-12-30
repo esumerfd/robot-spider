@@ -285,13 +285,13 @@ Since programming interface uses UART, it's **compatible with keeping TX/RX (GPI
        VBUS -.->|Optional| LED1[Green LED<br/>USB Active]
        VBUS -.->|Optional| LED2[Red LED<br/>Battery Active]
 
-       style USB fill:#90EE90
-       style BAT fill:#FFB6C1
-       style VBUS fill:#FFD700
-       style D1 fill:#87CEEB
-       style D2 fill:#87CEEB
-       style LED1 fill:#90EE90,stroke-dasharray: 5 5
-       style LED2 fill:#FFB6C1,stroke-dasharray: 5 5
+       style USB fill:#4CAF50,color:#fff
+       style BAT fill:#D32F2F,color:#fff
+       style VBUS fill:#F57C00,color:#fff
+       style D1 fill:#1976D2,color:#fff
+       style D2 fill:#1976D2,color:#fff
+       style LED1 fill:#2E7D32,color:#fff,stroke-dasharray: 5 5
+       style LED2 fill:#C62828,color:#fff,stroke-dasharray: 5 5
    ```
 
    - Note: When both sources connected, higher voltage takes priority (typically battery if >5.2V)
