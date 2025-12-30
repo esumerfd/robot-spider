@@ -266,7 +266,36 @@ Since programming interface uses UART, it's **compatible with keeping TX/RX (GPI
      - ✅ Backfeed protection built-in
      - ✅ Simpler user experience
      - ✅ Fewer mechanical components to fail
+
+   **Circuit Diagram:**
+   ```mermaid
+   graph LR
+       USB[USB 5V Input] -->|"+"| D1[Schottky Diode<br/>1N5819]
+       BAT[Battery Input<br/>6V-7.4V] -->|"+"| D2[Schottky Diode<br/>1N5819]
+       D1 --> VBUS[Power Bus<br/>~4.8V or ~6V]
+       D2 --> VBUS
+       VBUS --> ESP32[ESP32<br/>VIN]
+       VBUS --> PCA[PCA9685<br/>VCC]
+
+       USB_GND[USB GND] --> GND[Common Ground]
+       BAT_GND[Battery GND] --> GND
+       GND --> ESP32_GND[ESP32 GND]
+       GND --> PCA_GND[PCA9685 GND]
+
+       VBUS -.->|Optional| LED1[Green LED<br/>USB Active]
+       VBUS -.->|Optional| LED2[Red LED<br/>Battery Active]
+
+       style USB fill:#90EE90
+       style BAT fill:#FFB6C1
+       style VBUS fill:#FFD700
+       style D1 fill:#87CEEB
+       style D2 fill:#87CEEB
+       style LED1 fill:#90EE90,stroke-dasharray: 5 5
+       style LED2 fill:#FFB6C1,stroke-dasharray: 5 5
+   ```
+
    - Note: When both sources connected, higher voltage takes priority (typically battery if >5.2V)
+   - Voltage drop: ~0.2V across each Schottky diode (USB 5V → ~4.8V, Battery 6V → ~5.8V)
 
 ## Implementation Plan
 
