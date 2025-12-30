@@ -188,13 +188,31 @@ The ESP-prog uses DTR/RTS signals to automatically control EN and IO0 for seamle
 - Can keep current I2C configuration on GPIO14/15
 - Or migrate I2C elsewhere for other reasons (flexibility, better layout)
 
-**Connector Options:**
-1. **6-pin header** (2.54mm pitch) - simple, requires jumper wires
-2. **6-pin JST connector** - more robust, keyed connection
-3. **Pogo pin connector** - easy attach/detach, no inserted connector
+**Connector Selection: 6-pin JST Connector with Ribbon Cable**
+
+**Implementation:**
+- **On Hexapod:** 6-pin JST socket mounted on body
+- **Cable:** JST connector with ribbon cable for flexibility
+- **On ESP-prog:** Corresponding 6-pin JST connector
+
+**Advantages of JST + Ribbon Cable:**
+- ✅ Keyed connection - prevents reverse insertion
+- ✅ Robust mechanical connection
+- ✅ Easy to disconnect/reconnect for programming sessions
+- ✅ Ribbon cable provides flexibility for routing
+- ✅ Professional appearance
+- ✅ Strain relief from JST housing
+
+**Pin Order (Standard JST-SH 1mm pitch or JST-XH 2.5mm pitch):**
+1. GND (Black)
+2. VCC (Red)
+3. EN (Yellow)
+4. IO0 (Green)
+5. RXD (Blue)
+6. TXD (White)
 
 **Key Advantage:**
-Since programming interface uses UART, it's **compatible with keeping TX/RX (GPIO1/3) free** for both serial debugging and programming. I2C can remain on GPIO14/15 or be moved to GPIO21/22 without affecting ESP-prog functionality.
+Since programming interface uses UART, it's **compatible with keeping TX/RX (GPIO1/3) free** for both serial debugging and programming. I2C can remain on GPIO14/15 without affecting ESP-prog functionality.
 
 ### 3. Micro-USB Power Supply Integration
 
@@ -261,18 +279,33 @@ Hardware modifications required:
 **No firmware changes required** - board.cpp already configured for GPIO14/15
 
 ### Phase 3: ESP-prog Programming Interface Integration
-1. Design ESP-prog connector bracket/mount
-2. Select connector type (6-pin header, JST, or pogo pins)
-3. 3D print or fabricate mounting solution
-4. Install 6-pin programming header on robot
-   - TXD → ESP32 RX (GPIO3)
-   - RXD → ESP32 TX (GPIO1)
-   - IO0 → ESP32 IO0 (boot mode control)
-   - EN → ESP32 EN (reset control)
-   - GND → Ground
-   - VCC → 3.3V (optional)
-5. Document connection procedure
-6. Test auto-programming functionality with ESP-prog
+**Selected Connector:** 6-pin JST connector with ribbon cable
+
+Hardware installation steps:
+1. Source components:
+   - 6-pin JST-XH or JST-SH socket (for hexapod body mount)
+   - 6-pin JST connector with pre-crimped ribbon cable
+   - Matching JST plug for ESP-prog end
+2. Design and print JST connector mount bracket for hexapod body
+   - Should be accessible when robot is assembled
+   - Position to avoid servo interference
+3. Install 6-pin JST socket on hexapod
+   - Mount socket to body (epoxy, screws, or 3D-printed bracket)
+   - Wire socket pins to ESP32:
+     - Pin 1 (GND) → ESP32 GND
+     - Pin 2 (VCC) → ESP32 3.3V (optional power input)
+     - Pin 3 (EN) → ESP32 EN pin
+     - Pin 4 (IO0) → ESP32 IO0 pin (GPIO0)
+     - Pin 5 (RXD) → ESP32 TX (GPIO1)
+     - Pin 6 (TXD) → ESP32 RX (GPIO3)
+4. Prepare ESP-prog cable
+   - Attach JST plug to ESP-prog Program interface
+   - Verify pin mapping matches hexapod socket
+5. Test connection
+   - Connect ribbon cable between ESP-prog and hexapod
+   - Verify auto-programming functionality
+   - Test serial monitor communication
+6. Document connection procedure with photos and pinout diagram
 
 ### Phase 4: USB Power Integration
 1. Source micro-USB breakout or panel-mount connector
