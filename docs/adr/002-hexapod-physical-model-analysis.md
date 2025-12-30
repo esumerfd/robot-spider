@@ -241,10 +241,12 @@ Since programming interface uses UART, it's **compatible with keeping TX/RX (GPI
 ### 4. Physical Model Modifications
 
 **Planned Additions:**
-1. **ESP-prog connector mount**
-   - Location: TBD based on physical inspection
-   - Type: 6-pin header or connector
-   - Consideration: Easy attach/detach mechanism
+1. **ESP-prog programming interface connector**
+   - Type: 6-pin JST socket (JST-XH 2.5mm or JST-SH 1mm pitch)
+   - Location: Accessible side of hexapod body (TBD based on physical inspection)
+   - Mounting: 3D-printed bracket or epoxy-mounted directly to body
+   - Cable: Ribbon cable with JST connectors for ESP-prog connection
+   - Pin assignment: GND, VCC, EN, IO0, RXD, TXD (see Phase 3 for detailed wiring)
 
 2. **Micro-USB power connector**
    - Location: Accessible on body
