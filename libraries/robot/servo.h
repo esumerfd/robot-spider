@@ -15,6 +15,9 @@ class Servo {
     uint8_t _servonum = 0;
     uint16_t _position = SERVOMIN + (SERVOMAX - SERVOMIN) / 2;  // Start at middle (375)
 
+    // PWM initialization flag - safe for single-threaded Arduino model
+    // WARNING: Add synchronization if using FreeRTOS tasks or multi-core execution
+    // See docs/adr/001-servo-pwm-initialization-thread-safety.md
     static bool _pwmInitialized;
 
   public:

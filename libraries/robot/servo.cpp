@@ -18,6 +18,8 @@ uint16_t Servo::getPosition() {
 }
 
 void Servo::initializePWM(Board& board) {
+  // Single-threaded check-and-initialize pattern
+  // See docs/adr/001-servo-pwm-initialization-thread-safety.md for threading model assumptions
   if (_pwmInitialized) {
     return; // Already initialized
   }
