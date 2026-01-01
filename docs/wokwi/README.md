@@ -4,6 +4,8 @@ This directory contains the Wokwi simulation project for testing the ESP32-CAM c
 
 ## Files
 
+- **`board.json`** - Custom ESP32-CAM board definition with pin mappings
+- **`board.svg`** - Visual representation of the ESP32-CAM board
 - **`diagram.json`** - Wokwi circuit diagram with ESP32-CAM, PCA9685, and servos
 - **`sketch.ino`** - Test firmware demonstrating I2C and servo control
 - **`wokwi.toml`** - Wokwi CLI configuration
@@ -11,32 +13,35 @@ This directory contains the Wokwi simulation project for testing the ESP32-CAM c
 
 ## Custom Board Definition
 
-This simulation uses a custom ESP32-CAM board definition. The board files are located at:
+This simulation uses a custom ESP32-CAM board definition included in this directory:
 
-**Location:** `/Users/esumerfd/GoogleDrive/edward/Personal/projects/arduino/wokwi-boards-esp32-cam/`
+- **`board.json`** - Pin definitions and component positions
+- **`board.svg`** - Visual representation of the board
 
-Files needed:
-- `board.json` - Pin definitions and component positions
-- `board.svg` - Visual representation of the board
+These files define the custom ESP32-CAM board with I2C on GPIO14/15 matching the hexapod hardware configuration.
 
 ## Quick Start
 
 ### Option 1: Wokwi Online
 1. Visit https://wokwi.com
 2. Create a new ESP32 project
-3. Upload `diagram.json` and `sketch.ino`
-4. Click "Start Simulation"
+3. Press **F1** → "Load custom board file..." → select `board.json` from this directory
+4. Upload `diagram.json` and `sketch.ino`
+5. Click "Start Simulation"
 
 ### Option 2: Wokwi VSCode Extension
 1. Install the Wokwi extension in VSCode
 2. Open this directory (`docs/wokwi/`)
-3. Click "Start Simulation" button
+3. The custom board will be loaded automatically
+4. Click "Start Simulation" button
 
 ### Option 3: Wokwi CLI
 ```bash
 cd docs/wokwi
 wokwi-cli
 ```
+
+**Note:** All required files including the custom board definition are in this directory.
 
 ## Circuit Configuration
 
@@ -120,16 +125,16 @@ To simulate the complete 12-servo hexapod:
 
 ## Notes
 
-- This simulation uses the custom ESP32-CAM board definition
-- Board files location: `/Users/esumerfd/GoogleDrive/edward/Personal/projects/arduino/wokwi-boards-esp32-cam/`
-- The custom board must be loaded in Wokwi (press F1 → "Load custom board file...")
+- All simulation files including custom board definition are in this directory
+- The custom board defines ESP32-CAM with I2C on GPIO14/15
 - Camera, PSRAM, and SD card features are not simulated
 - Servo current draw is not accurately simulated (real hexapod may need external power)
+- Board files (`board.json`, `board.svg`) can be reused for other ESP32-CAM Wokwi projects
 
 ## References
 
-- **Custom Board Project:** `/Users/esumerfd/GoogleDrive/edward/Personal/projects/arduino/wokwi-boards-esp32-cam/`
 - **Robot-Spider Project Root:** `/Users/esumerfd/GoogleDrive/edward/Personal/projects/arduino/robot-spider/`
 - **ADR-002:** `../adr/002-hexapod-physical-model-analysis.md` (hexapod migration plan)
+- **ESP32-CAM Pinout:** https://www.espboards.dev/esp32/esp32cam/
 - **Wokwi Custom Boards:** https://docs.wokwi.com/guides/custom-boards
 - **Wokwi PCA9685:** https://docs.wokwi.com/parts/wokwi-pca9685
