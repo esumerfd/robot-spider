@@ -1,0 +1,242 @@
+{
+  "version": 1,
+  "author": "Robot Spider Project",
+  "editor": "wokwi",
+  "parts": [
+    {
+      "type": "board-esp32-cam",
+      "id": "esp32cam",
+      "top": 0,
+      "left": 0,
+      "attrs": {
+        "builder": "board-esp32-cam",
+        "customBoard": true
+      }
+    },
+    {
+      "type": "wokwi-pca9685",
+      "id": "pca9685",
+      "top": -100,
+      "left": 200,
+      "attrs": {}
+    },
+    {
+      "type": "wokwi-servo",
+      "id": "servo1",
+      "top": -200,
+      "left": 400,
+      "attrs": {
+        "label": "Servo 0 (Leg 1 Coxa)"
+      }
+    },
+    {
+      "type": "wokwi-servo",
+      "id": "servo2",
+      "top": -150,
+      "left": 400,
+      "attrs": {
+        "label": "Servo 1 (Leg 1 Femur)"
+      }
+    },
+    {
+      "type": "wokwi-servo",
+      "id": "servo3",
+      "top": -100,
+      "left": 400,
+      "attrs": {
+        "label": "Servo 2 (Leg 1 Tibia)"
+      }
+    },
+    {
+      "type": "wokwi-servo",
+      "id": "servo4",
+      "top": -50,
+      "left": 400,
+      "attrs": {
+        "label": "Servo 3 (Leg 2 Coxa)"
+      }
+    },
+    {
+      "type": "wokwi-led",
+      "id": "led1",
+      "top": 100,
+      "left": 200,
+      "attrs": {
+        "color": "red",
+        "label": "Power Indicator"
+      }
+    },
+    {
+      "type": "wokwi-resistor",
+      "id": "r1",
+      "top": 110,
+      "left": 150,
+      "attrs": {
+        "value": "220"
+      }
+    }
+  ],
+  "connections": [
+    [
+      "esp32cam:GPIO14",
+      "pca9685:SCL",
+      "green",
+      [
+        "h0"
+      ]
+    ],
+    [
+      "esp32cam:GPIO15",
+      "pca9685:SDA",
+      "blue",
+      [
+        "h0"
+      ]
+    ],
+    [
+      "esp32cam:VCC",
+      "pca9685:VCC",
+      "red",
+      [
+        "h0"
+      ]
+    ],
+    [
+      "esp32cam:GND.1",
+      "pca9685:GND",
+      "black",
+      [
+        "h0"
+      ]
+    ],
+    [
+      "pca9685:PWM0",
+      "servo1:PWM",
+      "orange",
+      [
+        "h0"
+      ]
+    ],
+    [
+      "pca9685:PWM1",
+      "servo2:PWM",
+      "orange",
+      [
+        "h0"
+      ]
+    ],
+    [
+      "pca9685:PWM2",
+      "servo3:PWM",
+      "orange",
+      [
+        "h0"
+      ]
+    ],
+    [
+      "pca9685:PWM3",
+      "servo4:PWM",
+      "orange",
+      [
+        "h0"
+      ]
+    ],
+    [
+      "pca9685:V+",
+      "esp32cam:5V",
+      "red",
+      [
+        "h0"
+      ]
+    ],
+    [
+      "servo1:V+",
+      "esp32cam:5V",
+      "red",
+      [
+        "h0"
+      ]
+    ],
+    [
+      "servo2:V+",
+      "esp32cam:5V",
+      "red",
+      [
+        "h0"
+      ]
+    ],
+    [
+      "servo3:V+",
+      "esp32cam:5V",
+      "red",
+      [
+        "h0"
+      ]
+    ],
+    [
+      "servo4:V+",
+      "esp32cam:5V",
+      "red",
+      [
+        "h0"
+      ]
+    ],
+    [
+      "servo1:GND",
+      "pca9685:GND",
+      "black",
+      [
+        "h0"
+      ]
+    ],
+    [
+      "servo2:GND",
+      "pca9685:GND",
+      "black",
+      [
+        "h0"
+      ]
+    ],
+    [
+      "servo3:GND",
+      "pca9685:GND",
+      "black",
+      [
+        "h0"
+      ]
+    ],
+    [
+      "servo4:GND",
+      "pca9685:GND",
+      "black",
+      [
+        "h0"
+      ]
+    ],
+    [
+      "esp32cam:GPIO4",
+      "r1:1",
+      "yellow",
+      [
+        "h0"
+      ]
+    ],
+    [
+      "r1:2",
+      "led1:A",
+      "yellow",
+      [
+        "h0"
+      ]
+    ],
+    [
+      "led1:C",
+      "esp32cam:GND.2",
+      "black",
+      [
+        "h0"
+      ]
+    ]
+  ],
+  "dependencies": {}
+}

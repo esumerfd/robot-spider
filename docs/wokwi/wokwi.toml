@@ -1,0 +1,9 @@
+[wokwi]
+version = 1
+elf = ""
+firmware = ""
+
+# Port forwarding for web server (if needed)
+[[net.forward]]
+from = "localhost:4000"
+to = "target:80"
