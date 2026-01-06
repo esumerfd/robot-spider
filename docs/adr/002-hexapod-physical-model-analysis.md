@@ -188,12 +188,13 @@ The ESP-prog uses DTR/RTS signals to automatically control EN and IO0 for seamle
 - Can keep current I2C configuration on GPIO14/15
 - Or migrate I2C elsewhere for other reasons (flexibility, better layout)
 
-**Connector Selection: 6-pin JST Connector with Ribbon Cable**
+**Connector Selection: 6-pin JST-XH Connector with Dual Purpose**
 
 **Implementation:**
-- **On Hexapod:** 6-pin JST socket mounted on body
+- **On Hexapod:** 6-pin JST-XH socket mounted on body
 - **Cable:** JST connector with ribbon cable for flexibility
 - **On ESP-prog:** Corresponding 6-pin JST connector
+- **Dual Purpose:** Same connector serves both programming and external power input
 
 **Advantages of JST + Ribbon Cable:**
 - ✅ Keyed connection - prevents reverse insertion
@@ -202,90 +203,106 @@ The ESP-prog uses DTR/RTS signals to automatically control EN and IO0 for seamle
 - ✅ Ribbon cable provides flexibility for routing
 - ✅ Professional appearance
 - ✅ Strain relief from JST housing
+- ✅ Single connector simplifies chassis design
+- ✅ VCC pin serves dual purpose (3.3V programming or external power)
 
-**Pin Order (Standard JST-SH 1mm pitch or JST-XH 2.5mm pitch):**
+**Pin Order (JST-XH 2.5mm pitch):**
 1. GND (Black)
-2. VCC (Red)
+2. VCC (Red) - **Dual purpose: 3.3V from ESP-prog OR external power input**
 3. EN (Yellow)
 4. IO0 (Green)
 5. RXD (Blue)
 6. TXD (White)
 
+**Dual Purpose VCC Pin:**
+- **Programming Mode:** ESP-prog provides 3.3V on VCC (sufficient for programming)
+- **Power Mode:** External power supply connected to VCC drives ESP32-CAM and servos
+- VCC connects to ESP32-CAM 5V pin which internally regulates to 3.3V for logic
+- Automatic power selection via diode-OR circuit (VCC or battery, whichever is higher)
+
 **Key Advantage:**
-Since programming interface uses UART, it's **compatible with keeping TX/RX (GPIO1/3) free** for both serial debugging and programming. I2C can remain on GPIO14/15 without affecting ESP-prog functionality.
+Since programming interface uses UART, it's **compatible with keeping TX/RX (GPIO1/3) free** for both serial debugging and programming. I2C can remain on GPIO14/15 without affecting ESP-prog functionality. The dual-purpose VCC pin eliminates the need for a separate micro-USB power connector.
 
-### 3. Micro-USB Power Supply Integration
+### 3. External Power Supply Integration via JST Connector
 
-**Goal:** Add USB power as alternative to battery pack for easier development
+**Goal:** Enable external power input through the same JST connector used for programming
 
-**Requirements:**
-1. Micro-USB power input connector
-2. Voltage regulation:
-   - USB provides 5V
-   - ESP32 requires 3.3V (regulated on-board)
-   - Servos typically need 5-6V (PCA9685 can handle 6V VCC)
-3. Power switching mechanism:
-   - Jumper or switch to select USB vs battery
-   - Prevent simultaneous power sources (backfeeding)
-4. Current capacity:
-   - 12 servos can draw significant current (potentially 1-2A each under load)
-   - USB 2.0 provides 500mA, USB 3.0 provides 900mA
-   - **USB likely insufficient for full servo load**
-   - USB power suitable for testing without heavy load
+**Design Decision:** Use JST VCC pin for dual-purpose power input
+- Eliminates need for separate micro-USB connector
+- Simplifies chassis design (single connector instead of two)
+- VCC pin accepts either:
+  - 3.3V from ESP-prog during programming
+  - External power supply (5V-7V) for development/testing
+
+**Power Input Options:**
+1. **Programming Mode:** ESP-prog provides 3.3V on VCC
+   - Sufficient for programming operations
+   - Battery can simultaneously power servos via diode-OR circuit
+2. **External Power Mode:** Wall adapter or bench supply connected to VCC
+   - Useful for development without depleting battery
+   - Easier debugging with stable power source
+3. **Battery Mode:** Battery powers system independently
+   - For autonomous operation
+   - Full current capacity for servo loads
+
+**Current Capacity Considerations:**
+- 12 servos can draw significant current (potentially 1-2A each under load)
+- External power supply should be rated for adequate current (5A+ recommended)
+- Battery pack required for full autonomous operation
+- External power suitable for tethered development/testing
 
 **Recommendation:**
-- USB power for development/testing with limited servo movement
-- Battery pack for full operation
-- Add current limiting or warning for USB power mode
+- External power (via JST VCC) for development/testing
+- Battery pack for full operation and autonomous movement
+- Automatic selection via diode-OR circuit (no manual switching)
 
 ### 4. Physical Model Modifications
 
 **Planned Additions:**
-1. **ESP-prog programming interface connector**
-   - Type: 6-pin JST socket (JST-XH 2.5mm or JST-SH 1mm pitch)
+1. **Dual-purpose JST-XH connector (Programming + Power)**
+   - Type: 6-pin JST-XH socket (2.5mm pitch)
    - Location: Accessible side of hexapod body (TBD based on physical inspection)
-   - Mounting: 3D-printed bracket or epoxy-mounted directly to body
-   - Cable: Ribbon cable with JST connectors for ESP-prog connection
-   - Pin assignment: GND, VCC, EN, IO0, RXD, TXD (see Phase 3 for detailed wiring)
+   - Mounting: 3D-printed bracket or integrated into chassis model
+   - Cable: Ribbon cable with JST connectors for ESP-prog or power supply connection
+   - Pin assignment: GND, VCC (dual-purpose), EN, IO0, RXD, TXD
+   - Functions:
+     - Programming: Connect ESP-prog for firmware upload and serial debugging
+     - Power: Connect external power supply for development/testing
 
-2. **Micro-USB power connector**
-   - Location: Accessible on body
-   - Type: Micro-USB breakout board or panel-mount connector
-   - Power switching: Automatic diode-OR circuit (no manual switch needed)
-
-3. **Automatic power selection circuit**
+2. **Automatic power selection circuit**
    - Type: Diode-OR configuration using Schottky diodes
-   - Operation: Automatically selects between USB and battery based on which is connected
+   - Operation: Automatically selects between JST VCC (external power/ESP-prog) and battery
    - Components:
-     - Schottky diode on USB 5V input (e.g., 1N5819, low voltage drop ~0.2V)
-     - Schottky diode on battery input (prevents backfeed to battery when USB connected)
+     - Schottky diode on JST VCC input (e.g., 1N5819, low voltage drop ~0.2V)
+     - Schottky diode on battery input (prevents backfeed to battery when external power connected)
      - Optional: LED indicator showing which power source is active
    - Advantages:
      - ✅ No manual switching required - plug and go
-     - ✅ Automatic failover if USB unplugged
+     - ✅ Automatic failover between power sources
      - ✅ Backfeed protection built-in
      - ✅ Simpler user experience
      - ✅ Fewer mechanical components to fail
+     - ✅ Works with both ESP-prog (3.3V) and external power supply
 
    **Circuit Diagram:**
    ```mermaid
    graph LR
-       USB[USB 5V Input] -->|"+"| D1[Schottky Diode<br/>1N5819]
+       JST[JST VCC Pin<br/>3.3V-7V] -->|"+"| D1[Schottky Diode<br/>1N5819]
        BAT[Battery Input<br/>6V-7.4V] -->|"+"| D2[Schottky Diode<br/>1N5819]
-       D1 --> VBUS[Power Bus<br/>~4.8V or ~6V]
+       D1 --> VBUS[Power Bus<br/>Voltage varies]
        D2 --> VBUS
-       VBUS --> ESP32[ESP32<br/>VIN]
+       VBUS --> ESP32[ESP32-CAM<br/>VIN/5V]
        VBUS --> PCA[PCA9685<br/>VCC]
 
-       USB_GND[USB GND] --> GND[Common Ground]
+       JST_GND[JST GND] --> GND[Common Ground]
        BAT_GND[Battery GND] --> GND
        GND --> ESP32_GND[ESP32 GND]
        GND --> PCA_GND[PCA9685 GND]
 
-       VBUS -.->|Optional| LED1[Green LED<br/>USB Active]
+       VBUS -.->|Optional| LED1[Green LED<br/>External Power]
        VBUS -.->|Optional| LED2[Red LED<br/>Battery Active]
 
-       style USB fill:#4CAF50,color:#fff
+       style JST fill:#4CAF50,color:#fff
        style BAT fill:#D32F2F,color:#fff
        style VBUS fill:#F57C00,color:#fff
        style D1 fill:#1976D2,color:#fff
@@ -294,8 +311,11 @@ Since programming interface uses UART, it's **compatible with keeping TX/RX (GPI
        style LED2 fill:#C62828,color:#fff,stroke-dasharray: 5 5
    ```
 
-   - Note: When both sources connected, higher voltage takes priority (typically battery if >5.2V)
-   - Voltage drop: ~0.2V across each Schottky diode (USB 5V → ~4.8V, Battery 6V → ~5.8V)
+   - Note: Higher voltage source takes priority automatically
+   - ESP-prog (3.3V): Battery powers servos, ESP-prog provides logic power
+   - External power (5-7V): External power dominates if voltage higher than battery
+   - Battery only: Battery powers entire system
+   - Voltage drop: ~0.2V across each Schottky diode
 
 ## Implementation Plan
 
@@ -319,66 +339,79 @@ Hardware modifications required:
 
 **No firmware changes required** - board.cpp already configured for GPIO14/15
 
-### Phase 3: ESP-prog Programming Interface Integration
-**Selected Connector:** 6-pin JST connector with ribbon cable
+### Phase 3: Dual-Purpose JST Connector Integration
+**Selected Connector:** 6-pin JST-XH connector for both programming and power
 
 Hardware installation steps:
 1. Source components:
-   - 6-pin JST-XH or JST-SH socket (for hexapod body mount)
+   - 6-pin JST-XH socket (for hexapod body mount)
    - 6-pin JST connector with pre-crimped ribbon cable
    - Matching JST plug for ESP-prog end
+   - Optional: Additional JST plug for external power supply adapter
 2. Design and print JST connector mount bracket for hexapod body
    - Should be accessible when robot is assembled
    - Position to avoid servo interference
+   - Integrate into chassis 3D model if reprinting
 3. Install 6-pin JST socket on hexapod
    - Mount socket to body (epoxy, screws, or 3D-printed bracket)
-   - Wire socket pins to ESP32:
-     - Pin 1 (GND) → ESP32 GND
-     - Pin 2 (VCC) → ESP32 3.3V (optional power input)
-     - Pin 3 (EN) → ESP32 EN pin
-     - Pin 4 (IO0) → ESP32 IO0 pin (GPIO0)
-     - Pin 5 (RXD) → ESP32 TX (GPIO1)
-     - Pin 6 (TXD) → ESP32 RX (GPIO3)
+   - Wire socket pins to ESP32-CAM and power system:
+     - Pin 1 (GND) → ESP32-CAM GND and power system GND
+     - Pin 2 (VCC) → ESP32-CAM 5V pin (via diode-OR circuit for power mode)
+     - Pin 3 (EN) → ESP32-CAM EN pin
+     - Pin 4 (IO0) → ESP32-CAM IO0 pin (GPIO0)
+     - Pin 5 (RXD) → ESP32-CAM TX (GPIO1)
+     - Pin 6 (TXD) → ESP32-CAM RX (GPIO3)
 4. Prepare ESP-prog cable
    - Attach JST plug to ESP-prog Program interface
    - Verify pin mapping matches hexapod socket
-5. Test connection
-   - Connect ribbon cable between ESP-prog and hexapod
-   - Verify auto-programming functionality
-   - Test serial monitor communication
-6. Document connection procedure with photos and pinout diagram
+5. Wire VCC to diode-OR circuit
+   - JST VCC (Pin 2) → Schottky diode anode
+   - Diode cathode → Power bus
+   - Power bus connects to ESP32-CAM VIN and PCA9685 VCC
+6. Test connections
+   - **Programming test:** Connect ESP-prog, verify auto-programming and serial monitor
+   - **Power test:** Connect external power supply via JST VCC, verify system operation
+   - **Dual operation:** Test ESP-prog with battery simultaneously connected
+7. Document connection procedure with photos and pinout diagram
 
-### Phase 4: USB Power Integration
+### Phase 4: Power Selection Circuit Implementation
 1. Source components:
-   - Micro-USB breakout or panel-mount connector
    - 2x Schottky diodes (e.g., 1N5819 or similar, rated for 1A+)
-   - Optional: Dual-color LED (red=battery, green=USB) with current-limiting resistors
+   - Optional: Dual-color LED (red=battery, green=external) with current-limiting resistors
+   - Heat shrink tubing for wire connections
 2. Design and build automatic power selection circuit:
    - Diode-OR configuration:
-     - USB 5V → Schottky diode → Power bus
+     - JST VCC (Pin 2) → Schottky diode → Power bus
      - Battery V+ → Schottky diode → Power bus
    - Optional LED indicators for visual feedback
-3. Install micro-USB connector in body
-   - Position for easy access during development
-   - Secure mounting to prevent mechanical stress
-4. Wire diode-OR circuit to power distribution
-   - Connect power bus output to ESP32 and PCA9685 power inputs
-   - Ensure proper polarity and ground connections
-5. Test power selection:
-   - Battery only: Verify operation
-   - USB only: Verify operation with limited servo movement
-   - Both connected: Verify higher voltage source takes priority
+3. Wire diode-OR circuit to power distribution
+   - Solder JST VCC wire to diode anode
+   - Connect diode cathode to power bus
+   - Verify battery already has diode in circuit (or add if needed)
+   - Connect power bus output to ESP32-CAM VIN and PCA9685 VCC
+   - Ensure proper polarity and common ground connections
+   - Add heat shrink tubing to all solder joints
+4. Test power selection:
+   - Battery only: Verify full operation
+   - ESP-prog only (3.3V): Verify programming works, battery powers servos
+   - External power (5-7V): Verify operation with servo movement
+   - ESP-prog + Battery: Verify both work simultaneously
+   - External power + Battery: Verify higher voltage source takes priority
    - Measure voltage drop across diodes (~0.2V for Schottky)
-6. Document power limitations and usage guidelines
+5. Optional: Add power indicator LEDs
+   - Green LED for external power active
+   - Red LED for battery active
+6. Document power system operation and usage guidelines
 
 ### Phase 5: Testing and Validation
-1. Power-on test (USB and battery)
+1. Power-on test (external power via JST and battery)
 2. I2C communication verification
 3. Individual servo testing
 4. Gait execution tests
-5. ESP-prog debugging test
-6. Long-duration stability test
-7. Document final configuration
+5. ESP-prog programming and debugging test
+6. Dual-purpose connector validation (programming + power modes)
+7. Long-duration stability test
+8. Document final configuration
 
 ## Final Pin Configuration
 
@@ -413,15 +446,16 @@ Hardware installation steps:
 - Rewire to GPIO14/15 to match firmware
 - No firmware changes needed
 
-### Risk 2: Insufficient USB Current
-**Impact:** Servos brown out or ESP32 resets under load
-**Likelihood:** High - 12 servos can draw >>1A, USB provides 500-900mA
+### Risk 2: Insufficient External Power Current
+**Impact:** Servos brown out or ESP32 resets under load with inadequate external power supply
+**Likelihood:** Medium - 12 servos can draw significant current (potentially >>5A under load)
 **Mitigation:**
-- Current limiting circuit or fuse
-- Warning LED when USB power is selected
-- Clear documentation stating USB is for testing only, not full operation
+- Use external power supply rated for adequate current (5A+ recommended)
+- Warning LED to indicate which power source is active
+- Clear documentation stating power supply requirements
 - Test with progressively increasing servo load
-- Battery pack required for actual robot movement
+- Battery pack required for actual robot movement and autonomous operation
+- ESP-prog 3.3V output only for programming (battery powers servos simultaneously)
 
 ### Risk 3: Desoldering Damage
 **Impact:** Damaged PCB traces or pads during I2C pin migration
@@ -434,13 +468,14 @@ Hardware installation steps:
 - Consider using flying wires if pads are damaged
 
 ### Risk 4: Physical Space Constraints
-**Impact:** Cannot mount ESP-prog connector or USB port in body
-**Likelihood:** Medium
+**Impact:** Cannot mount JST connector in body
+**Likelihood:** Low (single connector is smaller than two separate connectors)
 **Mitigation:**
-- Design compact mounting solutions
-- Use right-angle connectors to save space
-- Consider external adapter cables instead of on-board mounting
-- May need to modify body STL and reprint with connector cutouts
+- Design compact mounting solution
+- Use right-angle connectors to save space if needed
+- Single connector simplifies mounting (vs. previous two-connector design)
+- May need to modify body STL and reprint with connector cutout
+- 3D-printed bracket option if body modification is difficult
 
 ## References
 
@@ -456,6 +491,6 @@ Hardware installation steps:
 1. Physically inspect the SIXpack model
 2. Create subtasks for each migration component
 3. Make pinout decision based on inspection
-4. Design ESP-prog and USB power mounting solutions
-5. Procure necessary components (connectors, power components)
+4. Design dual-purpose JST connector mounting solution
+5. Procure necessary components (JST connectors, Schottky diodes, power components)
 6. Implement and test incrementally
