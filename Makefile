@@ -63,11 +63,22 @@ test-unit:
 	@echo "Running C++ unit tests..."
 	@cd $(SELECTED_PROJECT)/tests/unit && make test
 
-test-integration:
+test-integration: test-integration-install
 	@echo "Running Bluetooth integration tests..."
-	@cd $(SELECTED_PROJECT)/tests/integration && python3 test_bluetooth.py
+	@cd $(SELECTED_PROJECT)/tests/integration && ./venv/bin/python test_bluetooth.py
 
 test-integration-install:
-	@echo "Installing integration test dependencies..."
-	@echo "Installing PyBluez and dependencies..."
-	@pip3 install -r $(SELECTED_PROJECT)/tests/integration/requirements.txt
+	@echo "Setting up Python virtual environment for integration tests..."
+	@if [ ! -d "$(SELECTED_PROJECT)/tests/integration/venv" ]; then \
+		echo "Creating virtual environment..."; \
+		cd $(SELECTED_PROJECT)/tests/integration && python3 -m venv venv; \
+	fi
+	@echo "Installing dependencies into virtual environment..."
+	@cd $(SELECTED_PROJECT)/tests/integration && ./venv/bin/pip install --upgrade pip
+	@cd $(SELECTED_PROJECT)/tests/integration && ./venv/bin/pip install -r requirements.txt
+	@echo "✓ Integration test environment ready"
+
+test-integration-clean:
+	@echo "Cleaning integration test virtual environment..."
+	@rm -rf $(SELECTED_PROJECT)/tests/integration/venv
+	@echo "✓ Virtual environment removed"

@@ -73,21 +73,23 @@ sudo systemctl enable bluetooth
 
 ## Installation
 
-### Quick Start
+### Automatic Setup (Recommended)
+
+The Makefile automatically creates and manages a Python virtual environment:
 
 ```bash
-# From project root
+# From project root - creates venv and installs dependencies
 make test-integration-install
 ```
 
-### Manual Installation
+This will:
+1. Create `tests/integration/venv/` if it doesn't exist
+2. Install/upgrade pip in the venv
+3. Install PyBluez and dependencies into the venv
 
-```bash
-cd tests/integration
-pip3 install -r requirements.txt
-```
+### Manual Virtual Environment Setup
 
-### Virtual Environment (Recommended)
+If you prefer to manage the venv manually:
 
 ```bash
 cd tests/integration
@@ -102,7 +104,16 @@ source venv/bin/activate
 venv\Scripts\activate
 
 # Install dependencies
-pip3 install -r requirements.txt
+pip install -r requirements.txt
+```
+
+### Cleaning Up
+
+To remove the virtual environment:
+
+```bash
+# From project root
+make test-integration-clean
 ```
 
 ## Usage
@@ -110,12 +121,17 @@ pip3 install -r requirements.txt
 ### Discover and Connect to RobotSpider
 
 ```bash
-# From project root
+# From project root (automatically sets up venv if needed)
 make test-integration
 
-# Or directly
+# Or run directly with venv
 cd tests/integration
-python3 test_bluetooth.py
+./venv/bin/python test_bluetooth.py
+
+# Or activate venv first, then run
+cd tests/integration
+source venv/bin/activate  # On macOS/Linux
+python test_bluetooth.py
 ```
 
 ### Expected Output

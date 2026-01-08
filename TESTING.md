@@ -46,15 +46,19 @@ cd tests/unit && make run  # Build, upload to board, and monitor results
 
 **Make Targets:**
 ```bash
-make test-integration-install   # Install Python dependencies
-make test-integration           # Run Bluetooth discovery and connection test
+make test-integration-install   # Create venv and install Python dependencies
+make test-integration           # Run Bluetooth discovery and connection test (auto-installs if needed)
+make test-integration-clean     # Remove virtual environment
 ```
 
 **Direct Python usage:**
 ```bash
 cd tests/integration
-pip3 install -r requirements.txt
-python3 test_bluetooth.py
+./venv/bin/python test_bluetooth.py
+
+# Or activate venv first
+source venv/bin/activate
+python test_bluetooth.py
 ```
 
 **Requirements:**
@@ -78,8 +82,9 @@ python3 test_bluetooth.py
 |--------|-------------|
 | `make test` | Run all tests (unit build + integration) |
 | `make test-unit` | Build C++ unit tests |
-| `make test-integration` | Run Bluetooth integration tests |
-| `make test-integration-install` | Install integration test dependencies |
+| `make test-integration` | Run Bluetooth integration tests (auto-installs venv) |
+| `make test-integration-install` | Create venv and install Python dependencies |
+| `make test-integration-clean` | Remove virtual environment |
 
 ### Unit Test Makefile (`tests/unit/Makefile`)
 
