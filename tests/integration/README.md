@@ -17,13 +17,16 @@ These tests verify Bluetooth Classic (SPP) connectivity between a development ma
 - Bluetooth enabled on development machine
 - Python 2.7 (required for `bluetooth-serial-port` native module compilation)
 
-**Platform-Specific Requirements:**
+**Platform Support:**
 
-### macOS
-```bash
-# Xcode Command Line Tools (if not already installed)
-xcode-select --install
-```
+⚠️ **macOS Not Supported**: The `bluetooth-serial-port` npm package does not support macOS (darwin). Integration tests currently only work on Linux and Windows.
+
+For macOS users, alternatives:
+- Use a Linux VM or Docker container
+- Test manually using a Bluetooth serial terminal app (e.g., Serial Bluetooth Terminal)
+- Use an Android/iOS device with the robot-spider-control app
+
+**Platform-Specific Requirements:**
 
 ### Linux
 ```bash

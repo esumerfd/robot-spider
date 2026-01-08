@@ -19,6 +19,6 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
-    "bluetooth-serial-port": "^2.2.8"
+    "bluetooth-serial-port": "^3.0.2"
   }
 }
