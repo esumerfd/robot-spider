@@ -38,35 +38,36 @@ cd tests/unit && make run  # Build, upload to board, and monitor results
 - Servo position interpolation
 - Timing and speed logic
 
-### Integration Tests (JavaScript)
+### Integration Tests (Python)
 
 **Location:** `tests/integration/`
-**Technology:** Node.js with bluetooth-serial-port
+**Technology:** Python 3 with PyBluez
 **Purpose:** Test Bluetooth communication with real hardware
 
 **Make Targets:**
 ```bash
-make test-integration-install   # Install npm dependencies
-make test-integration           # Run Bluetooth pairing test
+make test-integration-install   # Install Python dependencies
+make test-integration           # Run Bluetooth discovery and connection test
 ```
 
-**Direct npm usage:**
+**Direct Python usage:**
 ```bash
 cd tests/integration
-npm install
-npm test
+pip3 install -r requirements.txt
+python3 test_bluetooth.py
 ```
 
 **Requirements:**
-- Node.js 16+
+- Python 3.6+
 - Bluetooth enabled on development machine
 - RobotSpider powered on with Bluetooth running
-- Platform-specific requirements (see tests/integration/README.md)
+- Platform-specific Bluetooth libraries (see tests/integration/README.md)
 
 **What's Tested:**
 - Bluetooth device discovery
-- SPP connection establishment
-- Message reception
+- SPP service discovery
+- Connection establishment
+- Connection stability
 - (Future: Command sending and response validation)
 
 ## Makefile Targets Reference

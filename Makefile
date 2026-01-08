@@ -65,28 +65,9 @@ test-unit:
 
 test-integration:
 	@echo "Running Bluetooth integration tests..."
-	@if [ "$$(uname)" = "Darwin" ]; then \
-		echo "⚠️  Integration tests not supported on macOS"; \
-		echo "   The bluetooth-serial-port npm package does not support macOS."; \
-		echo "   Alternatives:"; \
-		echo "   - Use Linux VM or Docker container"; \
-		echo "   - Test manually with Bluetooth serial terminal app"; \
-		echo "   - Use Android app (robot-spider-control)"; \
-		exit 1; \
-	fi
-	@cd $(SELECTED_PROJECT)/tests/integration && npm test
+	@cd $(SELECTED_PROJECT)/tests/integration && python3 test_bluetooth.py
 
 test-integration-install:
 	@echo "Installing integration test dependencies..."
-	@if [ "$$(uname)" = "Darwin" ]; then \
-		echo "⚠️  Integration tests not supported on macOS"; \
-		echo "   The bluetooth-serial-port npm package does not support macOS."; \
-		echo "   Skipping installation."; \
-		echo ""; \
-		echo "   For testing on macOS, use:"; \
-		echo "   - Linux VM or Docker container"; \
-		echo "   - Bluetooth serial terminal app"; \
-		echo "   - Android app (robot-spider-control)"; \
-	else \
-		cd $(SELECTED_PROJECT)/tests/integration && npm install; \
-	fi
+	@echo "Installing PyBluez and dependencies..."
+	@pip3 install -r $(SELECTED_PROJECT)/tests/integration/requirements.txt

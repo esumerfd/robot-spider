@@ -1,0 +1,6 @@
+# Bluetooth Classic (SPP) support
+pybluez==0.23
+
+# For better cross-platform compatibility
+# Note: pybluez may require platform-specific Bluetooth libraries
+# See README.md for installation instructions

@@ -42,22 +42,24 @@ See [unit/README.md](unit/README.md) for details.
 
 ### Integration Tests (`integration/`)
 
-**Technology:** Node.js/JavaScript
+**Technology:** Python + PyBluez
 **Purpose:** Test Bluetooth communication with real hardware
-**Dependencies:** bluetooth-serial-port npm package
+**Dependencies:** PyBluez (Bluetooth Classic/SPP support)
 **Environment:** Development machine + powered RobotSpider
 
 Tests verify:
 - Bluetooth device discovery
-- SPP connection establishment
+- SPP service discovery
+- Connection establishment
+- Connection stability
 - Command transmission (future)
-- Message protocol (future)
+- Response validation (future)
 
 **Quick Start:**
 ```bash
 cd integration/
-npm install
-npm test
+pip3 install -r requirements.txt
+python3 test_bluetooth.py
 ```
 
 See [integration/README.md](integration/README.md) for details.
