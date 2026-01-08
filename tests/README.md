@@ -110,7 +110,7 @@ npm run test:all
 ## Adding New Tests
 
 **For C++ component testing:**
-- Add to `tests/robot-tests/`
+- Add to `tests/unit/`
 - Follow existing test structure
 - Use mock objects for dependencies
 

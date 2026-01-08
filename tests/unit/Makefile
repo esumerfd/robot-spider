@@ -18,13 +18,13 @@ init:
 build:
 	@arduino-cli compile --build-path $(GEN) --fqbn $(FQBN) \
 		--libraries $(LIB) \
-		robot-tests.ino
+		unit.ino
 
 upload:
 ifeq ($(SELECTED_SERIAL_PORT),notset)
 	@echo "Pass in serial port: SERIAL_PORT=xxx make upload"
 else
-	@arduino-cli upload --build-path $(GEN) --port $(SELECTED_SERIAL_PORT) --fqbn $(FQBN) robot-tests.ino
+	@arduino-cli upload --build-path $(GEN) --port $(SELECTED_SERIAL_PORT) --fqbn $(FQBN) unit.ino
 endif
 
 monitor:

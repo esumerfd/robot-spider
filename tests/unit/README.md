@@ -9,10 +9,10 @@ These tests verify individual components of the hexapod robot in isolation using
 ## Structure
 
 ```
-tests/robot-tests/
+tests/unit/
 ├── README.md           # This file
 ├── Makefile           # Build configuration for unit tests
-├── robot-tests.ino    # Arduino sketch wrapper for tests
+├── unit.ino           # Arduino sketch wrapper for tests
 ├── main.cpp           # Test runner entry point
 ├── joint_test.h       # Joint movement and timing tests
 └── mock_servo.h       # Mock Servo class for testing
@@ -22,7 +22,7 @@ tests/robot-tests/
 
 ### Arduino IDE
 
-1. Open `robot-tests.ino` in Arduino IDE
+1. Open `unit.ino` in Arduino IDE
 2. Select your board (tests run on any board)
 3. Upload and run
 4. Open Serial Monitor to view test results
@@ -30,7 +30,7 @@ tests/robot-tests/
 ### Command Line (Make)
 
 ```bash
-cd tests/robot-tests
+cd tests/unit
 make
 ```
 

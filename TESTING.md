@@ -19,14 +19,14 @@ make test
 
 ### Unit Tests (C++)
 
-**Location:** `tests/robot-tests/`
+**Location:** `tests/unit/`
 **Technology:** C++ with Arduino framework
 **Purpose:** Test component logic in isolation
 
 **Make Targets:**
 ```bash
 make test-unit                    # Build unit tests (compile only)
-cd tests/robot-tests && make run  # Build, upload to board, and monitor results
+cd tests/unit && make run  # Build, upload to board, and monitor results
 ```
 
 **Requirements:**
@@ -80,7 +80,7 @@ npm test
 | `make test-integration` | Run Bluetooth integration tests |
 | `make test-integration-install` | Install integration test dependencies |
 
-### Unit Test Makefile (`tests/robot-tests/Makefile`)
+### Unit Test Makefile (`tests/unit/Makefile`)
 
 | Target | Description |
 |--------|-------------|
@@ -91,7 +91,7 @@ npm test
 
 **Running on hardware:**
 ```bash
-cd tests/robot-tests
+cd tests/unit
 SERIAL_PORT=/dev/cu.usbserial-0001 make run
 ```
 
@@ -136,7 +136,7 @@ jobs:
 
 ### Adding Unit Tests
 
-1. Create test file in `tests/robot-tests/`
+1. Create test file in `tests/unit/`
 2. Include `unit_test.h` framework
 3. Write test cases with `TEST()` macro
 4. Add to `main.cpp` if needed
@@ -187,7 +187,7 @@ jobs:
 ## Related Documentation
 
 - **tests/README.md** - Test organization overview
-- **tests/robot-tests/README.md** - Unit test details
+- **tests/unit/README.md** - Unit test details
 - **tests/integration/README.md** - Integration test details with troubleshooting
 - **ADR 003** - Bluetooth Communication Architecture
 - **Main README.md** - Project setup and build instructions

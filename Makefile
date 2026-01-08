@@ -61,7 +61,7 @@ test: test-unit test-integration
 
 test-unit:
 	@echo "Running C++ unit tests..."
-	@cd $(SELECTED_PROJECT)/tests/robot-tests && make test
+	@cd $(SELECTED_PROJECT)/tests/unit && make test
 
 test-integration:
 	@echo "Running Bluetooth integration tests..."
