@@ -57,5 +57,16 @@ clean:
 	@cd $(SELECTED_PROJECT) \
 		&& rm -rf gen/*
 
-test:
-	@cd $(SELECTED_PROJECT)/tests && make test
+test: test-unit test-integration
+
+test-unit:
+	@echo "Running C++ unit tests..."
+	@cd $(SELECTED_PROJECT)/tests/robot-tests && make test
+
+test-integration:
+	@echo "Running Bluetooth integration tests..."
+	@cd $(SELECTED_PROJECT)/tests/integration && npm test
+
+test-integration-install:
+	@echo "Installing integration test dependencies..."
+	@cd $(SELECTED_PROJECT)/tests/integration && npm install
