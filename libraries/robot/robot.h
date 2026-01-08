@@ -5,6 +5,8 @@
 #include <board.h>
 #include <body.h>
 #include <one_sweep_sequence.h>
+#include <command_router.h>
+#include <bluetooth_connection.h>
 
 class Robot {
   private:
@@ -13,9 +15,28 @@ class Robot {
     Body _body;
     OneSweepSequence _sweep;
 
+    // Communication components
+    CommandRouter _commandRouter;
+    BluetoothConnection _bluetooth;
+
     uint32_t _lastUpdateMs;
     uint32_t _lastHeapCheckMs;
     bool _firstLoop;
+
+    // Command state
+    bool _isMoving;
+    String _currentCommand;
+
+    // Command handlers
+    void handleInitCommand();
+    void handleForwardCommand();
+    void handleBackwardCommand();
+    void handleLeftCommand();
+    void handleRightCommand();
+    void handleStopCommand();
+
+    // Communication setup
+    void setupCommands();
 
   public:
     Robot();
