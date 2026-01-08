@@ -1,0 +1,24 @@
+{
+  "name": "robot-spider-bluetooth-integration-tests",
+  "version": "1.0.0",
+  "description": "Bluetooth integration tests for RobotSpider hexapod",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "node index.js",
+    "pair": "node index.js --pair",
+    "send": "node index.js --send"
+  },
+  "keywords": [
+    "bluetooth",
+    "esp32",
+    "hexapod",
+    "robot",
+    "integration-test"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "bluetooth-serial-port": "^2.2.8"
+  }
+}
