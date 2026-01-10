@@ -100,6 +100,7 @@ class BluetoothConnection {
     String _deviceName;
     String _messageBuffer;
     bool _initialized;
+    bool _wasConnected; // Track connection state changes
 
     static const size_t MAX_MESSAGE_LENGTH = 256;
 
@@ -107,6 +108,11 @@ class BluetoothConnection {
      * Process accumulated buffer and extract complete messages
      */
     void processBuffer();
+
+    /**
+     * Check and log connection state changes
+     */
+    void checkConnectionState();
 };
 
 #endif

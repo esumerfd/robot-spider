@@ -6,7 +6,8 @@ BluetoothConnection::BluetoothConnection()
     _messageCallback(nullptr),
     _deviceName(""),
     _messageBuffer(""),
-    _initialized(false) {
+    _initialized(false),
+    _wasConnected(false) {
 }
 
 bool BluetoothConnection::begin(const String& deviceName) {
@@ -61,6 +62,9 @@ void BluetoothConnection::update() {
   if (!_initialized) {
     return;
   }
+
+  // Check for connection state changes and log them
+  checkConnectionState();
 
   // Read all available data
   while (_serialBT.available()) {
@@ -134,4 +138,19 @@ void BluetoothConnection::processBuffer() {
 
   // Clear buffer for next message
   _messageBuffer = "";
+}
+
+void BluetoothConnection::checkConnectionState() {
+  bool currentlyConnected = isConnected();
+
+  // Detect connection state change
+  if (currentlyConnected && !_wasConnected) {
+    Log::println("BluetoothConnection: Client connected");
+    _wasConnected = true;
+  } else if (!currentlyConnected && _wasConnected) {
+    Log::println("BluetoothConnection: Client disconnected");
+    _wasConnected = false;
+    // Clear any partial message on disconnect
+    _messageBuffer = "";
+  }
 }
