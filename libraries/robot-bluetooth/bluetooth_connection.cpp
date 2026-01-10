@@ -81,6 +81,7 @@ void BluetoothConnection::update() {
     }
 
     // Check for complete message (newline terminated)
+    Log::println("BluetoothConnection: Read char '%c'", c);
     if (c == '\n' || c == '\r') {
       processBuffer();
     }
