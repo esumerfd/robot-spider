@@ -3,8 +3,7 @@
 
 RightGait::RightGait() : _movingToMax(true) {
   // Calculate speed for 2-second sweep
-  uint16_t range = _board.servoMax() - _board.servoMin();
-  _speed = range / 2;  // Range / 2 seconds = units per second
+  _speed = _board.servoRange() / 2;  // Range / 2 seconds = units per second
 }
 
 void RightGait::applyTo(LeftFrontLeg& leg) {
