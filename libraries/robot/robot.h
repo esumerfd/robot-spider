@@ -7,6 +7,7 @@
 #include <one_sweep_sequence.h>
 #include <command_router.h>
 #include <bluetooth_connection.h>
+#include <profiler.h>
 
 class Robot {
   private:
@@ -19,8 +20,10 @@ class Robot {
     CommandRouter _commandRouter;
     BluetoothConnection _bluetooth;
 
+    // Diagnostics
+    Profiler _profiler;
+
     uint32_t _lastUpdateMs;
-    uint32_t _lastHeapCheckMs;
     bool _firstLoop;
 
     // Command state

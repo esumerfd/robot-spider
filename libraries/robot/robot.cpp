@@ -10,8 +10,8 @@ Robot::Robot()
     _sweep(),
     _commandRouter(),
     _bluetooth(),
+    _profiler(false), // Profiling disabled by default
     _lastUpdateMs(0),
-    _lastHeapCheckMs(0),
     _firstLoop(true),
     _isMoving(false),
     _currentCommand("") {
@@ -70,11 +70,8 @@ void Robot::loop() {
   uint32_t deltaMs = currentMs - _lastUpdateMs;
   _lastUpdateMs = currentMs;
 
-  // Periodic heap monitoring (every 5 seconds)
-  if (currentMs - _lastHeapCheckMs >= 5000) {
-    Log::println("Heap: %d bytes (min: %d)", ESP.getFreeHeap(), ESP.getMinFreeHeap());
-    _lastHeapCheckMs = currentMs;
-  }
+  // Periodic diagnostics (if enabled)
+  _profiler.update(currentMs);
 
   _flasher.flash(currentMs);
 
