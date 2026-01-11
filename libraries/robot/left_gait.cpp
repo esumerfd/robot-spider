@@ -2,8 +2,7 @@
 #include <logging.h>
 
 LeftGait::LeftGait() : _movingToMax(true) {
-  // Calculate speed for 2-second sweep
-  _speed = _board.servoRange() / 2;  // Range / 2 seconds = units per second
+  _speed = _board.servoSpeed();
 }
 
 void LeftGait::applyTo(LeftFrontLeg& leg) {

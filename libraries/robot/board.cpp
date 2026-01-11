@@ -23,6 +23,10 @@ uint16_t Board::servoRange() {
   return SERVOMAX - SERVOMIN;
 }
 
+uint16_t Board::servoSpeed() {
+  return servoRange() / 2;  // Speed for 2-second sweep
+}
+
 uint16_t Board::servoMiddle() {
   return SERVOMIN + servoRange() / 2;
 }

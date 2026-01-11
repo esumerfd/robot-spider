@@ -19,6 +19,7 @@ class Board {
     uint16_t servoMin();
     uint16_t servoMax();
     uint16_t servoRange();
+    uint16_t servoSpeed();
     uint16_t servoMiddle();
 };
 
