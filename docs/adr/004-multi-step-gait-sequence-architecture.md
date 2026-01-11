@@ -291,29 +291,22 @@ class Robot {
     LeftGait _leftGait;
     RightGait _rightGait;
 
-    // New multi-step gaits (for real walking)
-    MultiStepGait _walkForwardGait;   // Uses FORWARD_WALK_SEQUENCE
-
-    // State tracking
-    bool _usingMultiStepGait;         // Which gait system is active
+    // Future: Multi-step gaits can be added alongside
+    // MultiStepGait _walkForwardGait;   // Uses FORWARD_WALK_SEQUENCE
 
   public:
-    Robot() :
-      _walkForwardGait(&FORWARD_WALK_SEQUENCE),
-      _usingMultiStepGait(false)
-    {}
-
     void handleForwardCommand() {
-      if (_usingMultiStepGait) {
-        _body.applyGait(_walkForwardGait);
-      } else {
-        _body.applyGait(_forwardGait);  // Simple oscillation
-      }
+      _body.applyGait(_forwardGait);
     }
 
-    void setMultiStepMode(bool enabled) {
-      _usingMultiStepGait = enabled;
+    void handleBackwardCommand() {
+      _body.applyGait(_backwardGait);
     }
+
+    // In future, commands can be mapped to multi-step gaits:
+    // void handleWalkForwardCommand() {
+    //   _body.applyGait(_walkForwardGait);
+    // }
 };
 ```
 
@@ -395,16 +388,17 @@ class Robot {
 
    **Note**: The visitor pattern forces per-leg method calls, but multi-step sequences need to coordinate across multiple legs. The solution is to do the actual work in a separate `applyCurrentStep(Body&)` method that `Body::applyGait()` can call, or to store references during the first `applyTo()` call and execute on the last one.
 
-### Phase 2: Robot Integration (Initial Scope)
+### Phase 2: Robot Integration (Future Work)
 
 **Files to Modify:**
 - `libraries/robot/robot.h` - Add `#include <multi_step_gait.h>`, add member `_walkForwardGait`
-- `libraries/robot/robot.cpp` - Initialize multi-step gait, optionally use in command handlers
+- `libraries/robot/robot.cpp` - Initialize multi-step gait, add new command handler (e.g., `handleWalkCommand()`)
 
 **Testing Strategy:**
-1. Keep existing simple gaits active by default
-2. Add serial command to toggle multi-step mode: `"multistep on"` / `"multistep off"`
-3. Test body-lift sequence in isolation before adding more steps
+1. Implement MultiStepGait class and FORWARD_WALK_SEQUENCE definition
+2. Create standalone test to verify body-lift sequence
+3. When ready, add new command (e.g., "walk") that uses multi-step gait
+4. Existing directional commands (forward/backward/left/right) continue using simple gaits
 
 ### Phase 3: Future Extensibility (Out of Scope)
 
