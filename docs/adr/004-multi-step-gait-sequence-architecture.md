@@ -172,26 +172,78 @@ class GaitSequence {
 
 **Decision**: ❌ Rejected - adds complexity without clear benefit
 
+### Data Structure Organization
+
+#### Option 1: Flat Array with Leg/Joint Indices
+**Approach**: Array of `JointDelta` structs with `legIndex` and `jointType` fields.
+
+**Example**: `{legIndex: 0, jointType: 1, delta: -50, duration: 1000}`
+
+**Cons**:
+- Requires centralized loop over all deltas
+- Forces leg coupling - all movements processed together
+- Bypasses visitor pattern - `applyTo()` methods become stubs
+- Breaks abstraction - accessing legs by index instead of type
+- Incompatible with sequence generators that produce per-leg data
+- Hardware coupling through index-based access
+
+**Decision**: ❌ Rejected - couples legs together, breaks visitor pattern
+
+#### Option 2: Per-Leg Named Fields
+**Approach**: `GaitStep` has explicit named fields for each leg (`leftFront`, `leftMiddle`, etc.)
+
+**Example**:
+```cpp
+struct GaitStep {
+  LegMovement leftFront;
+  LegMovement leftMiddle;
+  // ... other legs
+};
+```
+
+**Pros**:
+- ✅ Preserves visitor pattern - each `applyTo()` stands alone
+- ✅ No leg coupling - each method is independent
+- ✅ Hardware agnostic - no index-based access
+- ✅ Sequence generators naturally produce per-leg data
+- ✅ Type-safe - named fields are explicit
+- ✅ Dynamic dispatch preserved - `Body` orchestrates calls
+
+**Cons**:
+- Uses memory for all 6 legs even if only 1 moves (acceptable tradeoff)
+
+**Decision**: ✅ **Selected** - preserves abstraction and enables future sequence generators
+
 ## Decision
 
-**We will implement a `MultiStepGait` class that extends the existing `GaitSequence` interface and uses hardcoded C++ data structures to define multi-step sequences with relative position deltas.**
+**We will implement a `MultiStepGait` class that extends the existing `GaitSequence` interface and uses hardcoded C++ data structures with per-leg organization to define multi-step sequences with relative position deltas.**
+
+**Key architectural principles:**
+- Preserve visitor pattern - each `applyTo()` method stands alone
+- Avoid leg coupling - no centralized loops over hardware indices
+- Enable sequence generators - data structure matches how generators will produce movements
+- Hardware agnostic - named fields instead of index-based access
 
 ### Core Data Structures
 
 ```cpp
-// Represents a single joint movement within a step
-struct JointDelta {
-  uint8_t legIndex;    // 0-5: LF, LM, LR, RF, RM, RR
-  uint8_t jointType;   // 0=shoulder, 1=knee
-  int16_t delta;       // Relative position change (negative=clockwise, positive=counter-clockwise)
-  uint16_t duration;   // Time to complete movement in milliseconds
+// Represents movement for a single leg's joints
+struct LegMovement {
+  int16_t shoulderDelta;  // Relative position change for shoulder (0 = no movement)
+  int16_t kneeDelta;      // Relative position change for knee (0 = no movement)
+  uint16_t duration;      // Time to complete movement in milliseconds
 };
 
 // Represents one step in a multi-step sequence
+// Each leg has explicit named field - no index coupling
 struct GaitStep {
   const char* name;              // Human-readable description
-  const JointDelta* deltas;      // Array of joint movements in this step
-  uint8_t deltaCount;            // Number of elements in deltas array
+  LegMovement leftFront;         // Left Front leg movement
+  LegMovement leftMiddle;        // Left Middle leg movement
+  LegMovement leftRear;          // Left Rear leg movement
+  LegMovement rightFront;        // Right Front leg movement
+  LegMovement rightMiddle;       // Right Middle leg movement
+  LegMovement rightRear;         // Right Rear leg movement
   bool waitForCompletion;        // If true, wait for all joints to reach target before advancing
 };
 
@@ -214,19 +266,16 @@ class MultiStepGait : public GaitSequence {
     uint8_t _currentStepIndex;
     bool _stepInProgress;
 
-    // Apply current step's deltas to all joints
-    void applyCurrentStep(Body& body);
+    // Helper to apply movement to a leg's joints
+    void applyLegMovement(Leg& leg, const LegMovement& movement);
 
-    // Get leg by index (0-5)
-    Leg* getLeg(Body& body, uint8_t legIndex);
-
-    // Get joint from leg by type
-    Joint* getJoint(Leg* leg, uint8_t jointType);
+    // Helper to apply a delta to a single joint
+    void applyDelta(Joint& joint, int16_t delta, uint16_t duration);
 
   public:
     MultiStepGait(const GaitSequenceData* data);
 
-    // GaitSequence interface - applies current step
+    // GaitSequence interface - each method handles its specific leg independently
     void applyTo(LeftFrontLeg& leg) override;
     void applyTo(LeftMiddleLeg& leg) override;
     void applyTo(LeftRearLeg& leg) override;
@@ -250,26 +299,24 @@ This example defines the initial movement for forward walking - lifting the body
 
 ```cpp
 // Step 1: Lift body by extending 3 knees
-// - Left Front knee (leg 0, joint 1): rotate clockwise (-50)
-// - Middle Right knee (leg 4, joint 1): rotate counter-clockwise (+50)
-// - Left Rear knee (leg 2, joint 1): rotate clockwise (-50)
-const JointDelta BODY_LIFT_DELTAS[] = {
-  {0, 1, -50, 1000},  // LF knee: -50 units over 1 second
-  {4, 1, +50, 1000},  // MR knee: +50 units over 1 second
-  {2, 1, -50, 1000},  // LR knee: -50 units over 1 second
-};
-
+// - Left Front knee: rotate clockwise (-50)
+// - Right Middle knee: rotate counter-clockwise (+50)
+// - Left Rear knee: rotate clockwise (-50)
 const GaitStep FORWARD_WALK_STEPS[] = {
   {
     "Lift body",           // Step name
-    BODY_LIFT_DELTAS,      // Joint movements
-    3,                     // Number of joints involved
+    {0, -50, 1000},        // Left Front: knee -50 over 1 second
+    {0,   0,    0},        // Left Middle: no movement
+    {0, -50, 1000},        // Left Rear: knee -50 over 1 second
+    {0,   0,    0},        // Right Front: no movement
+    {0, +50, 1000},        // Right Middle: knee +50 over 1 second
+    {0,   0,    0},        // Right Rear: no movement
     true                   // Wait for all joints to complete
   },
   // Future steps would go here:
-  // - Swing opposite legs forward
-  // - Lower body
-  // - Shift body forward
+  // - Swing opposite legs forward (shoulders)
+  // - Lower body (same knees return to neutral)
+  // - Shift body forward (all shoulders move)
 };
 
 const GaitSequenceData FORWARD_WALK_SEQUENCE = {
@@ -321,44 +368,69 @@ class Robot {
 
 **Key Implementation Details:**
 
-1. **Relative Delta Application:**
+1. **Visitor Pattern - Per-Leg Application:**
+   Each `applyTo()` method stands alone and handles only its specific leg:
    ```cpp
-   void MultiStepGait::applyCurrentStep(Body& body) {
+   void MultiStepGait::applyTo(LeftFrontLeg& leg) {
      const GaitStep& step = _sequenceData->steps[_currentStepIndex];
+     applyLegMovement(leg, step.leftFront);  // Only handles LeftFront
+   }
 
-     for (uint8_t i = 0; i < step.deltaCount; i++) {
-       const JointDelta& delta = step.deltas[i];
+   void MultiStepGait::applyTo(LeftMiddleLeg& leg) {
+     const GaitStep& step = _sequenceData->steps[_currentStepIndex];
+     applyLegMovement(leg, step.leftMiddle);  // Only handles LeftMiddle
+   }
 
-       Leg* leg = getLeg(body, delta.legIndex);
-       Joint* joint = getJoint(leg, delta.jointType);
+   void MultiStepGait::applyTo(RightMiddleLeg& leg) {
+     const GaitStep& step = _sequenceData->steps[_currentStepIndex];
+     applyLegMovement(leg, step.rightMiddle);  // Only handles RightMiddle
+   }
 
-       // Calculate new target as current position + delta
-       uint16_t currentPos = joint->getCurrentPos();
-       int32_t newTarget = currentPos + delta.delta;
+   // ... similar for other legs
+   ```
 
-       // Clamp to safe servo range
-       const uint16_t safeMin = _board.servoMin() + 5;
-       const uint16_t safeMax = _board.servoMax() - 5;
-       newTarget = constrain(newTarget, safeMin, safeMax);
+   **Key Point**: Each method is independent. `Body::applyGait()` orchestrates the visitor calls. No leg coupling occurs.
 
-       // Calculate speed from distance and duration
-       uint16_t distance = abs(delta.delta);
-       uint16_t speed = (distance * 1000) / delta.duration;  // units per second
-
-       joint->setTarget(newTarget, speed);
+2. **Leg Movement Helper:**
+   Shared helper applies movement to a leg's joints:
+   ```cpp
+   void MultiStepGait::applyLegMovement(Leg& leg, const LegMovement& movement) {
+     if (movement.shoulderDelta != 0) {
+       applyDelta(leg.shoulder(), movement.shoulderDelta, movement.duration);
      }
-
-     _stepInProgress = true;
+     if (movement.kneeDelta != 0) {
+       applyDelta(leg.knee(), movement.kneeDelta, movement.duration);
+     }
    }
    ```
 
-2. **Step Advancement:**
+3. **Delta Application:**
+   Applies relative position change to a joint:
+   ```cpp
+   void MultiStepGait::applyDelta(Joint& joint, int16_t delta, uint16_t duration) {
+     // Calculate new target as current position + delta
+     uint16_t currentPos = joint.getCurrentPos();
+     int32_t newTarget = currentPos + delta;
+
+     // Clamp to safe servo range
+     const uint16_t safeMin = _board.servoMin() + 5;
+     const uint16_t safeMax = _board.servoMax() - 5;
+     newTarget = constrain(newTarget, safeMin, safeMax);
+
+     // Calculate speed from distance and duration
+     uint16_t distance = abs(delta);
+     uint16_t speed = (distance * 1000) / duration;  // units per second
+
+     joint.setTarget(newTarget, speed);
+   }
+   ```
+
+4. **Step Advancement:**
    ```cpp
    void MultiStepGait::advance() {
      // Check if current step is complete
      if (_stepInProgress && _sequenceData->steps[_currentStepIndex].waitForCompletion) {
        // Caller should check body.atTarget() before calling advance()
-       // This is just a safety check
        return;
      }
 
@@ -376,17 +448,6 @@ class Robot {
      _stepInProgress = false;
    }
    ```
-
-3. **Visitor Pattern Integration:**
-   ```cpp
-   void MultiStepGait::applyTo(LeftFrontLeg& leg) {
-     // The actual work is done in applyCurrentStep() which operates on Body
-     // These methods exist to satisfy the GaitSequence interface
-     // They're effectively no-ops since we need access to all legs simultaneously
-   }
-   ```
-
-   **Note**: The visitor pattern forces per-leg method calls, but multi-step sequences need to coordinate across multiple legs. The solution is to do the actual work in a separate `applyCurrentStep(Body&)` method that `Body::applyGait()` can call, or to store references during the first `applyTo()` call and execute on the last one.
 
 ### Phase 2: Robot Integration (Future Work)
 
@@ -407,17 +468,28 @@ class Robot {
 1. **Complete Walking Sequence**: Expand `FORWARD_WALK_SEQUENCE` with additional steps
    ```cpp
    const GaitStep FORWARD_WALK_STEPS[] = {
-     {"Lift body", BODY_LIFT_DELTAS, 3, true},
-     {"Swing legs forward", LEG_SWING_DELTAS, 3, true},
-     {"Lower body", BODY_LOWER_DELTAS, 3, true},
-     {"Shift body forward", BODY_SHIFT_DELTAS, 6, true},
+     {"Lift body",      {0, -50, 1000}, {0, 0, 0}, {0, -50, 1000}, {0, 0, 0}, {0, +50, 1000}, {0, 0, 0}, true},
+     {"Swing legs",     {0, 0, 0}, {+30, 0, 800}, {0, 0, 0}, {+30, 0, 800}, {0, 0, 0}, {+30, 0, 800}, true},
+     {"Lower body",     {0, +50, 1000}, {0, 0, 0}, {0, +50, 1000}, {0, 0, 0}, {0, -50, 1000}, {0, 0, 0}, true},
+     {"Shift forward",  {-20, 0, 1000}, {-20, 0, 1000}, {-20, 0, 1000}, {-20, 0, 1000}, {-20, 0, 1000}, {-20, 0, 1000}, true},
    };
    ```
 
-2. **Parametric Sequences**: Generate sequences programmatically
+2. **Sequence Generators**: Create sequences programmatically
    ```cpp
-   GaitSequenceData* createForwardWalk(uint16_t stepLength, uint16_t speed);
+   class SequenceGenerator {
+     virtual GaitSequenceData* generate() = 0;
+   };
+
+   class ForwardWalkGenerator : public SequenceGenerator {
+     GaitSequenceData* generate(uint16_t stepLength, uint16_t speed) {
+       // Calculates per-leg LegMovement data based on parameters
+       // Returns dynamically allocated GaitSequenceData
+     }
+   };
    ```
+
+   **Key Point**: Generators naturally produce per-leg data, which MultiStepGait dispatches through visitor pattern
 
 3. **Inverse Kinematics**: Calculate joint deltas from desired body movement
    ```cpp
@@ -451,6 +523,12 @@ class Robot {
 
 ✅ **Testable**: Can test individual steps in isolation
 
+✅ **Visitor Pattern Preserved**: Each `applyTo()` method stands alone - no leg coupling
+
+✅ **Hardware Agnostic**: Per-leg data structure doesn't couple to specific hardware configuration
+
+✅ **Generator Friendly**: Sequence generators naturally produce per-leg movements
+
 ### Negative
 
 ⚠️ **Compilation Required**: Changing sequences requires recompile and re-upload
@@ -461,7 +539,7 @@ class Robot {
 
 ⚠️ **Learning Curve**: Developers need to understand step/delta/sequence concepts
 
-⚠️ **Visitor Pattern Mismatch**: GaitSequence interface designed for single-step, not multi-step (workaround required)
+⚠️ **Data Structure Size**: LegMovement for all 6 legs even if only 1 moves (could optimize with bitfields if memory constrained)
 
 ### Neutral
 
