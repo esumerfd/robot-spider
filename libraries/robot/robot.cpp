@@ -8,6 +8,10 @@ Robot::Robot()
     _board(),
     _body(_board),
     _sweep(),
+    _forwardGait(),
+    _backwardGait(),
+    _leftGait(),
+    _rightGait(),
     _commandRouter(),
     _bluetooth(),
     _profiler(false), // Profiling disabled by default
@@ -84,10 +88,24 @@ void Robot::loop() {
   if (_isMoving) {
     _body.update(deltaMs);
 
-    // For sweep test: when target is reached, toggle direction and reapply
-    if (_currentCommand == "sweep" && _body.atTarget()) {
-      _sweep.toggleDirection();
-      _body.applyGait(_sweep);
+    // When target is reached, toggle direction and reapply for oscillating gaits
+    if (_body.atTarget()) {
+      if (_currentCommand == "sweep") {
+        _sweep.toggleDirection();
+        _body.applyGait(_sweep);
+      } else if (_currentCommand == "forward") {
+        _forwardGait.toggleDirection();
+        _body.applyGait(_forwardGait);
+      } else if (_currentCommand == "backward") {
+        _backwardGait.toggleDirection();
+        _body.applyGait(_backwardGait);
+      } else if (_currentCommand == "left") {
+        _leftGait.toggleDirection();
+        _body.applyGait(_leftGait);
+      } else if (_currentCommand == "right") {
+        _rightGait.toggleDirection();
+        _body.applyGait(_rightGait);
+      }
     }
   }
 
@@ -126,9 +144,7 @@ void Robot::handleForwardCommand() {
   _currentCommand = "forward";
   _isMoving = true;
 
-  // TODO: Apply forward walking gait when implemented
-  // For now, use the sweep sequence as a demonstration
-  _body.applyGait(_sweep);
+  _body.applyGait(_forwardGait);
 
   _bluetooth.send("OK: Moving forward");
 }
@@ -138,9 +154,7 @@ void Robot::handleBackwardCommand() {
   _currentCommand = "backward";
   _isMoving = true;
 
-  // TODO: Apply backward walking gait when implemented
-  // For now, use the sweep sequence as a demonstration
-  _body.applyGait(_sweep);
+  _body.applyGait(_backwardGait);
 
   _bluetooth.send("OK: Moving backward");
 }
@@ -150,9 +164,7 @@ void Robot::handleLeftCommand() {
   _currentCommand = "left";
   _isMoving = true;
 
-  // TODO: Apply left turn gait when implemented
-  // For now, use the sweep sequence as a demonstration
-  _body.applyGait(_sweep);
+  _body.applyGait(_leftGait);
 
   _bluetooth.send("OK: Turning left");
 }
@@ -162,9 +174,7 @@ void Robot::handleRightCommand() {
   _currentCommand = "right";
   _isMoving = true;
 
-  // TODO: Apply right turn gait when implemented
-  // For now, use the sweep sequence as a demonstration
-  _body.applyGait(_sweep);
+  _body.applyGait(_rightGait);
 
   _bluetooth.send("OK: Turning right");
 }
