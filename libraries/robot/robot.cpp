@@ -8,10 +8,10 @@ Robot::Robot()
     _board(),
     _body(_board),
     _sweep(),
-    _forwardGait(),
-    _backwardGait(),
-    _leftGait(),
-    _rightGait(),
+    _forwardGait(&FORWARD_SEQUENCE),
+    _backwardGait(&BACKWARD_SEQUENCE),
+    _leftGait(&LEFT_SEQUENCE),
+    _rightGait(&RIGHT_SEQUENCE),
     _commandRouter(),
     _bluetooth(),
     _profiler(false), // Profiling disabled by default
@@ -88,22 +88,22 @@ void Robot::loop() {
   if (_isMoving) {
     _body.update(deltaMs);
 
-    // When target is reached, toggle direction and reapply for oscillating gaits
+    // When target is reached, advance to next step and reapply gait
     if (_body.atTarget()) {
       if (_currentCommand == "sweep") {
         _sweep.toggleDirection();
         _body.applyGait(_sweep);
       } else if (_currentCommand == "forward") {
-        _forwardGait.toggleDirection();
+        _forwardGait.advance();
         _body.applyGait(_forwardGait);
       } else if (_currentCommand == "backward") {
-        _backwardGait.toggleDirection();
+        _backwardGait.advance();
         _body.applyGait(_backwardGait);
       } else if (_currentCommand == "left") {
-        _leftGait.toggleDirection();
+        _leftGait.advance();
         _body.applyGait(_leftGait);
       } else if (_currentCommand == "right") {
-        _rightGait.toggleDirection();
+        _rightGait.advance();
         _body.applyGait(_rightGait);
       }
     }

@@ -34,4 +34,132 @@ const GaitSequenceData FORWARD_WALK_SEQUENCE = {
   false                    // Don't loop (for now)
 };
 
+// Forward Sequence (servo testing)
+// Oscillates Left Front shoulder (servo 0)
+const GaitStep FORWARD_STEPS[] = {
+  {
+    "Forward move",
+    {200, 0, 2000},     // Left Front shoulder: +200 over 2 seconds
+    {0, 0, 0},          // Left Middle: no movement
+    {0, 0, 0},          // Left Rear: no movement
+    {0, 0, 0},          // Right Front: no movement
+    {0, 0, 0},          // Right Middle: no movement
+    {0, 0, 0},          // Right Rear: no movement
+    true
+  },
+  {
+    "Forward return",
+    {-200, 0, 2000},    // Left Front shoulder: -200 over 2 seconds
+    {0, 0, 0},
+    {0, 0, 0},
+    {0, 0, 0},
+    {0, 0, 0},
+    {0, 0, 0},
+    true
+  }
+};
+
+const GaitSequenceData FORWARD_SEQUENCE = {
+  "Forward",
+  FORWARD_STEPS,
+  2,
+  true                    // Loop
+};
+
+// Backward Sequence (servo testing)
+// Oscillates Left Front knee (servo 1)
+const GaitStep BACKWARD_STEPS[] = {
+  {
+    "Backward move",
+    {0, 200, 2000},     // Left Front knee: +200 over 2 seconds
+    {0, 0, 0},
+    {0, 0, 0},
+    {0, 0, 0},
+    {0, 0, 0},
+    {0, 0, 0},
+    true
+  },
+  {
+    "Backward return",
+    {0, -200, 2000},    // Left Front knee: -200 over 2 seconds
+    {0, 0, 0},
+    {0, 0, 0},
+    {0, 0, 0},
+    {0, 0, 0},
+    {0, 0, 0},
+    true
+  }
+};
+
+const GaitSequenceData BACKWARD_SEQUENCE = {
+  "Backward",
+  BACKWARD_STEPS,
+  2,
+  true                    // Loop
+};
+
+// Left Sequence (servo testing)
+// Oscillates Left Middle shoulder (servo 2)
+const GaitStep LEFT_STEPS[] = {
+  {
+    "Left move",
+    {0, 0, 0},
+    {200, 0, 2000},     // Left Middle shoulder: +200 over 2 seconds
+    {0, 0, 0},
+    {0, 0, 0},
+    {0, 0, 0},
+    {0, 0, 0},
+    true
+  },
+  {
+    "Left return",
+    {0, 0, 0},
+    {-200, 0, 2000},    // Left Middle shoulder: -200 over 2 seconds
+    {0, 0, 0},
+    {0, 0, 0},
+    {0, 0, 0},
+    {0, 0, 0},
+    true
+  }
+};
+
+const GaitSequenceData LEFT_SEQUENCE = {
+  "Left",
+  LEFT_STEPS,
+  2,
+  true                    // Loop
+};
+
+// Right Sequence (servo testing)
+// Oscillates Left Middle knee (servo 3)
+const GaitStep RIGHT_STEPS[] = {
+  {
+    "Right move",
+    {0, 0, 0},
+    {0, 200, 2000},     // Left Middle knee: +200 over 2 seconds
+    {0, 0, 0},
+    {0, 0, 0},
+    {0, 0, 0},
+    {0, 0, 0},
+    true
+  },
+  {
+    "Right return",
+    {0, 0, 0},
+    {0, -200, 2000},    // Left Middle knee: -200 over 2 seconds
+    {0, 0, 0},
+    {0, 0, 0},
+    {0, 0, 0},
+    {0, 0, 0},
+    true
+  }
+};
+
+const GaitSequenceData RIGHT_SEQUENCE = {
+  "Right",
+  RIGHT_STEPS,
+  2,
+  true                    // Loop
+};
+
 #endif

@@ -5,10 +5,8 @@
 #include <board.h>
 #include <body.h>
 #include <one_sweep_sequence.h>
-#include <forward_gait.h>
-#include <backward_gait.h>
-#include <left_gait.h>
-#include <right_gait.h>
+#include <multi_step_gait.h>
+#include <gait_sequences.h>
 #include <command_router.h>
 #include <bluetooth_connection.h>
 #include <profiler.h>
@@ -19,10 +17,10 @@ class Robot {
     Board _board;
     Body _body;
     OneSweepSequence _sweep;
-    ForwardGait _forwardGait;
-    BackwardGait _backwardGait;
-    LeftGait _leftGait;
-    RightGait _rightGait;
+    MultiStepGait _forwardGait;
+    MultiStepGait _backwardGait;
+    MultiStepGait _leftGait;
+    MultiStepGait _rightGait;
 
     // Communication components
     CommandRouter _commandRouter;
