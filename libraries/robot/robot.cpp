@@ -94,17 +94,33 @@ void Robot::loop() {
         _sweep.toggleDirection();
         _body.applyGait(_sweep);
       } else if (_currentCommand == "forward") {
-        _forwardGait.advance();
-        _body.applyGait(_forwardGait);
+        if (!_forwardGait.isComplete()) {
+          _forwardGait.advance();
+          _body.applyGait(_forwardGait);
+        } else {
+          _isMoving = false;  // Stop when sequence completes
+        }
       } else if (_currentCommand == "backward") {
-        _backwardGait.advance();
-        _body.applyGait(_backwardGait);
+        if (!_backwardGait.isComplete()) {
+          _backwardGait.advance();
+          _body.applyGait(_backwardGait);
+        } else {
+          _isMoving = false;
+        }
       } else if (_currentCommand == "left") {
-        _leftGait.advance();
-        _body.applyGait(_leftGait);
+        if (!_leftGait.isComplete()) {
+          _leftGait.advance();
+          _body.applyGait(_leftGait);
+        } else {
+          _isMoving = false;
+        }
       } else if (_currentCommand == "right") {
-        _rightGait.advance();
-        _body.applyGait(_rightGait);
+        if (!_rightGait.isComplete()) {
+          _rightGait.advance();
+          _body.applyGait(_rightGait);
+        } else {
+          _isMoving = false;
+        }
       }
     }
   }
@@ -144,6 +160,7 @@ void Robot::handleForwardCommand() {
   _currentCommand = "forward";
   _isMoving = true;
 
+  _forwardGait.reset();  // Reset to step 0
   _body.applyGait(_forwardGait);
 
   _bluetooth.send("OK: Moving forward");
@@ -154,6 +171,7 @@ void Robot::handleBackwardCommand() {
   _currentCommand = "backward";
   _isMoving = true;
 
+  _backwardGait.reset();  // Reset to step 0
   _body.applyGait(_backwardGait);
 
   _bluetooth.send("OK: Moving backward");
@@ -164,6 +182,7 @@ void Robot::handleLeftCommand() {
   _currentCommand = "left";
   _isMoving = true;
 
+  _leftGait.reset();  // Reset to step 0
   _body.applyGait(_leftGait);
 
   _bluetooth.send("OK: Turning left");
@@ -174,6 +193,7 @@ void Robot::handleRightCommand() {
   _currentCommand = "right";
   _isMoving = true;
 
+  _rightGait.reset();  // Reset to step 0
   _body.applyGait(_rightGait);
 
   _bluetooth.send("OK: Turning right");
