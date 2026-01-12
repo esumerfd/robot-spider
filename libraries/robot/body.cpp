@@ -89,3 +89,16 @@ bool Body::atTarget() const {
   return true;
 }
 
+void Body::resetToMiddle() {
+  uint16_t middle = _board.servoMiddle();
+  uint16_t speed = _board.servoSpeed();
+
+  // Set all legs to middle position
+  for (int i = 0; i < LEG_COUNT; i++) {
+    _legs[i]->shoulder().setTarget(middle, speed);
+    _legs[i]->knee().setTarget(middle, speed);
+  }
+
+  Log::println("Body: reset to middle position");
+}
+

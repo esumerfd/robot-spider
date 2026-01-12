@@ -143,6 +143,7 @@ void Robot::setupCommands() {
 
   // Register command handlers with the router
   _commandRouter.registerCommand("init", [this]() { handleInitCommand(); });
+  _commandRouter.registerCommand("reset", [this]() { handleResetCommand(); });
   _commandRouter.registerCommand("forward", [this]() { handleForwardCommand(); });
   _commandRouter.registerCommand("backward", [this]() { handleBackwardCommand(); });
   _commandRouter.registerCommand("left", [this]() { handleLeftCommand(); });
@@ -163,6 +164,27 @@ void Robot::handleInitCommand() {
   _currentCommand = "";
   // Could reset robot to home position here
   _bluetooth.send("OK: Initialized");
+}
+
+void Robot::handleResetCommand() {
+  Log::println("Robot: Executing RESET command");
+
+  // Reset all gaits to step 0
+  _stationaryGait.reset();
+  _forwardGait.reset();
+  _backwardGait.reset();
+  _leftGait.reset();
+  _rightGait.reset();
+
+  // Move all servos to middle position
+  _body.resetToMiddle();
+
+  // Apply stationary gait and enable movement so servos can reach middle
+  _body.applyGait(_stationaryGait);
+  _currentCommand = "stationary";
+  _isMoving = true;
+
+  _bluetooth.send("OK: Reset to middle position");
 }
 
 void Robot::handleForwardCommand() {

@@ -39,6 +39,7 @@ class Robot {
 
     // Command handlers
     void handleInitCommand();
+    void handleResetCommand();
     void handleForwardCommand();
     void handleBackwardCommand();
     void handleLeftCommand();

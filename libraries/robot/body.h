@@ -57,6 +57,9 @@ class Body {
     // Apply a gait sequence to all legs
     void applyGait(GaitSequence& gait);
 
+    // Reset all joints to middle position
+    void resetToMiddle();
+
     // Access to individual legs (for testing/debugging)
     LeftFrontLeg& leftFront() { return _leftFront; }
     LeftMiddleLeg& leftMiddle() { return _leftMiddle; }
