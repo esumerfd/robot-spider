@@ -106,10 +106,11 @@ bool BluetoothConnection::send(const String& message) {
     return false;
   }
 
-  // Don't send empty messages
-  if (message.length() == 0) {
-    Log::println("BluetoothConnection: Skipping empty message");
-    return false;
+  // Don't send empty messages (zero length or only whitespace)
+  String trimmed = message;
+  trimmed.trim();
+  if (trimmed.length() == 0) {
+    return true;  // Treat as success, silently ignore
   }
 
   _serialBT.println(message);
