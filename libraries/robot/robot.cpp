@@ -8,7 +8,7 @@ Robot::Robot()
     _board(),
     _body(_board),
     _sweep(),
-    _forwardGait(&FORWARD_SEQUENCE),
+    _forwardGait(&FORWARD_WALK_SEQUENCE),
     _backwardGait(&BACKWARD_SEQUENCE),
     _leftGait(&LEFT_SEQUENCE),
     _rightGait(&RIGHT_SEQUENCE),

@@ -31,39 +31,7 @@ const GaitSequenceData FORWARD_WALK_SEQUENCE = {
   "Forward Walk",          // Sequence name
   FORWARD_WALK_STEPS,      // Array of steps
   1,                       // Currently only 1 step defined
-  false                    // Don't loop (for now)
-};
-
-// Forward Sequence (servo testing)
-// Oscillates Left Front shoulder (servo 0)
-const GaitStep FORWARD_STEPS[] = {
-  {
-    "Forward move",
-    {200, 0, 2000},     // Left Front shoulder: +200 over 2 seconds
-    {0, 0, 0},          // Left Middle: no movement
-    {0, 0, 0},          // Left Rear: no movement
-    {0, 0, 0},          // Right Front: no movement
-    {0, 0, 0},          // Right Middle: no movement
-    {0, 0, 0},          // Right Rear: no movement
-    true
-  },
-  {
-    "Forward return",
-    {-200, 0, 2000},    // Left Front shoulder: -200 over 2 seconds
-    {0, 0, 0},
-    {0, 0, 0},
-    {0, 0, 0},
-    {0, 0, 0},
-    {0, 0, 0},
-    true
-  }
-};
-
-const GaitSequenceData FORWARD_SEQUENCE = {
-  "Forward",
-  FORWARD_STEPS,
-  2,
-  true                    // Loop
+  false                    // Don't loop
 };
 
 // Backward Sequence (servo testing)
@@ -95,7 +63,7 @@ const GaitSequenceData BACKWARD_SEQUENCE = {
   "Backward",
   BACKWARD_STEPS,
   2,
-  true                    // Loop
+  false                   // Don't loop
 };
 
 // Left Sequence (servo testing)
@@ -127,7 +95,7 @@ const GaitSequenceData LEFT_SEQUENCE = {
   "Left",
   LEFT_STEPS,
   2,
-  true                    // Loop
+  false                   // Don't loop
 };
 
 // Right Sequence (servo testing)
@@ -159,7 +127,7 @@ const GaitSequenceData RIGHT_SEQUENCE = {
   "Right",
   RIGHT_STEPS,
   2,
-  true                    // Loop
+  false                   // Don't loop
 };
 
 #endif
