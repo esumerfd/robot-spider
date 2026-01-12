@@ -3,6 +3,28 @@
 
 #include "multi_step_gait.h"
 
+// Stationary Sequence
+// Robot at rest - no movement on any joints
+const GaitStep STATIONARY_STEPS[] = {
+  {
+    "Stationary",
+    {0, 0, 0},  // Left Front: no movement
+    {0, 0, 0},  // Left Middle: no movement
+    {0, 0, 0},  // Left Rear: no movement
+    {0, 0, 0},  // Right Front: no movement
+    {0, 0, 0},  // Right Middle: no movement
+    {0, 0, 0},  // Right Rear: no movement
+    true
+  }
+};
+
+const GaitSequenceData STATIONARY_SEQUENCE = {
+  "Stationary",
+  STATIONARY_STEPS,
+  1,
+  false  // Don't loop
+};
+
 // Forward Walk Sequence
 // Initial step: Lift body using 3 knees (Left Front, Right Middle, Left Rear)
 

@@ -17,6 +17,7 @@ class Robot {
     Board _board;
     Body _body;
     OneSweepSequence _sweep;
+    MultiStepGait _stationaryGait;
     MultiStepGait _forwardGait;
     MultiStepGait _backwardGait;
     MultiStepGait _leftGait;

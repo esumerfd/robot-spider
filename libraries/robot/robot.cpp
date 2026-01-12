@@ -8,6 +8,7 @@ Robot::Robot()
     _board(),
     _body(_board),
     _sweep(),
+    _stationaryGait(&STATIONARY_SEQUENCE),
     _forwardGait(&FORWARD_WALK_SEQUENCE),
     _backwardGait(&BACKWARD_SEQUENCE),
     _leftGait(&LEFT_SEQUENCE),
@@ -58,8 +59,9 @@ void Robot::setup() {
   Log::println("Robot: setup complete");
   delay(100); // Give serial time to flush
 
-  // Don't apply initial gait - wait for commands
-  // _body.applyGait(_sweep);
+  // Apply stationary gait - robot starts at rest
+  _body.applyGait(_stationaryGait);
+  _currentCommand = "stationary";
 }
 
 void Robot::loop() {
@@ -98,13 +100,17 @@ void Robot::loop() {
           _forwardGait.advance();
           _body.applyGait(_forwardGait);
         } else {
-          _isMoving = false;  // Stop when sequence completes
+          _currentCommand = "stationary";
+          _body.applyGait(_stationaryGait);
+          _isMoving = false;
         }
       } else if (_currentCommand == "backward") {
         if (!_backwardGait.isComplete()) {
           _backwardGait.advance();
           _body.applyGait(_backwardGait);
         } else {
+          _currentCommand = "stationary";
+          _body.applyGait(_stationaryGait);
           _isMoving = false;
         }
       } else if (_currentCommand == "left") {
@@ -112,6 +118,8 @@ void Robot::loop() {
           _leftGait.advance();
           _body.applyGait(_leftGait);
         } else {
+          _currentCommand = "stationary";
+          _body.applyGait(_stationaryGait);
           _isMoving = false;
         }
       } else if (_currentCommand == "right") {
@@ -119,6 +127,8 @@ void Robot::loop() {
           _rightGait.advance();
           _body.applyGait(_rightGait);
         } else {
+          _currentCommand = "stationary";
+          _body.applyGait(_stationaryGait);
           _isMoving = false;
         }
       }
