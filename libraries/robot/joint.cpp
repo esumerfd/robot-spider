@@ -2,29 +2,29 @@
 #include <logging.h>
 #include <Arduino.h>
 
-Joint::Joint(Servo &servo, uint16_t initialPos)
+Joint::Joint(Servo &servo, float initialPos)
   : _servo(servo),
     _currentPos(initialPos),
     _targetPos(initialPos),
-    _speed(100),
+    _speed(90.0f),  // Default 90 degrees per second
     _servoWriteProfiler("ServoWrite", false, 1000, 20) {  // 20ms min interval (50Hz max)
 }
 
 void Joint::update(uint32_t deltaMs) {
-  if (_currentPos == _targetPos) {
-    return; // Already at target
+  if (abs(_currentPos - _targetPos) < 0.5f) {
+    return; // Already at target (within tolerance)
   }
 
   // Calculate maximum distance we can move in this time step
-  uint32_t maxDelta = (_speed * deltaMs) / 1000;
+  float maxDelta = (_speed * deltaMs) / 1000.0f;
 
-  if (maxDelta == 0) {
+  if (maxDelta < 0.01f) {
     return; // Time step too small
   }
 
   // Calculate distance and direction to target
-  int16_t direction = (_currentPos < _targetPos) ? 1 : -1;
-  uint16_t distance = abs((int16_t)_targetPos - (int16_t)_currentPos);
+  float direction = (_currentPos < _targetPos) ? 1.0f : -1.0f;
+  float distance = abs(_targetPos - _currentPos);
 
   // Move towards target or reach it
   if (maxDelta >= distance) {
@@ -33,16 +33,17 @@ void Joint::update(uint32_t deltaMs) {
     _currentPos += direction * maxDelta;
   }
 
-  Log::println("Joint: cur=%d tgt=%d speed=%d deltaMs=%d", _currentPos, _targetPos, _speed, deltaMs);
+  Log::println("Joint: cur=%.1f° tgt=%.1f° speed=%.1f°/s deltaMs=%d",
+               _currentPos, _targetPos, _speed, deltaMs);
 
   // Apply position to servo with rate limiting
-  uint16_t positionToWrite = _currentPos;
+  float positionToWrite = _currentPos;
   _servoWriteProfiler.executeIfReady(millis(), [this, positionToWrite]() {
     _servo.move(positionToWrite);
   });
 }
 
-void Joint::setTarget(uint16_t targetPos, uint16_t speed) {
+void Joint::setTarget(float targetPos, float speed) {
   _targetPos = targetPos;
   _speed = speed;
 }

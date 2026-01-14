@@ -11,10 +11,10 @@ static Adafruit_PWMServoDriver pwm = Adafruit_PWMServoDriver();
 bool Servo::_pwmInitialized = false;
 
 Servo::Servo(Board &board, uint8_t servonum)
-  : _board(board), _servonum(servonum) {}
+  : _board(board), _servonum(servonum), _positionAngle(90.0f) {}
 
-uint16_t Servo::getPosition() {
-  return _position;
+float Servo::getPosition() {
+  return _positionAngle;
 }
 
 void Servo::initializePWM(Board& board) {
@@ -38,12 +38,16 @@ void Servo::initializePWM(Board& board) {
 
 void Servo::begin() {
   // Set initial position for this servo
-  pwm.setPWM(_servonum, 0, _position);
+  uint16_t pwm_value = _board.angleToPWM(_servonum, _positionAngle);
+  pwm.setPWM(_servonum, 0, pwm_value);
 }
 
-void Servo::move(uint16_t position) {
-  _position = position;
-  pwm.setPWM(_servonum, 0, _position);
+void Servo::move(float angle) {
+  _positionAngle = angle;
+
+  // Convert angle to PWM for hardware
+  uint16_t pwm_value = _board.angleToPWM(_servonum, angle);
+  pwm.setPWM(_servonum, 0, pwm_value);
   // Note: Blocking delay removed - rate limiting now handled by Joint class
   // via CallRateProfiler to prevent servo spinning while allowing smooth movement
 }

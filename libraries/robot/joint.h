@@ -15,30 +15,30 @@
 class Joint {
   protected:
     Servo &_servo;
-    uint16_t _currentPos;
-    uint16_t _targetPos;
-    uint16_t _speed; // Units per second
+    float _currentPos;   // Current angle in degrees
+    float _targetPos;    // Target angle in degrees
+    float _speed;        // Degrees per second
 
     // Rate limiting for servo writes
     CallRateProfiler _servoWriteProfiler;
 
   public:
-    Joint(Servo &servo, uint16_t initialPos);
+    Joint(Servo &servo, float initialPos);
 
     // Update joint position based on elapsed time
     virtual void update(uint32_t deltaMs);
 
     // Set target position and speed
-    void setTarget(uint16_t targetPos, uint16_t speed);
+    void setTarget(float targetPos, float speed);
 
     // Get current position
-    uint16_t getPosition() const { return _currentPos; }
+    float getPosition() const { return _currentPos; }
 
     // Get target position
-    uint16_t getTarget() const { return _targetPos; }
+    float getTarget() const { return _targetPos; }
 
     // Check if joint has reached target
-    bool atTarget() const { return _currentPos == _targetPos; }
+    bool atTarget() const { return abs(_currentPos - _targetPos) < 0.5f; }
 
     // Profiling control
     void enableServoWriteProfiling(bool enabled);

@@ -53,19 +53,19 @@ void MultiStepGait::applyLegMovement(Leg& leg, const LegMovement& movement) {
   }
 }
 
-void MultiStepGait::applyDelta(Joint& joint, int16_t delta, uint16_t duration) {
-  // Calculate new target as current position + delta
-  uint16_t currentPos = joint.getPosition();
-  int32_t newTarget = currentPos + delta;
+void MultiStepGait::applyDelta(Joint& joint, int8_t delta, uint16_t duration) {
+  // Calculate new target as current angle + delta
+  float currentPos = joint.getPosition();
+  float newTarget = currentPos + (float)delta;
 
-  // Clamp to safe servo range
-  const uint16_t safeMin = _board.servoMin() + 5;
-  const uint16_t safeMax = _board.servoMax() - 5;
+  // Clamp to safe angle range
+  const float safeMin = _board.servoSafeMin();  // 2.0 degrees
+  const float safeMax = _board.servoSafeMax();  // 178.0 degrees
   newTarget = constrain(newTarget, safeMin, safeMax);
 
-  // Calculate speed from distance and duration
-  uint16_t distance = abs(delta);
-  uint16_t speed = (distance * 1000) / duration;  // units per second
+  // Get speed from board (handles constant speed or duration-based calculation)
+  float distance = abs((float)delta);
+  float speed = _board.servoSpeed(duration, distance);
 
   joint.setTarget(newTarget, speed);
 }

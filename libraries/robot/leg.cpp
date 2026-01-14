@@ -1,7 +1,7 @@
 #include <leg.h>
 
 Leg::Leg(Servo &shoulderServo, Servo &kneeServo,
-         uint16_t shoulderInitial, uint16_t kneeInitial)
+         float shoulderInitial, float kneeInitial)
   : _shoulder(shoulderServo, shoulderInitial),
     _knee(kneeServo, kneeInitial) {
 }

@@ -17,13 +17,13 @@ Body::Body(Board& board)
     _rightMiddleKnee(board, 9),
     _rightRearShoulder(board, 10),
     _rightRearKnee(board, 11),
-    // Initialize all 6 legs with their servos and initial positions
-    _leftFront(_leftFrontShoulder, _leftFrontKnee, board.servoMiddle(), board.servoMiddle()),
-    _leftMiddle(_leftMiddleShoulder, _leftMiddleKnee, board.servoMiddle(), board.servoMiddle()),
-    _leftRear(_leftRearShoulder, _leftRearKnee, board.servoMiddle(), board.servoMiddle()),
-    _rightFront(_rightFrontShoulder, _rightFrontKnee, board.servoMiddle(), board.servoMiddle()),
-    _rightMiddle(_rightMiddleShoulder, _rightMiddleKnee, board.servoMiddle(), board.servoMiddle()),
-    _rightRear(_rightRearShoulder, _rightRearKnee, board.servoMiddle(), board.servoMiddle()) {
+    // Initialize all 6 legs with their servos and initial positions (90 degrees)
+    _leftFront(_leftFrontShoulder, _leftFrontKnee, 90.0f, 90.0f),
+    _leftMiddle(_leftMiddleShoulder, _leftMiddleKnee, 90.0f, 90.0f),
+    _leftRear(_leftRearShoulder, _leftRearKnee, 90.0f, 90.0f),
+    _rightFront(_rightFrontShoulder, _rightFrontKnee, 90.0f, 90.0f),
+    _rightMiddle(_rightMiddleShoulder, _rightMiddleKnee, 90.0f, 90.0f),
+    _rightRear(_rightRearShoulder, _rightRearKnee, 90.0f, 90.0f) {
 
   // Build servo array for iteration
   _servos[0] = &_leftFrontShoulder;
@@ -90,8 +90,8 @@ bool Body::atTarget() const {
 }
 
 void Body::resetToMiddle() {
-  uint16_t middle = _board.servoMiddle();
-  uint16_t speed = _board.servoSpeed();
+  float middle = _board.servoMiddle();  // Returns 90.0f
+  float speed = _board.servoSpeed();    // Returns 180.0f degrees/sec
 
   // Set all legs to middle position
   for (int i = 0; i < LEG_COUNT; i++) {
@@ -99,6 +99,6 @@ void Body::resetToMiddle() {
     _legs[i]->knee().setTarget(middle, speed);
   }
 
-  Log::println("Body: reset to middle position");
+  Log::println("Body: reset to middle position (90°)");
 }
 

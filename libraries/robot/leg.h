@@ -18,7 +18,7 @@ class Leg {
 
   public:
     Leg(Servo &shoulderServo, Servo &kneeServo,
-        uint16_t shoulderInitial, uint16_t kneeInitial);
+        float shoulderInitial, float kneeInitial);
 
     // Update both joints based on elapsed time
     virtual void update(uint32_t deltaMs);

@@ -11,14 +11,14 @@
  * - Body::atTarget() determines when to switch direction
  *
  * Speed calculation:
- * - Range: SERVOMAX (600) - SERVOMIN (150) = 450 units
- * - Duration: 2000ms = 2 seconds
- * - Speed: 450 units / 2 seconds = 225 units/second
+ * - Range: 180 degrees (0° to 180°)
+ * - Duration: 1 second (full range in 1s)
+ * - Speed: 180 degrees/second
  */
 class OneSweepSequence : public GaitSequence {
   private:
     Board _board;
-    uint16_t _speed;
+    float _speed;       // Speed in degrees per second
     bool _movingToMax;  // Track direction: true = moving to max, false = moving to min
 
     // Helper method to apply sweep movement to a joint

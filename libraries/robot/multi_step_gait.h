@@ -8,9 +8,9 @@
 
 // Represents movement for a single leg's joints
 struct LegMovement {
-  int16_t shoulderDelta;  // Relative position change for shoulder (0 = no movement)
-  int16_t kneeDelta;      // Relative position change for knee (0 = no movement)
-  uint16_t duration;      // Time to complete movement in milliseconds
+  int8_t shoulderDelta;  // Relative angle change for shoulder in degrees (0 = no movement)
+  int8_t kneeDelta;      // Relative angle change for knee in degrees (0 = no movement)
+  uint16_t duration;     // Time to complete movement in milliseconds
 };
 
 // Represents one step in a multi-step sequence
@@ -48,7 +48,7 @@ class MultiStepGait : public GaitSequence {
     void applyLegMovement(Leg& leg, const LegMovement& movement);
 
     // Helper to apply a delta to a single joint
-    void applyDelta(Joint& joint, int16_t delta, uint16_t duration);
+    void applyDelta(Joint& joint, int8_t delta, uint16_t duration);
 
   public:
     MultiStepGait(const GaitSequenceData* data);

@@ -29,18 +29,19 @@ const GaitSequenceData STATIONARY_SEQUENCE = {
 // Initial step: Lift body using 3 knees (Left Front, Right Middle, Left Rear)
 
 // Step 1: Lift body by extending 3 knees
-// - Left Front knee: rotate clockwise (-50)
-// - Right Middle knee: rotate counter-clockwise (+50)
-// - Left Rear knee: rotate clockwise (-50)
+// - Left Front knee: rotate clockwise (-23 degrees)
+// - Right Middle knee: rotate counter-clockwise (+23 degrees)
+// - Left Rear knee: rotate clockwise (-23 degrees)
+// - Duration 0 = constant speed (180°/s), so 23° takes ~128ms
 const GaitStep FORWARD_WALK_STEPS[] = {
   {
     "Lift body",           // Step name
-    {0, -50, 1000},        // Left Front: knee -50 over 1 second
-    {0,   0,    0},        // Left Middle: no movement
-    {0, -50, 1000},        // Left Rear: knee -50 over 1 second
-    {0,   0,    0},        // Right Front: no movement
-    {0, +50, 1000},        // Right Middle: knee +50 over 1 second
-    {0,   0,    0},        // Right Rear: no movement
+    {0, -23, 0},           // Left Front: knee -23° at constant speed
+    {0,   0, 0},           // Left Middle: no movement
+    {0, -23, 0},           // Left Rear: knee -23° at constant speed
+    {0,   0, 0},           // Right Front: no movement
+    {0, +23, 0},           // Right Middle: knee +23° at constant speed
+    {0,   0, 0},           // Right Rear: no movement
     true                   // Wait for all joints to complete
   },
   // Future steps will go here:
@@ -57,11 +58,12 @@ const GaitSequenceData FORWARD_WALK_SEQUENCE = {
 };
 
 // Backward Sequence (servo testing)
-// Oscillates Left Front knee (servo 1)
+// Oscillates Left Front knee (servo 1) at constant speed
+// Duration 0 = constant 180°/s, so 91° takes ~506ms
 const GaitStep BACKWARD_STEPS[] = {
   {
     "Backward move",
-    {0, 200, 2000},     // Left Front knee: +200 over 2 seconds
+    {0, 91, 0},         // Left Front knee: +91° at constant speed
     {0, 0, 0},
     {0, 0, 0},
     {0, 0, 0},
@@ -71,7 +73,7 @@ const GaitStep BACKWARD_STEPS[] = {
   },
   {
     "Backward return",
-    {0, -200, 2000},    // Left Front knee: -200 over 2 seconds
+    {0, -91, 0},        // Left Front knee: -91° at constant speed
     {0, 0, 0},
     {0, 0, 0},
     {0, 0, 0},
@@ -89,12 +91,12 @@ const GaitSequenceData BACKWARD_SEQUENCE = {
 };
 
 // Left Sequence (servo testing)
-// Oscillates Left Middle shoulder (servo 2)
+// Oscillates Left Middle shoulder (servo 2) at constant speed
 const GaitStep LEFT_STEPS[] = {
   {
     "Left move",
     {0, 0, 0},
-    {200, 0, 2000},     // Left Middle shoulder: +200 over 2 seconds
+    {91, 0, 0},         // Left Middle shoulder: +91° at constant speed
     {0, 0, 0},
     {0, 0, 0},
     {0, 0, 0},
@@ -104,7 +106,7 @@ const GaitStep LEFT_STEPS[] = {
   {
     "Left return",
     {0, 0, 0},
-    {-200, 0, 2000},    // Left Middle shoulder: -200 over 2 seconds
+    {-91, 0, 0},        // Left Middle shoulder: -91° at constant speed
     {0, 0, 0},
     {0, 0, 0},
     {0, 0, 0},
@@ -121,12 +123,12 @@ const GaitSequenceData LEFT_SEQUENCE = {
 };
 
 // Right Sequence (servo testing)
-// Oscillates Left Middle knee (servo 3)
+// Oscillates Left Middle knee (servo 3) at constant speed
 const GaitStep RIGHT_STEPS[] = {
   {
     "Right move",
     {0, 0, 0},
-    {0, 200, 2000},     // Left Middle knee: +200 over 2 seconds
+    {0, 91, 0},         // Left Middle knee: +91° at constant speed
     {0, 0, 0},
     {0, 0, 0},
     {0, 0, 0},
@@ -136,7 +138,7 @@ const GaitStep RIGHT_STEPS[] = {
   {
     "Right return",
     {0, 0, 0},
-    {0, -200, 2000},    // Left Middle knee: -200 over 2 seconds
+    {0, -91, 0},        // Left Middle knee: -91° at constant speed
     {0, 0, 0},
     {0, 0, 0},
     {0, 0, 0},

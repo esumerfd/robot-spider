@@ -13,7 +13,7 @@ class Servo {
     Board& _board;
 
     uint8_t _servonum = 0;
-    uint16_t _position = SERVOMIN + (SERVOMAX - SERVOMIN) / 2;  // Start at middle (375)
+    float _positionAngle = 90.0f;  // Start at middle (90 degrees)
 
     // PWM initialization flag - safe for single-threaded Arduino model
     // WARNING: Add synchronization if using FreeRTOS tasks or multi-core execution
@@ -28,8 +28,8 @@ class Servo {
     static void initializePWM(Board& board);
 
     void begin();
-    void move(uint16_t position);
-    uint16_t getPosition();
+    void move(float angle);
+    float getPosition();
 };
 
 #endif
