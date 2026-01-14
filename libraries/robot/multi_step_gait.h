@@ -4,6 +4,7 @@
 #include "gait_sequence.h"
 #include "board.h"
 #include "leg.h"
+#include <profiler.h>
 
 // Represents movement for a single leg's joints
 struct LegMovement {
@@ -40,6 +41,9 @@ class MultiStepGait : public GaitSequence {
     uint8_t _currentStepIndex;
     bool _stepInProgress;
 
+    // Call rate profiling
+    CallRateProfiler _applyProfiler;
+
     // Helper to apply movement to a leg's joints
     void applyLegMovement(Leg& leg, const LegMovement& movement);
 
@@ -64,6 +68,11 @@ class MultiStepGait : public GaitSequence {
     bool isComplete() const;     // True if all steps executed
     void reset();                // Return to step 0
     uint8_t getCurrentStep() const;
+
+    // Profiling control
+    void updateProfiler(uint32_t currentMs);
+    void enableProfiling(bool enabled);
+    CallRateProfiler& getProfiler();
 };
 
 #endif

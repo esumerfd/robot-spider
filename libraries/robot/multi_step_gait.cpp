@@ -4,7 +4,8 @@
 MultiStepGait::MultiStepGait(const GaitSequenceData* data)
   : _sequenceData(data),
     _currentStepIndex(0),
-    _stepInProgress(false) {
+    _stepInProgress(false),
+    _applyProfiler("GaitApply", false, 1000) {  // Disabled by default, log every 1s
 }
 
 void MultiStepGait::applyTo(LeftFrontLeg& leg) {
@@ -42,6 +43,8 @@ const char* MultiStepGait::getName() const {
 }
 
 void MultiStepGait::applyLegMovement(Leg& leg, const LegMovement& movement) {
+  _applyProfiler.tick();
+
   if (movement.shoulderDelta != 0) {
     applyDelta(leg.shoulder(), movement.shoulderDelta, movement.duration);
   }
@@ -101,4 +104,16 @@ void MultiStepGait::reset() {
 
 uint8_t MultiStepGait::getCurrentStep() const {
   return _currentStepIndex;
+}
+
+void MultiStepGait::updateProfiler(uint32_t currentMs) {
+  _applyProfiler.update(currentMs);
+}
+
+void MultiStepGait::enableProfiling(bool enabled) {
+  _applyProfiler.setEnabled(enabled);
+}
+
+CallRateProfiler& MultiStepGait::getProfiler() {
+  return _applyProfiler;
 }

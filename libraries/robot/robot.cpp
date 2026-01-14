@@ -15,7 +15,7 @@ Robot::Robot()
     _rightGait(&RIGHT_SEQUENCE),
     _commandRouter(),
     _bluetooth(),
-    _profiler(false), // Profiling disabled by default
+    _memoryProfiler(false), // Profiling disabled by default
     _lastUpdateMs(0),
     _firstLoop(true),
     _isMoving(false),
@@ -77,7 +77,13 @@ void Robot::loop() {
   _lastUpdateMs = currentMs;
 
   // Periodic diagnostics (if enabled)
-  _profiler.update(currentMs);
+  _memoryProfiler.update(currentMs);
+
+  // Update gait profilers
+  _forwardGait.updateProfiler(currentMs);
+  _backwardGait.updateProfiler(currentMs);
+  _leftGait.updateProfiler(currentMs);
+  _rightGait.updateProfiler(currentMs);
 
   _flasher.flash(currentMs);
 

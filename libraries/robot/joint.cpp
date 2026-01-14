@@ -3,7 +3,11 @@
 #include <Arduino.h>
 
 Joint::Joint(Servo &servo, uint16_t initialPos)
-  : _servo(servo), _currentPos(initialPos), _targetPos(initialPos), _speed(100) {
+  : _servo(servo),
+    _currentPos(initialPos),
+    _targetPos(initialPos),
+    _speed(100),
+    _servoWriteProfiler("ServoWrite", false, 1000, 20) {  // 20ms min interval (50Hz max)
 }
 
 void Joint::update(uint32_t deltaMs) {
@@ -31,11 +35,29 @@ void Joint::update(uint32_t deltaMs) {
 
   Log::println("Joint: cur=%d tgt=%d speed=%d deltaMs=%d", _currentPos, _targetPos, _speed, deltaMs);
 
-  // Apply position to servo
-  _servo.move(_currentPos);
+  // Apply position to servo with rate limiting
+  uint16_t positionToWrite = _currentPos;
+  _servoWriteProfiler.executeIfReady(millis(), [this, positionToWrite]() {
+    _servo.move(positionToWrite);
+  });
 }
 
 void Joint::setTarget(uint16_t targetPos, uint16_t speed) {
   _targetPos = targetPos;
   _speed = speed;
+}
+
+void Joint::enableServoWriteProfiling(bool enabled) {
+  _servoWriteProfiler.setEnabled(enabled);
+}
+
+void Joint::setServoWriteRateLimit(uint32_t minIntervalMs) {
+  // Note: This would require modifying CallRateProfiler to support changing
+  // minIntervalMs after construction, which is not currently implemented.
+  // For now, the rate limit is set in the constructor (20ms).
+  Log::println("Joint: Rate limit change not yet implemented (currently fixed at 20ms)");
+}
+
+CallRateProfiler& Joint::getServoWriteProfiler() {
+  return _servoWriteProfiler;
 }

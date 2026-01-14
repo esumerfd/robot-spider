@@ -45,8 +45,8 @@ void Servo::begin() {
 
 void Servo::move(uint16_t position) {
   _position = position;
-
   pwm.setPWM(_servonum, 0, _position);
-  delay(100);  // 50ms between calls - no limit
+  // Note: Blocking delay removed - rate limiting now handled by Joint class
+  // via CallRateProfiler to prevent servo spinning while allowing smooth movement
 }
 

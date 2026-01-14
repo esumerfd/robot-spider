@@ -28,7 +28,7 @@ class Robot {
     BluetoothConnection _bluetooth;
 
     // Diagnostics
-    Profiler _profiler;
+    MemoryProfiler _memoryProfiler;
 
     uint32_t _lastUpdateMs;
     bool _firstLoop;
