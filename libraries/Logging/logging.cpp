@@ -8,7 +8,6 @@ static char logBuffer[256];
 
 void Log::begin() {
   Serial.begin(9600);
-  delay(100);
 }
 
 void Log::println(const char* format, ...) {

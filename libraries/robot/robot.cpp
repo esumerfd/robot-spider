@@ -33,7 +33,6 @@ void Robot::setup() {
 
   _flasher.begin();
 
-  delay(500);
   yield(); // Yield to watchdog
 
   // Initialize Bluetooth communication
@@ -57,11 +56,13 @@ void Robot::setup() {
   // Memory diagnostics after initialization
   Log::println("After init - Free heap: %d bytes", ESP.getFreeHeap());
   Log::println("Robot: setup complete");
-  delay(100); // Give serial time to flush
 
   // Apply stationary gait - robot starts at rest
   _body.applyGait(_stationaryGait);
   _currentCommand = "stationary";
+
+  // Small delay to let initialized devices stabalize.
+  delay(100);
 }
 
 void Robot::loop() {
@@ -140,8 +141,6 @@ void Robot::loop() {
       }
     }
   }
-
-  delay(10); // Small delay for stability, actual timing handled by deltaMs
 }
 
 void Robot::setupCommands() {

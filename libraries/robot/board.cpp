@@ -24,7 +24,7 @@ uint16_t Board::servoRange() {
 }
 
 uint16_t Board::servoSpeed() {
-  return servoRange() / 2;  // Distence to travel in 1s. 
+  return servoRange();  // Full range in 1s (was /2 for 2s)
 }
 
 uint16_t Board::servoMiddle() {

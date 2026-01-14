@@ -32,8 +32,6 @@ void Servo::initializePWM(Board& board) {
   pwm.setOscillatorFrequency(27000000);  // Calibrate oscillator
   pwm.setPWMFreq(50);  // 50 Hz for servos (was 60)
 
-  delay(10);  // Startup delay from example
-
   _pwmInitialized = true;
   Log::println("Servo: PWM driver initialized");
 }
