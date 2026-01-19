@@ -1,6 +1,7 @@
 #ifndef BODY_H
 #define BODY_H
 
+#include <Arduino.h>
 #include <left_front_leg.h>
 #include <left_middle_leg.h>
 #include <left_rear_leg.h>
@@ -70,6 +71,10 @@ class Body {
 
     // Check if all legs have reached their targets
     bool atTarget() const;
+
+    // Diagnostic: wiggle a servo by name to test connectivity
+    // Returns true if servo name was valid, false otherwise
+    bool wiggleServo(const String& servoName);
 };
 
 #endif

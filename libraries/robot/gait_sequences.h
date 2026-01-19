@@ -3,6 +3,9 @@
 
 #include "multi_step_gait.h"
 
+// Helper macro to calculate array length at compile time
+#define ARRAY_LENGTH(arr) (sizeof(arr) / sizeof(arr[0]))
+
 // Stationary Sequence
 // Robot at rest - no movement on any joints
 const GaitStep STATIONARY_STEPS[] = {
@@ -21,7 +24,7 @@ const GaitStep STATIONARY_STEPS[] = {
 const GaitSequenceData STATIONARY_SEQUENCE = {
   "Stationary",
   STATIONARY_STEPS,
-  1,
+  ARRAY_LENGTH(STATIONARY_STEPS),
   false  // Don't loop
 };
 
@@ -44,17 +47,30 @@ const GaitStep FORWARD_WALK_STEPS[] = {
     {0,   0, 0},           // Right Rear: no movement
     true                   // Wait for all joints to complete
   },
+  // Step 2: Swing opposite tripod shoulders forward
+  // - Right Front shoulder: -10° (forward, mirrored)
+  // - Left Middle shoulder: +10° (forward)
+  // - Right Back shoulder: -10° (forward, mirrored)
+  {
+    "Swing shoulders forward",
+    {0,   0, 0},           // Left Front: no movement
+    {+10, 0, 0},           // Left Middle: shoulder +10° forward
+    {0,   0, 0},           // Left Rear: no movement
+    {-10, 0, 0},           // Right Front: shoulder -10° forward (mirrored)
+    {0,   0, 0},           // Right Middle: no movement
+    {-10, 0, 0},           // Right Rear: shoulder -10° forward (mirrored)
+    true                   // Wait for all joints to complete
+  },
   // Future steps will go here:
-  // - Swing opposite legs forward (shoulders)
   // - Lower body (same knees return to neutral)
   // - Shift body forward (all shoulders move)
 };
 
 const GaitSequenceData FORWARD_WALK_SEQUENCE = {
-  "Forward Walk",          // Sequence name
-  FORWARD_WALK_STEPS,      // Array of steps
-  1,                       // Currently only 1 step defined
-  false                    // Don't loop
+  "Forward Walk",
+  FORWARD_WALK_STEPS,
+  ARRAY_LENGTH(FORWARD_WALK_STEPS),
+  false  // Don't loop
 };
 
 // Backward Sequence (servo testing)
@@ -86,8 +102,8 @@ const GaitStep BACKWARD_STEPS[] = {
 const GaitSequenceData BACKWARD_SEQUENCE = {
   "Backward",
   BACKWARD_STEPS,
-  2,
-  false                   // Don't loop
+  ARRAY_LENGTH(BACKWARD_STEPS),
+  false  // Don't loop
 };
 
 // Left Sequence (servo testing)
@@ -118,8 +134,8 @@ const GaitStep LEFT_STEPS[] = {
 const GaitSequenceData LEFT_SEQUENCE = {
   "Left",
   LEFT_STEPS,
-  2,
-  false                   // Don't loop
+  ARRAY_LENGTH(LEFT_STEPS),
+  false  // Don't loop
 };
 
 // Right Sequence (servo testing)
@@ -150,8 +166,8 @@ const GaitStep RIGHT_STEPS[] = {
 const GaitSequenceData RIGHT_SEQUENCE = {
   "Right",
   RIGHT_STEPS,
-  2,
-  false                   // Don't loop
+  ARRAY_LENGTH(RIGHT_STEPS),
+  false  // Don't loop
 };
 
 #endif

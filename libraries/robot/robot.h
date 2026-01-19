@@ -45,6 +45,7 @@ class Robot {
     void handleLeftCommand();
     void handleRightCommand();
     void handleStopCommand();
+    void handleWiggleCommand(const String& servoName);
 
     // Communication setup
     void setupCommands();

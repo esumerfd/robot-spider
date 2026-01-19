@@ -155,6 +155,20 @@ void Robot::setupCommands() {
   _commandRouter.registerCommand("right", [this]() { handleRightCommand(); });
   _commandRouter.registerCommand("stop", [this]() { handleStopCommand(); });
 
+  // Wiggle commands for testing individual servo connectivity
+  _commandRouter.registerCommand("wiggle leftfrontshoulder", [this]() { handleWiggleCommand("leftfrontshoulder"); });
+  _commandRouter.registerCommand("wiggle leftfrontknee", [this]() { handleWiggleCommand("leftfrontknee"); });
+  _commandRouter.registerCommand("wiggle leftmiddleshoulder", [this]() { handleWiggleCommand("leftmiddleshoulder"); });
+  _commandRouter.registerCommand("wiggle leftmiddleknee", [this]() { handleWiggleCommand("leftmiddleknee"); });
+  _commandRouter.registerCommand("wiggle leftrearshoulder", [this]() { handleWiggleCommand("leftrearshoulder"); });
+  _commandRouter.registerCommand("wiggle leftrearknee", [this]() { handleWiggleCommand("leftrearknee"); });
+  _commandRouter.registerCommand("wiggle rightfrontshoulder", [this]() { handleWiggleCommand("rightfrontshoulder"); });
+  _commandRouter.registerCommand("wiggle rightfrontknee", [this]() { handleWiggleCommand("rightfrontknee"); });
+  _commandRouter.registerCommand("wiggle rightmiddleshoulder", [this]() { handleWiggleCommand("rightmiddleshoulder"); });
+  _commandRouter.registerCommand("wiggle rightmiddleknee", [this]() { handleWiggleCommand("rightmiddleknee"); });
+  _commandRouter.registerCommand("wiggle rightrearshoulder", [this]() { handleWiggleCommand("rightrearshoulder"); });
+  _commandRouter.registerCommand("wiggle rightrearknee", [this]() { handleWiggleCommand("rightrearknee"); });
+
   // Hook up Bluetooth message callback to command router
   _bluetooth.onMessageReceived([this](String message) {
     _commandRouter.route(message);
@@ -242,4 +256,15 @@ void Robot::handleStopCommand() {
   _currentCommand = "";
   // Movement will naturally stop since _isMoving is false
   _bluetooth.send("OK: Stopped");
+}
+
+void Robot::handleWiggleCommand(const String& servoName) {
+  Log::println("Robot: Executing WIGGLE command for '%s'", servoName.c_str());
+  _isMoving = false;  // Stop any current movement
+
+  if (_body.wiggleServo(servoName)) {
+    _bluetooth.send("OK: Wiggled " + servoName);
+  } else {
+    _bluetooth.send("ERROR: Unknown servo " + servoName);
+  }
 }

@@ -102,3 +102,47 @@ void Body::resetToMiddle() {
   Log::println("Body: reset to middle position (90°)");
 }
 
+bool Body::wiggleServo(const String& servoName) {
+  // Map servo name to servo pointer
+  Servo* servo = nullptr;
+
+  if (servoName == "leftfrontshoulder") servo = &_leftFrontShoulder;
+  else if (servoName == "leftfrontknee") servo = &_leftFrontKnee;
+  else if (servoName == "leftmiddleshoulder") servo = &_leftMiddleShoulder;
+  else if (servoName == "leftmiddleknee") servo = &_leftMiddleKnee;
+  else if (servoName == "leftrearshoulder") servo = &_leftRearShoulder;
+  else if (servoName == "leftrearknee") servo = &_leftRearKnee;
+  else if (servoName == "rightfrontshoulder") servo = &_rightFrontShoulder;
+  else if (servoName == "rightfrontknee") servo = &_rightFrontKnee;
+  else if (servoName == "rightmiddleshoulder") servo = &_rightMiddleShoulder;
+  else if (servoName == "rightmiddleknee") servo = &_rightMiddleKnee;
+  else if (servoName == "rightrearshoulder") servo = &_rightRearShoulder;
+  else if (servoName == "rightrearknee") servo = &_rightRearKnee;
+
+  if (servo == nullptr) {
+    Log::println("Body: Unknown servo name '%s'", servoName.c_str());
+    return false;
+  }
+
+  Log::println("Body: Wiggling servo '%s'", servoName.c_str());
+
+  // Wiggle sequence: reset, +10%, -20%, reset
+  // 10% of 180° = 18°, 20% = 36°
+  const float middle = 90.0f;
+  const float plusTenPercent = middle + 18.0f;   // 108°
+  const float minusTenPercent = middle - 18.0f;  // 72°
+  const int delayMs = 300;
+
+  servo->move(middle);           // Reset to middle
+  delay(delayMs);
+  servo->move(plusTenPercent);   // +10% (clockwise)
+  delay(delayMs);
+  servo->move(minusTenPercent);  // -20% from middle (counter-clockwise)
+  delay(delayMs);
+  servo->move(middle);           // Reset to middle
+  delay(delayMs);
+
+  Log::println("Body: Wiggle complete for '%s'", servoName.c_str());
+  return true;
+}
+
