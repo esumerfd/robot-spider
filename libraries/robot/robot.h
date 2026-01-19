@@ -1,6 +1,7 @@
 #ifndef ROBOT_H
 #define ROBOT_H
 
+#include <vector>
 #include <flasher.h>
 #include <board.h>
 #include <body.h>
@@ -37,15 +38,18 @@ class Robot {
     bool _isMoving;
     String _currentCommand;
 
-    // Command handlers
-    void handleInitCommand();
-    void handleResetCommand();
-    void handleForwardCommand();
-    void handleBackwardCommand();
-    void handleLeftCommand();
-    void handleRightCommand();
-    void handleStopCommand();
-    void handleWiggleCommand(const String& servoName);
+    // Command argument type alias
+    using Args = const std::vector<String>&;
+
+    // Command handlers (all receive arguments, even if unused)
+    void handleInitCommand(Args args);
+    void handleResetCommand(Args args);
+    void handleForwardCommand(Args args);
+    void handleBackwardCommand(Args args);
+    void handleLeftCommand(Args args);
+    void handleRightCommand(Args args);
+    void handleStopCommand(Args args);
+    void handleWiggleCommand(Args args);
 
     // Communication setup
     void setupCommands();

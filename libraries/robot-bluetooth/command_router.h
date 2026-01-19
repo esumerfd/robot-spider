@@ -4,6 +4,7 @@
 #include <Arduino.h>
 #include <functional>
 #include <map>
+#include <vector>
 
 /**
  * CommandRouter - Routes incoming string commands to registered handler functions
@@ -13,17 +14,22 @@
  * strings to callback functions, enabling a clean separation between communication
  * layers and command execution logic.
  *
+ * Commands are parsed as: "command arg1 arg2, arg3" where:
+ * - First word is the command name
+ * - Subsequent words (separated by spaces and/or commas) are arguments
+ *
  * Supported commands (matching Android app interface):
  * - "init" - Initialize robot state
  * - "forward" - Move forward
  * - "backward" - Move backward
  * - "left" - Turn left
  * - "right" - Turn right
+ * - "wiggle <servo>" - Test servo connectivity
  */
 class CommandRouter {
   public:
-    // Command handler function type
-    using CommandHandler = std::function<void()>;
+    // Command handler function type - receives list of arguments
+    using CommandHandler = std::function<void(const std::vector<String>&)>;
 
     /**
      * Register a handler for a specific command string
@@ -63,12 +69,13 @@ class CommandRouter {
     std::map<String, CommandHandler> _handlers;
 
     /**
-     * Parse command string by trimming whitespace and newlines
+     * Parse message into command and arguments
      *
      * @param message Raw message string
-     * @return Cleaned command string
+     * @param outCommand Output: the command name (first word, lowercase)
+     * @param outArgs Output: vector of arguments (subsequent words)
      */
-    String parseCommand(const String& message) const;
+    void parseMessage(const String& message, String& outCommand, std::vector<String>& outArgs) const;
 };
 
 #endif

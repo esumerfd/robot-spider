@@ -147,27 +147,18 @@ void Robot::setupCommands() {
   Log::println("Robot: Setting up command handlers");
 
   // Register command handlers with the router
-  _commandRouter.registerCommand("init", [this]() { handleInitCommand(); });
-  _commandRouter.registerCommand("reset", [this]() { handleResetCommand(); });
-  _commandRouter.registerCommand("forward", [this]() { handleForwardCommand(); });
-  _commandRouter.registerCommand("backward", [this]() { handleBackwardCommand(); });
-  _commandRouter.registerCommand("left", [this]() { handleLeftCommand(); });
-  _commandRouter.registerCommand("right", [this]() { handleRightCommand(); });
-  _commandRouter.registerCommand("stop", [this]() { handleStopCommand(); });
+  // All handlers receive arguments (even if unused)
+  _commandRouter.registerCommand("init", [this](Args args) { handleInitCommand(args); });
+  _commandRouter.registerCommand("reset", [this](Args args) { handleResetCommand(args); });
+  _commandRouter.registerCommand("forward", [this](Args args) { handleForwardCommand(args); });
+  _commandRouter.registerCommand("backward", [this](Args args) { handleBackwardCommand(args); });
+  _commandRouter.registerCommand("left", [this](Args args) { handleLeftCommand(args); });
+  _commandRouter.registerCommand("right", [this](Args args) { handleRightCommand(args); });
+  _commandRouter.registerCommand("stop", [this](Args args) { handleStopCommand(args); });
 
-  // Wiggle commands for testing individual servo connectivity
-  _commandRouter.registerCommand("wiggle leftfrontshoulder", [this]() { handleWiggleCommand("leftfrontshoulder"); });
-  _commandRouter.registerCommand("wiggle leftfrontknee", [this]() { handleWiggleCommand("leftfrontknee"); });
-  _commandRouter.registerCommand("wiggle leftmiddleshoulder", [this]() { handleWiggleCommand("leftmiddleshoulder"); });
-  _commandRouter.registerCommand("wiggle leftmiddleknee", [this]() { handleWiggleCommand("leftmiddleknee"); });
-  _commandRouter.registerCommand("wiggle leftrearshoulder", [this]() { handleWiggleCommand("leftrearshoulder"); });
-  _commandRouter.registerCommand("wiggle leftrearknee", [this]() { handleWiggleCommand("leftrearknee"); });
-  _commandRouter.registerCommand("wiggle rightfrontshoulder", [this]() { handleWiggleCommand("rightfrontshoulder"); });
-  _commandRouter.registerCommand("wiggle rightfrontknee", [this]() { handleWiggleCommand("rightfrontknee"); });
-  _commandRouter.registerCommand("wiggle rightmiddleshoulder", [this]() { handleWiggleCommand("rightmiddleshoulder"); });
-  _commandRouter.registerCommand("wiggle rightmiddleknee", [this]() { handleWiggleCommand("rightmiddleknee"); });
-  _commandRouter.registerCommand("wiggle rightrearshoulder", [this]() { handleWiggleCommand("rightrearshoulder"); });
-  _commandRouter.registerCommand("wiggle rightrearknee", [this]() { handleWiggleCommand("rightrearknee"); });
+  // Wiggle command for testing individual servo connectivity
+  // Usage: "wiggle <servoName>" e.g., "wiggle leftfrontshoulder"
+  _commandRouter.registerCommand("wiggle", [this](Args args) { handleWiggleCommand(args); });
 
   // Hook up Bluetooth message callback to command router
   _bluetooth.onMessageReceived([this](String message) {
@@ -177,7 +168,7 @@ void Robot::setupCommands() {
   Log::println("Robot: Registered %d commands", _commandRouter.getCommandCount());
 }
 
-void Robot::handleInitCommand() {
+void Robot::handleInitCommand(Args args) {
   Log::println("Robot: Executing INIT command");
   _isMoving = false;
   _currentCommand = "";
@@ -185,7 +176,7 @@ void Robot::handleInitCommand() {
   _bluetooth.send("OK: Initialized");
 }
 
-void Robot::handleResetCommand() {
+void Robot::handleResetCommand(Args args) {
   Log::println("Robot: Executing RESET command");
 
   // Reset all gaits to step 0
@@ -206,7 +197,7 @@ void Robot::handleResetCommand() {
   _bluetooth.send("OK: Reset to middle position");
 }
 
-void Robot::handleForwardCommand() {
+void Robot::handleForwardCommand(Args args) {
   Log::println("Robot: Executing FORWARD command");
   _currentCommand = "forward";
   _isMoving = true;
@@ -217,7 +208,7 @@ void Robot::handleForwardCommand() {
   _bluetooth.send("OK: Moving forward");
 }
 
-void Robot::handleBackwardCommand() {
+void Robot::handleBackwardCommand(Args args) {
   Log::println("Robot: Executing BACKWARD command");
   _currentCommand = "backward";
   _isMoving = true;
@@ -228,7 +219,7 @@ void Robot::handleBackwardCommand() {
   _bluetooth.send("OK: Moving backward");
 }
 
-void Robot::handleLeftCommand() {
+void Robot::handleLeftCommand(Args args) {
   Log::println("Robot: Executing LEFT command");
   _currentCommand = "left";
   _isMoving = true;
@@ -239,7 +230,7 @@ void Robot::handleLeftCommand() {
   _bluetooth.send("OK: Turning left");
 }
 
-void Robot::handleRightCommand() {
+void Robot::handleRightCommand(Args args) {
   Log::println("Robot: Executing RIGHT command");
   _currentCommand = "right";
   _isMoving = true;
@@ -250,7 +241,7 @@ void Robot::handleRightCommand() {
   _bluetooth.send("OK: Turning right");
 }
 
-void Robot::handleStopCommand() {
+void Robot::handleStopCommand(Args args) {
   Log::println("Robot: Executing STOP command");
   _isMoving = false;
   _currentCommand = "";
@@ -258,7 +249,14 @@ void Robot::handleStopCommand() {
   _bluetooth.send("OK: Stopped");
 }
 
-void Robot::handleWiggleCommand(const String& servoName) {
+void Robot::handleWiggleCommand(Args args) {
+  if (args.empty()) {
+    Log::println("Robot: WIGGLE command missing servo name");
+    _bluetooth.send("ERROR: Missing servo name. Usage: wiggle <servoName>");
+    return;
+  }
+
+  const String& servoName = args[0];
   Log::println("Robot: Executing WIGGLE command for '%s'", servoName.c_str());
   _isMoving = false;  // Stop any current movement
 
