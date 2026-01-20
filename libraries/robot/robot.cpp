@@ -176,6 +176,10 @@ void Robot::setupCommands() {
   // Usage: "wiggle <servoName>" e.g., "wiggle leftfrontshoulder"
   _commandRouter.registerCommand("wiggle", [this](Args args) { handleWiggleCommand(args); });
 
+  // Test movement command for testing gait logic without hardware
+  // Usage: "test-movement <gait>" e.g., "test-movement forward"
+  _commandRouter.registerCommand("test-movement", [this](Args args) { handleTestMovementCommand(args); });
+
   // Hook up Bluetooth message callback to command router
   _bluetooth.onMessageReceived([this](String message) {
     _commandRouter.route(message);
@@ -280,5 +284,44 @@ void Robot::handleWiggleCommand(Args args) {
     _bluetooth.send("OK: Wiggled " + servoName);
   } else {
     _bluetooth.send("ERROR: Unknown servo " + servoName);
+  }
+}
+
+void Robot::handleTestMovementCommand(Args args) {
+  if (args.empty()) {
+    Log::println("Robot: TEST-MOVEMENT command missing gait name");
+    _bluetooth.send("ERROR: Usage: test-movement <gait> (forward|backward|left|right|statemachine)");
+    return;
+  }
+
+  const String& gaitName = args[0];
+  Log::println("Robot: Executing TEST-MOVEMENT command for '%s'", gaitName.c_str());
+  _isMoving = false;  // Stop any real movement
+
+  bool success = false;
+
+  if (gaitName == "forward") {
+    success = _testHarness.runGaitTest(FORWARD_WALK_SEQUENCE);
+  } else if (gaitName == "backward") {
+    success = _testHarness.runGaitTest(BACKWARD_SEQUENCE);
+  } else if (gaitName == "left") {
+    success = _testHarness.runGaitTest(LEFT_SEQUENCE);
+  } else if (gaitName == "right") {
+    success = _testHarness.runGaitTest(RIGHT_SEQUENCE);
+  } else if (gaitName == "stationary") {
+    success = _testHarness.runGaitTest(STATIONARY_SEQUENCE);
+  } else if (gaitName == "statemachine") {
+    // Special test for the state machine logic
+    success = _testHarness.runStateMachineTest(FORWARD_WALK_SEQUENCE);
+  } else {
+    Log::println("Robot: Unknown gait '%s'", gaitName.c_str());
+    _bluetooth.send("ERROR: Unknown gait. Use: forward|backward|left|right|statemachine");
+    return;
+  }
+
+  if (success) {
+    _bluetooth.send("OK: Test passed for " + gaitName);
+  } else {
+    _bluetooth.send("ERROR: Test failed for " + gaitName);
   }
 }

@@ -11,6 +11,7 @@
 #include <command_router.h>
 #include <bluetooth_connection.h>
 #include <profiler.h>
+#include <test_harness.h>
 
 class Robot {
   private:
@@ -31,6 +32,9 @@ class Robot {
     // Diagnostics
     MemoryProfiler _memoryProfiler;
 
+    // Test harness for movement testing
+    TestHarness _testHarness;
+
     uint32_t _lastUpdateMs;
     bool _firstLoop;
 
@@ -50,6 +54,7 @@ class Robot {
     void handleRightCommand(Args args);
     void handleStopCommand(Args args);
     void handleWiggleCommand(Args args);
+    void handleTestMovementCommand(Args args);
 
     // Communication setup
     void setupCommands();

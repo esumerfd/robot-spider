@@ -102,6 +102,28 @@ void Body::resetToMiddle() {
   Log::println("Body: reset to middle position (90°)");
 }
 
+void Body::logState() const {
+  Log::println("Body State:");
+  Log::println("  LF: shoulder=%.1f knee=%.1f",
+               _leftFront.shoulder().getPosition(),
+               _leftFront.knee().getPosition());
+  Log::println("  LM: shoulder=%.1f knee=%.1f",
+               _leftMiddle.shoulder().getPosition(),
+               _leftMiddle.knee().getPosition());
+  Log::println("  LR: shoulder=%.1f knee=%.1f",
+               _leftRear.shoulder().getPosition(),
+               _leftRear.knee().getPosition());
+  Log::println("  RF: shoulder=%.1f knee=%.1f",
+               _rightFront.shoulder().getPosition(),
+               _rightFront.knee().getPosition());
+  Log::println("  RM: shoulder=%.1f knee=%.1f",
+               _rightMiddle.shoulder().getPosition(),
+               _rightMiddle.knee().getPosition());
+  Log::println("  RR: shoulder=%.1f knee=%.1f",
+               _rightRear.shoulder().getPosition(),
+               _rightRear.knee().getPosition());
+}
+
 bool Body::wiggleServo(const String& servoName) {
   // Map servo name to servo pointer
   Servo* servo = nullptr;

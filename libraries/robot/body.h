@@ -9,6 +9,7 @@
 #include <right_middle_leg.h>
 #include <right_rear_leg.h>
 #include <gait_sequence.h>
+#include <i_gait_target.h>
 
 /*
  * Composes all the parts of the body - 6 named legs.
@@ -16,8 +17,10 @@
  * Body owns all servos and legs. It coordinates movement by
  * applying gait sequences to the legs and updating them based
  * on elapsed time.
+ *
+ * Implements IGaitTarget for use with gait sequencing and testing.
  */
-class Body {
+class Body : public IGaitTarget {
   private:
     Board& _board;
 
@@ -53,13 +56,13 @@ class Body {
     Body(Board& board);
 
     void begin();
-    void update(uint32_t deltaMs);
 
-    // Apply a gait sequence to all legs
-    void applyGait(GaitSequence& gait);
-
-    // Reset all joints to middle position
-    void resetToMiddle();
+    // IGaitTarget interface implementation
+    void update(uint32_t deltaMs) override;
+    void applyGait(GaitSequence& gait) override;
+    bool atTarget() const override;
+    void resetToMiddle() override;
+    void logState() const override;
 
     // Access to individual legs (for testing/debugging)
     LeftFrontLeg& leftFront() { return _leftFront; }
@@ -68,9 +71,6 @@ class Body {
     RightFrontLeg& rightFront() { return _rightFront; }
     RightMiddleLeg& rightMiddle() { return _rightMiddle; }
     RightRearLeg& rightRear() { return _rightRear; }
-
-    // Check if all legs have reached their targets
-    bool atTarget() const;
 
     // Diagnostic: wiggle a servo by name to test connectivity
     // Returns true if servo name was valid, false otherwise

@@ -29,6 +29,8 @@ class Leg {
     // Access to joints
     Shoulder& shoulder() { return _shoulder; }
     Knee& knee() { return _knee; }
+    const Shoulder& shoulder() const { return _shoulder; }
+    const Knee& knee() const { return _knee; }
 
     // Check if both joints have reached their targets
     bool atTarget() const { return _shoulder.atTarget() && _knee.atTarget(); }
