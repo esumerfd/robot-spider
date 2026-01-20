@@ -36,14 +36,15 @@ const GaitSequenceData STATIONARY_SEQUENCE = {
 // - Right Middle knee: rotate counter-clockwise (+23 degrees)
 // - Left Rear knee: rotate clockwise (-23 degrees)
 // - Duration 0 = constant speed (180°/s), so 23° takes ~128ms
+// DIAGNOSTIC: Reduced to -5/+5 degrees to test if load is causing brownout
 const GaitStep FORWARD_WALK_STEPS[] = {
   {
     "Lift body",           // Step name
-    {0, -23, 0},           // Left Front: knee -23° at constant speed
+    {0,  -5, 0},           // Left Front: knee -5° (reduced for testing)
     {0,   0, 0},           // Left Middle: no movement
-    {0, -23, 0},           // Left Rear: knee -23° at constant speed
+    {0,  -5, 0},           // Left Rear: knee -5° (reduced for testing)
     {0,   0, 0},           // Right Front: no movement
-    {0, +23, 0},           // Right Middle: knee +23° at constant speed
+    {0,  +5, 0},           // Right Middle: knee +5° (reduced for testing)
     {0,   0, 0},           // Right Rear: no movement
     true                   // Wait for all joints to complete
   },
@@ -51,14 +52,15 @@ const GaitStep FORWARD_WALK_STEPS[] = {
   // - Right Front shoulder: -10° (forward, mirrored)
   // - Left Middle shoulder: +10° (forward)
   // - Right Back shoulder: -10° (forward, mirrored)
+  // DIAGNOSTIC: Reduced to -3/+3 degrees
   {
     "Swing shoulders forward",
     {0,   0, 0},           // Left Front: no movement
-    {+10, 0, 0},           // Left Middle: shoulder +10° forward
+    {+3,  0, 0},           // Left Middle: shoulder +3° (reduced for testing)
     {0,   0, 0},           // Left Rear: no movement
-    {-10, 0, 0},           // Right Front: shoulder -10° forward (mirrored)
+    {-3,  0, 0},           // Right Front: shoulder -3° (reduced for testing)
     {0,   0, 0},           // Right Middle: no movement
-    {-10, 0, 0},           // Right Rear: shoulder -10° forward (mirrored)
+    {-3,  0, 0},           // Right Rear: shoulder -3° (reduced for testing)
     true                   // Wait for all joints to complete
   },
   // Future steps will go here:

@@ -45,6 +45,11 @@ const char* MultiStepGait::getName() const {
 void MultiStepGait::applyLegMovement(Leg& leg, const LegMovement& movement) {
   _applyProfiler.tick();
 
+  // Mark step as in progress when any movement is applied
+  if (movement.shoulderDelta != 0 || movement.kneeDelta != 0) {
+    _stepInProgress = true;
+  }
+
   if (movement.shoulderDelta != 0) {
     applyDelta(leg.shoulder(), movement.shoulderDelta, movement.duration);
   }
@@ -71,24 +76,23 @@ void MultiStepGait::applyDelta(Joint& joint, int8_t delta, uint16_t duration) {
 }
 
 void MultiStepGait::advance() {
-  // Check if current step is complete
-  if (_stepInProgress && _sequenceData->steps[_currentStepIndex].waitForCompletion) {
-    // Caller should check body.atTarget() before calling advance()
-    return;
+  // Caller must verify body.atTarget() before calling advance()
+
+  // If already at last step (non-looping), just mark as complete
+  if (!_sequenceData->looping && _currentStepIndex >= _sequenceData->stepCount - 1) {
+    _stepInProgress = false;
+    return;  // Don't advance past the last step
   }
+
+  // Clear step-in-progress flag since we're moving to the next step
+  _stepInProgress = false;
 
   _currentStepIndex++;
 
-  // Handle looping
-  if (_currentStepIndex >= _sequenceData->stepCount) {
-    if (_sequenceData->looping) {
-      _currentStepIndex = 0;
-    } else {
-      _currentStepIndex = _sequenceData->stepCount - 1;  // Stay on last step
-    }
+  // Handle looping (wrap back to start)
+  if (_sequenceData->looping && _currentStepIndex >= _sequenceData->stepCount) {
+    _currentStepIndex = 0;
   }
-
-  _stepInProgress = false;
 }
 
 bool MultiStepGait::isComplete() const {

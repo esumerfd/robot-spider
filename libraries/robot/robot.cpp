@@ -104,17 +104,27 @@ void Robot::loop() {
         _body.applyGait(_sweep);
       } else if (_currentCommand == "forward") {
         if (!_forwardGait.isComplete()) {
+          Log::println("Robot: Step %d complete, advancing to step %d",
+                       _forwardGait.getCurrentStep(),
+                       _forwardGait.getCurrentStep() + 1);
+          yield();  // Yield before step transition
           _forwardGait.advance();
+          yield();  // Yield after advance
           _body.applyGait(_forwardGait);
+          yield();  // Yield after applying new gait
         } else {
+          Log::println("Robot: Forward gait complete");
           _currentCommand = "stationary";
           _body.applyGait(_stationaryGait);
           _isMoving = false;
         }
       } else if (_currentCommand == "backward") {
         if (!_backwardGait.isComplete()) {
+          yield();
           _backwardGait.advance();
+          yield();
           _body.applyGait(_backwardGait);
+          yield();
         } else {
           _currentCommand = "stationary";
           _body.applyGait(_stationaryGait);
@@ -122,8 +132,11 @@ void Robot::loop() {
         }
       } else if (_currentCommand == "left") {
         if (!_leftGait.isComplete()) {
+          yield();
           _leftGait.advance();
+          yield();
           _body.applyGait(_leftGait);
+          yield();
         } else {
           _currentCommand = "stationary";
           _body.applyGait(_stationaryGait);
@@ -131,8 +144,11 @@ void Robot::loop() {
         }
       } else if (_currentCommand == "right") {
         if (!_rightGait.isComplete()) {
+          yield();
           _rightGait.advance();
+          yield();
           _body.applyGait(_rightGait);
+          yield();
         } else {
           _currentCommand = "stationary";
           _body.applyGait(_stationaryGait);
