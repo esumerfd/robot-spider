@@ -78,15 +78,14 @@ void MultiStepGait::applyDelta(Joint& joint, int8_t delta, uint16_t duration) {
 void MultiStepGait::advance() {
   // Caller must verify body.atTarget() before calling advance()
 
-  // If already at last step (non-looping), just mark as complete
+  // If already at last step (non-looping), mark as complete and don't advance
   if (!_sequenceData->looping && _currentStepIndex >= _sequenceData->stepCount - 1) {
-    _stepInProgress = false;
-    return;  // Don't advance past the last step
+    _stepInProgress = false;  // This makes isComplete() return true
+    return;
   }
 
-  // Clear step-in-progress flag since we're moving to the next step
-  _stepInProgress = false;
-
+  // Move to next step - DON'T clear _stepInProgress here
+  // It will be set to true when applyGait() is called for the new step
   _currentStepIndex++;
 
   // Handle looping (wrap back to start)
