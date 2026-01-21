@@ -313,9 +313,12 @@ void Robot::handleTestMovementCommand(Args args) {
   } else if (gaitName == "statemachine") {
     // Special test for the state machine logic
     success = _testHarness.runStateMachineTest(FORWARD_WALK_SEQUENCE);
+  } else if (gaitName == "robotloop") {
+    // Full robot loop simulation - detects infinite loop bugs
+    success = _testHarness.runRobotLoopTest(FORWARD_WALK_SEQUENCE);
   } else {
     Log::println("Robot: Unknown gait '%s'", gaitName.c_str());
-    _bluetooth.send("ERROR: Unknown gait. Use: forward|backward|left|right|statemachine");
+    _bluetooth.send("ERROR: Unknown gait. Use: forward|backward|left|right|robotloop");
     return;
   }
 
