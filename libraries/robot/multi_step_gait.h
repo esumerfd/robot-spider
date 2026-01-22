@@ -62,12 +62,17 @@ class MultiStepGait : public GaitSequence {
     void applyTo(RightRearLeg& leg) override;
 
     const char* getName() const override;
+    const char* getStepName() const override;
+    uint8_t getStepIndex() const override { return _currentStepIndex; }
 
     // Multi-step specific control
     void advance();              // Move to next step in sequence
     bool isComplete() const;     // True if all steps executed
     void reset();                // Return to step 0
     uint8_t getCurrentStep() const;
+
+    // For testing: mark that a step has been applied and is in progress
+    void markStepInProgress() { _stepInProgress = true; }
 
     // Profiling control
     void updateProfiler(uint32_t currentMs);

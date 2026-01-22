@@ -2,6 +2,26 @@
 #include <logging.h>
 #include <Arduino.h>
 
+// Map servo pin number to descriptive name
+static const char* getJointName(uint8_t pin) {
+  static const char* names[] = {
+    "LF.Shoulder",  // 0
+    "LF.Knee",      // 1
+    "LM.Shoulder",  // 2
+    "LM.Knee",      // 3
+    "LR.Shoulder",  // 4
+    "LR.Knee",      // 5
+    "RF.Shoulder",  // 6
+    "RF.Knee",      // 7
+    "RM.Shoulder",  // 8
+    "RM.Knee",      // 9
+    "RR.Shoulder",  // 10
+    "RR.Knee"       // 11
+  };
+  if (pin < 12) return names[pin];
+  return "Unknown";
+}
+
 Joint::Joint(Servo &servo, float initialPos)
   : _servo(servo),
     _currentPos(initialPos),
@@ -33,9 +53,6 @@ void Joint::update(uint32_t deltaMs) {
     _currentPos += direction * maxDelta;
   }
 
-  Log::println("Joint: cur=%.1f° tgt=%.1f° speed=%.1f°/s deltaMs=%d",
-               _currentPos, _targetPos, _speed, deltaMs);
-
   // Apply position to servo with rate limiting
   float positionToWrite = _currentPos;
   _servoWriteProfiler.executeIfReady(millis(), [this, positionToWrite]() {
@@ -44,6 +61,12 @@ void Joint::update(uint32_t deltaMs) {
 }
 
 void Joint::setTarget(float targetPos, float speed) {
+  // Only log if target actually changed
+  if (abs(_targetPos - targetPos) > 0.5f) {
+    uint8_t pin = _servo.getServoNum();
+    Log::println("%s[%d]: %.1f° -> %.1f° (delta=%.1f°)",
+                 getJointName(pin), pin, _currentPos, targetPos, targetPos - _currentPos);
+  }
   _targetPos = targetPos;
   _speed = speed;
 }

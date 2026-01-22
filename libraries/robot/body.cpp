@@ -68,6 +68,12 @@ void Body::update(uint32_t deltaMs) {
 }
 
 void Body::applyGait(GaitSequence& gait) {
+  // Log step info before applying
+  const char* stepName = gait.getStepName();
+  if (stepName) {
+    Log::println("=== Step %d: '%s' ===", gait.getStepIndex(), stepName);
+  }
+
   // Apply sequence to each leg (stateless - can be reapplied)
   // Note: Must call type-specific methods for compile-time type safety
   gait.applyTo(_leftFront);

@@ -42,6 +42,10 @@ const char* MultiStepGait::getName() const {
   return _sequenceData->name;
 }
 
+const char* MultiStepGait::getStepName() const {
+  return _sequenceData->steps[_currentStepIndex].name;
+}
+
 void MultiStepGait::applyLegMovement(Leg& leg, const LegMovement& movement) {
   _applyProfiler.tick();
 

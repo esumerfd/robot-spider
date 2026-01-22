@@ -217,6 +217,7 @@ class TestHarness {
       // Apply initial gait (like handleForwardCommand does)
       Log::println("TEST: === Starting movement ===");
       applyStep(gaitData.steps[gait.getCurrentStep()]);
+      gait.markStepInProgress();  // Simulate what applyGait() does
       stepApplicationCounts[gait.getCurrentStep()]++;
 
       while (isMoving && loopCount < MAX_LOOPS) {
@@ -254,6 +255,7 @@ class TestHarness {
               }
 
               applyStep(gaitData.steps[newStep]);
+              gait.markStepInProgress();  // Simulate what applyGait() does
               _mockBody.logState();
             }
           } else {

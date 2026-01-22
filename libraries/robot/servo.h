@@ -30,6 +30,7 @@ class Servo {
     void begin();
     void move(float angle);
     float getPosition();
+    uint8_t getServoNum() const { return _servonum; }
 };
 
 #endif

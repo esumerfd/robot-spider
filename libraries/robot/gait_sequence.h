@@ -31,6 +31,14 @@ class GaitSequence {
 
     // Get sequence name for debugging/logging
     virtual const char* getName() const = 0;
+
+    // Get current step name (for multi-step gaits)
+    // Returns nullptr for single-step gaits
+    virtual const char* getStepName() const { return nullptr; }
+
+    // Get current step index (for multi-step gaits)
+    // Returns 0 for single-step gaits
+    virtual uint8_t getStepIndex() const { return 0; }
 };
 
 #endif
