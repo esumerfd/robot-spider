@@ -29,42 +29,31 @@ const GaitSequenceData STATIONARY_SEQUENCE = {
 };
 
 // Forward Walk Sequence
-// Initial step: Lift body using 3 knees (Left Front, Right Middle, Left Rear)
-
-// Step 1: Lift body by extending 3 knees
-// - Left Front knee: rotate clockwise (-23 degrees)
-// - Right Middle knee: rotate counter-clockwise (+23 degrees)
-// - Left Rear knee: rotate clockwise (-23 degrees)
-// - Duration 0 = constant speed (180°/s), so 23° takes ~128ms
-// DIAGNOSTIC: Reduced to -5/+5 degrees to test if load is causing brownout
+// Step 1: Lift body by extending 3 knees (tripod A)
+// Step 2: Swing opposite tripod (B) shoulders forward
 const GaitStep FORWARD_WALK_STEPS[] = {
   {
     "Lift body",           // Step name
-    {0,  -5, 0},           // Left Front: knee -5° (reduced for testing)
+    {0, -23, 0},           // Left Front: knee -23°
     {0,   0, 0},           // Left Middle: no movement
-    {0,  -5, 0},           // Left Rear: knee -5° (reduced for testing)
+    {0, -23, 0},           // Left Rear: knee -23°
     {0,   0, 0},           // Right Front: no movement
-    {0,  +5, 0},           // Right Middle: knee +5° (reduced for testing)
+    {0, +23, 0},           // Right Middle: knee +23°
     {0,   0, 0},           // Right Rear: no movement
     true                   // Wait for all joints to complete
   },
-  // Step 2: Swing opposite tripod shoulders forward
-  // - Right Front shoulder: -10° (forward, mirrored)
-  // - Left Middle shoulder: +10° (forward)
-  // - Right Back shoulder: -10° (forward, mirrored)
-  // DIAGNOSTIC: Reduced to -3/+3 degrees
   {
     "Swing shoulders forward",
-    {0,   0, 0},           // Left Front: no movement
-    {+3,  0, 0},           // Left Middle: shoulder +3° (reduced for testing)
-    {0,   0, 0},           // Left Rear: no movement
-    {-3,  0, 0},           // Right Front: shoulder -3° (reduced for testing)
-    {0,   0, 0},           // Right Middle: no movement
-    {-3,  0, 0},           // Right Rear: shoulder -3° (reduced for testing)
+    {0,    0, 0},          // Left Front: no movement
+    {+10,  0, 0},          // Left Middle: shoulder +10°
+    {0,    0, 0},          // Left Rear: no movement
+    {-10,  0, 0},          // Right Front: shoulder -10°
+    {0,    0, 0},          // Right Middle: no movement
+    {-10,  0, 0},          // Right Rear: shoulder -10°
     true                   // Wait for all joints to complete
   },
-  // Future steps will go here:
-  // - Lower body (same knees return to neutral)
+  // Future steps:
+  // - Lower body (knees return to neutral)
   // - Shift body forward (all shoulders move)
 };
 

@@ -64,7 +64,7 @@ void Joint::setTarget(float targetPos, float speed) {
   // Only log if target actually changed
   if (abs(_targetPos - targetPos) > 0.5f) {
     uint8_t pin = _servo.getServoNum();
-    Log::println("%s[%d]: %.1f° -> %.1f° (delta=%.1f°)",
+    Log::println("    %s[%d]: %.1f° -> %.1f° (delta=%.1f°)",
                  getJointName(pin), pin, _currentPos, targetPos, targetPos - _currentPos);
   }
   _targetPos = targetPos;

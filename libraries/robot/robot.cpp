@@ -104,25 +104,25 @@ void Robot::loop() {
         _body.applyGait(_sweep);
       } else if (_currentCommand == "forward") {
         if (!_forwardGait.isComplete()) {
-          Log::println("Robot: Step %d complete, advancing",
-                       _forwardGait.getCurrentStep());
+          uint8_t completedStep = _forwardGait.getCurrentStep();
           yield();  // Yield before step transition
           _forwardGait.advance();
           yield();  // Yield after advance
 
           // Check if complete AFTER advance (last step may have just finished)
           if (!_forwardGait.isComplete()) {
-            Log::println("Robot: Applying step %d", _forwardGait.getCurrentStep());
+            Log::println("Robot: Step %d complete, advancing to step %d",
+                         completedStep, _forwardGait.getCurrentStep());
             _body.applyGait(_forwardGait);
             yield();  // Yield after applying new gait
           } else {
-            Log::println("Robot: Forward gait complete after advance");
+            Log::println("Robot: Step %d complete, gait finished", completedStep);
             _currentCommand = "stationary";
             _body.applyGait(_stationaryGait);
             _isMoving = false;
           }
         } else {
-          Log::println("Robot: Forward gait complete");
+          Log::println("Robot: Forward gait already complete");
           _currentCommand = "stationary";
           _body.applyGait(_stationaryGait);
           _isMoving = false;
