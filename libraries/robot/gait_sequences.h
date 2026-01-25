@@ -29,32 +29,49 @@ const GaitSequenceData STATIONARY_SEQUENCE = {
 };
 
 // Forward Walk Sequence
-// Step 1: Lift body by extending 3 knees (tripod A)
-// Step 2: Swing opposite tripod (B) shoulders forward
+// Tripod A: Left Front, Left Rear, Right Middle
+// Tripod B: Right Front, Right Rear, Left Middle
 const GaitStep FORWARD_WALK_STEPS[] = {
   {
-    "Lift body",           // Step name
-    {0, -23, 0},           // Left Front: knee -23°
+    "Lift body",
+    {0, -23, 0},           // Left Front: knee -23° (lift)
     {0,   0, 0},           // Left Middle: no movement
-    {0, -23, 0},           // Left Rear: knee -23°
+    {0, -23, 0},           // Left Rear: knee -23° (lift)
     {0,   0, 0},           // Right Front: no movement
-    {0, +23, 0},           // Right Middle: knee +23°
+    {0, +23, 0},           // Right Middle: knee +23° (lift)
     {0,   0, 0},           // Right Rear: no movement
-    true                   // Wait for all joints to complete
+    true
   },
   {
-    "Swing shoulders forward",
+    "Swing prep",
     {0,    0, 0},          // Left Front: no movement
-    {+10,  0, 0},          // Left Middle: shoulder +10°
+    {+10,  0, 0},          // Left Middle: shoulder +10° (forward)
     {0,    0, 0},          // Left Rear: no movement
-    {-10,  0, 0},          // Right Front: shoulder -10°
+    {-10,  0, 0},          // Right Front: shoulder -10° (forward)
     {0,    0, 0},          // Right Middle: no movement
-    {-10,  0, 0},          // Right Rear: shoulder -10°
-    true                   // Wait for all joints to complete
+    {-10,  0, 0},          // Right Rear: shoulder -10° (forward)
+    true
   },
-  // Future steps:
-  // - Lower body (knees return to neutral)
-  // - Shift body forward (all shoulders move)
+  {
+    "Right shimmy",
+    {0,    0, 0},          // Left Front: no movement
+    {0, -23, 0},           // Left Middle: knee down
+    {0,    0, 0},          // Left Rear: no movement
+    {0, +23, 0},           // Right Front: knee down
+    {0,    0, 0},          // Right Middle: no movement
+    {0, +23, 0},           // Right Rear: knee down
+    true
+  },
+  {
+    "Left shimmy",
+    {0, +23, 0},           // Left Front: knee up
+    {0,    0, 0},          // Left Middle: no movement
+    {0, +23, 0},           // Left Rear: knee up
+    {0,    0, 0},          // Right Front: no movement
+    {0, -23, 0},           // Right Middle: knee up
+    {0,    0, 0},          // Right Rear: no movement
+    true
+  },
 };
 
 const GaitSequenceData FORWARD_WALK_SEQUENCE = {
