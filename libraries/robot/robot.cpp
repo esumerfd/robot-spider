@@ -111,18 +111,18 @@ void Robot::loop() {
 
           // Check if complete AFTER advance (last step may have just finished)
           if (!_forwardGait.isComplete()) {
-            Log::println("Robot: Step %d complete, advancing to step %d",
+            Log::debugln("Robot: Step %d complete, advancing to step %d",
                          completedStep, _forwardGait.getCurrentStep());
             _body.applyGait(_forwardGait);
             yield();  // Yield after applying new gait
           } else {
-            Log::println("Robot: Step %d complete, gait finished", completedStep);
+            Log::debugln("Robot: Step %d complete, gait finished", completedStep);
             _currentCommand = "stationary";
             _body.applyGait(_stationaryGait);
             _isMoving = false;
           }
         } else {
-          Log::println("Robot: Forward gait already complete");
+          Log::debugln("Robot: Forward gait already complete");
           _currentCommand = "stationary";
           _body.applyGait(_stationaryGait);
           _isMoving = false;
@@ -207,6 +207,10 @@ void Robot::setupCommands() {
   // Usage: "test-movement <gait>" e.g., "test-movement forward"
   _commandRouter.registerCommand("test-movement", [this](Args args) { handleTestMovementCommand(args); });
 
+  // Debug mode command for toggling verbose movement logging
+  // Usage: "debug on" or "debug off"
+  _commandRouter.registerCommand("debug", [this](Args args) { handleDebugCommand(args); });
+
   // Hook up Bluetooth message callback to command router
   _bluetooth.onMessageReceived([this](String message) {
     _commandRouter.route(message);
@@ -245,7 +249,7 @@ void Robot::handleResetCommand(Args args) {
 }
 
 void Robot::handleForwardCommand(Args args) {
-  Log::println("Robot: Executing FORWARD command");
+  Log::debugln("Robot: Executing FORWARD command");
   _currentCommand = "forward";
   _isMoving = true;
 
@@ -256,7 +260,7 @@ void Robot::handleForwardCommand(Args args) {
 }
 
 void Robot::handleBackwardCommand(Args args) {
-  Log::println("Robot: Executing BACKWARD command");
+  Log::debugln("Robot: Executing BACKWARD command");
   _currentCommand = "backward";
   _isMoving = true;
 
@@ -267,7 +271,7 @@ void Robot::handleBackwardCommand(Args args) {
 }
 
 void Robot::handleLeftCommand(Args args) {
-  Log::println("Robot: Executing LEFT command");
+  Log::debugln("Robot: Executing LEFT command");
   _currentCommand = "left";
   _isMoving = true;
 
@@ -278,7 +282,7 @@ void Robot::handleLeftCommand(Args args) {
 }
 
 void Robot::handleRightCommand(Args args) {
-  Log::println("Robot: Executing RIGHT command");
+  Log::debugln("Robot: Executing RIGHT command");
   _currentCommand = "right";
   _isMoving = true;
 
@@ -289,7 +293,7 @@ void Robot::handleRightCommand(Args args) {
 }
 
 void Robot::handleStopCommand(Args args) {
-  Log::println("Robot: Executing STOP command");
+  Log::debugln("Robot: Executing STOP command");
   _isMoving = false;
   _currentCommand = "";
   // Movement will naturally stop since _isMoving is false
@@ -353,5 +357,29 @@ void Robot::handleTestMovementCommand(Args args) {
     _bluetooth.send("OK: Test passed for " + gaitName);
   } else {
     _bluetooth.send("ERROR: Test failed for " + gaitName);
+  }
+}
+
+void Robot::handleDebugCommand(Args args) {
+  if (args.empty()) {
+    // No argument - show current state
+    const char* state = Log::isDebugEnabled() ? "on" : "off";
+    Log::println("Robot: Debug mode is %s", state);
+    _bluetooth.send(String("OK: Debug mode is ") + state);
+    return;
+  }
+
+  const String& arg = args[0];
+  if (arg == "on") {
+    Log::setDebug(true);
+    Log::println("Robot: Debug mode enabled");
+    _bluetooth.send("OK: Debug mode on");
+  } else if (arg == "off") {
+    Log::println("Robot: Debug mode disabled");
+    Log::setDebug(false);
+    _bluetooth.send("OK: Debug mode off");
+  } else {
+    Log::println("Robot: Unknown debug argument '%s'", arg.c_str());
+    _bluetooth.send("ERROR: Usage: debug [on|off]");
   }
 }

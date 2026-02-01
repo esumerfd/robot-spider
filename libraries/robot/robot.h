@@ -55,6 +55,7 @@ class Robot {
     void handleStopCommand(Args args);
     void handleWiggleCommand(Args args);
     void handleTestMovementCommand(Args args);
+    void handleDebugCommand(Args args);
 
     // Communication setup
     void setupCommands();

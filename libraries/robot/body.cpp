@@ -68,11 +68,11 @@ void Body::update(uint32_t deltaMs) {
 }
 
 void Body::applyGait(GaitSequence& gait) {
-  // Log gait and step info before applying
-  Log::println("Gait '%s'", gait.getName());
+  // Log gait and step info before applying (debug mode only)
+  Log::debugln("Gait '%s'", gait.getName());
   const char* stepName = gait.getStepName();
   if (stepName) {
-    Log::println("  Step %d: '%s'", gait.getStepIndex(), stepName);
+    Log::debugln("  Step %d: '%s'", gait.getStepIndex(), stepName);
   }
 
   // Apply sequence to each leg (stateless - can be reapplied)
